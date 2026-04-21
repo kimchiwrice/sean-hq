@@ -122,7 +122,6 @@
             text-transform: uppercase;
             color: var(--gold);
             font-weight: 500;
-            opacity: 0;
         }
 
         .hdr-name {
@@ -134,7 +133,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            opacity: 0;
         }
 
         .hdr-title {
@@ -142,7 +140,6 @@
             color: var(--text-2);
             font-weight: 400;
             margin-top: 2px;
-            opacity: 0;
         }
 
         .hdr-right {
@@ -157,7 +154,6 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.65rem;
             color: var(--text-3);
-            opacity: 0;
         }
 
         .hdr-status {
@@ -169,7 +165,6 @@
             color: var(--green);
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            opacity: 0;
         }
 
         .dot {
@@ -964,25 +959,30 @@
 
     // ===== ENTRANCE ANIMATION =====
     function playEntrance() {
+        // Set initial hidden states
+        gsap.set('#app', { opacity: 0 });
+        gsap.set(['.hdr-greeting', '.hdr-name', '.hdr-title', '.hdr-time', '.hdr-status'], { opacity: 0 });
+        gsap.set('.stat', { opacity: 0, y: 15 });
+        gsap.set('.sec', { opacity: 0, y: 15 });
+
         const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
         tl.to('#app', { opacity: 1, duration: 0.3 })
-          .from('.hdr-greeting', { opacity: 0, y: -10, duration: 0.4 }, 0.1)
-          .from('.hdr-name', { opacity: 0, x: -20, duration: 0.5 }, 0.2)
-          .from('.hdr-title', { opacity: 0, duration: 0.4 }, 0.35)
-          .from('.hdr-time', { opacity: 0, duration: 0.3 }, 0.3)
-          .from('.hdr-status', { opacity: 0, x: 10, duration: 0.4 }, 0.4)
+          .to('.hdr-greeting', { opacity: 1, y: 0, duration: 0.4 }, 0.15)
+          .to('.hdr-name', { opacity: 1, duration: 0.5 }, 0.25)
+          .to('.hdr-title', { opacity: 1, duration: 0.4 }, 0.4)
+          .to('.hdr-time', { opacity: 1, duration: 0.3 }, 0.35)
+          .to('.hdr-status', { opacity: 1, duration: 0.4 }, 0.45)
           .to('.stat', {
               opacity: 1, y: 0, duration: 0.5, stagger: 0.08
-          }, 0.4)
+          }, 0.5)
           .add(() => {
               document.querySelectorAll('.stat-val').forEach(el => {
                   const target = parseInt(el.dataset.target) || 0;
                   animateCounter(el, target);
               });
-          }, 0.5)
-          .from('.sec', { opacity: 0, y: 15, duration: 0.4, stagger: 0.12 }, 0.7)
-          .to('#roadmap-fill', { width: '30%', duration: 1.2, ease: 'power2.inOut' }, 1);
+          }, 0.6)
+          .to('.sec', { opacity: 1, y: 0, duration: 0.4, stagger: 0.12 }, 0.8);
     }
 
     // ===== NAV WITH GSAP TRANSITIONS =====

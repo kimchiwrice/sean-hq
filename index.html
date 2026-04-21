@@ -972,6 +972,8 @@
     tick(); setInterval(tick, 10000);
 
     // ===== ANIMATED COUNTERS =====
+    let countersResolved = false;
+
     function animateCounter(el, target) {
         const dur = 1.2;
         const obj = { val: 0 };
@@ -979,24 +981,51 @@
             val: target,
             duration: dur,
             ease: 'power2.out',
-            onUpdate: () => { el.textContent = Math.round(obj.val); }
+            onUpdate: () => { el.textContent = Math.round(obj.val); },
+            onComplete: () => { el.textContent = target; } // Guarantee final value
         });
+    }
+
+    function forceCounterValues() {
+        document.querySelectorAll('.stat-val').forEach(el => {
+            const target = parseInt(el.dataset.target) || 0;
+            if (target > 0) el.textContent = target;
+        });
+        countersResolved = true;
     }
 
     // ===== ENTRANCE ANIMATION =====
     function runCounters() {
-        setTimeout(() => {
-            document.querySelectorAll('.stat-val').forEach(el => {
-                const target = parseInt(el.dataset.target) || 0;
-                if (target > 0) animateCounter(el, target);
-            });
-        }, 500);
+        if (document.hidden) {
+            // Tab in background — skip animation, set values directly
+            forceCounterValues();
+        } else {
+            setTimeout(() => {
+                document.querySelectorAll('.stat-val').forEach(el => {
+                    const target = parseInt(el.dataset.target) || 0;
+                    if (target > 0) animateCounter(el, target);
+                });
+            }, 500);
+            // Safety net: force correct values after animation should be done
+            setTimeout(forceCounterValues, 2500);
+        }
         // Roadmap fill
-        setTimeout(() => {
+        const applyRoadmap = () => {
             const fill = document.getElementById('roadmap-fill');
-            if (fill) fill.style.width = '30%';
-        }, 900);
+            if (fill && fill.style.width === '0%' || fill && !fill.style.width) {
+                fill.style.width = '30%';
+            }
+        };
+        if (document.hidden) applyRoadmap();
+        else setTimeout(applyRoadmap, 900);
     }
+
+    // Re-trigger counters when tab becomes visible (handles background-loaded tabs)
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && !countersResolved) {
+            runCounters();
+        }
+    });
 
     // ===== NAV WITH GSAP TRANSITIONS =====
     let currentView = 'v-hq';

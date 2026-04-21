@@ -1,8 +1,8 @@
 {
     "stats": {
         "liveSites": 5,
-        "tasksDone": 48,
-        "deploys": 6
+        "tasksDone": 49,
+        "deploys": 7
     },
     "hoursLog": {
         "totalHours": 0,
@@ -17,7 +17,7 @@
     "roadmap": {
         "p1": {
             "name": "Revenue On",
-            "progress": "2/5"
+            "progress": "3/5"
         },
         "p2": {
             "name": "Proof Stack",
@@ -33,6 +33,12 @@
         }
     },
     "deploys": [
+        {
+            "project": "Trinh Media",
+            "msg": "Conversion architecture: FAQ, testimonials, scarcity, credential bar",
+            "hash": "006c6ea",
+            "when": "Apr 21"
+        },
         {
             "project": "Trinh Media",
             "msg": "Cowork foundation: about-me, voice, anti-AI, templates",
@@ -68,12 +74,6 @@
             "msg": "Cinematic upgrade + bulletproof counters",
             "hash": "a5bf219",
             "when": "Apr 21"
-        },
-        {
-            "project": "HQ Command Center",
-            "msg": "Wire live data.json",
-            "hash": "cc04515",
-            "when": "Apr 20"
         }
     ],
     "portfolio": [

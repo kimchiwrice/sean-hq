@@ -1,8 +1,9 @@
-const CACHE_NAME = 'hq-v1';
+const CACHE_NAME = 'hq-v2';
 const ASSETS = [
     '/',
     '/index.html',
-    '/manifest.json'
+    '/manifest.json',
+    '/data.json'
 ];
 
 self.addEventListener('install', e => {

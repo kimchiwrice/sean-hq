@@ -1,0 +1,91 @@
+{
+    "stats": {
+        "liveSites": 5,
+        "tasksDone": 38,
+        "deploys": 4
+    },
+    "roadmap": {
+        "p1": { "name": "Revenue On", "progress": "2/5" },
+        "p2": { "name": "Proof Stack", "progress": "0/5" },
+        "p3": { "name": "Lead Machine", "progress": "—" },
+        "p4": { "name": "Scale", "progress": "—" }
+    },
+    "deploys": [
+        { "project": "HQ Command Center", "msg": "Wire live data.json", "hash": "latest", "when": "Apr 20" },
+        { "project": "T4 Folsom", "msg": "Fix: menu image loading", "hash": "563c5bd", "when": "Apr 20" },
+        { "project": "T4 Folsom", "msg": "V2: Full menu + ordering", "hash": "724312e", "when": "Apr 20" },
+        { "project": "Trinh Media", "msg": "Cinematic v2 launch", "hash": "main", "when": "Apr 20" }
+    ],
+    "portfolio": [
+        {
+            "name": "Trinh Media",
+            "type": "Agency Portfolio",
+            "url": "https://trinh-media-site.vercel.app",
+            "emoji": "🎬",
+            "desc": "Cinematic scroll-driven agency site with GSAP animations, video hero, 3D tilt cards, and live contact form.",
+            "tags": ["HTML/CSS/JS", "GSAP", "Formspree", "Vercel"]
+        },
+        {
+            "name": "T4 Tea For U",
+            "type": "Restaurant · 92 Items · Live Ordering",
+            "url": "https://t4-folsom.vercel.app",
+            "emoji": "🧋",
+            "desc": "Full menu browser with 102 product images, DoorDash and Grubhub ordering integration, and real-time open/closed status.",
+            "tags": ["HTML/CSS/JS", "DoorDash API", "Grubhub", "102 Images"]
+        },
+        {            "name": "Underground Reptiles",
+            "type": "E-Commerce",
+            "url": "https://underground-reptiles.vercel.app",
+            "emoji": "🦎",
+            "desc": "Exotic reptile shop with animated product catalog and premium dark design.",
+            "tags": ["HTML/CSS/JS", "Vercel"]
+        },
+        {
+            "name": "Emyie's Shop",
+            "type": "Retail Storefront",
+            "url": "https://emyies-shop.vercel.app",
+            "emoji": "🛍️",
+            "desc": "Clean, modern retail storefront with product showcase and brand identity.",
+            "tags": ["HTML/CSS/JS", "Vercel"]
+        },
+        {
+            "name": "Paws & Co",
+            "type": "Pet Services",
+            "url": "https://paws-and-co-eta.vercel.app",
+            "emoji": "🐾",
+            "desc": "Pet care services site with warm design and service booking flow.",
+            "tags": ["HTML/CSS/JS", "Vercel"]
+        }
+    ],
+    "quickActions": [
+        { "icon": "🧠", "name": "Notion Brain", "desc": "Business OS · CRM · Sprints", "url": "https://notion.so", "bg": "var(--purple-dim)", "color": "var(--purple)" },
+        { "icon": "📧", "name": "Gmail", "desc": "Inbox & outreach", "url": "https://mail.google.com", "bg": "var(--cyan-dim)", "color": "var(--cyan)" },
+        { "icon": "▲", "name": "Vercel Dashboard", "desc": "Deployments & domains", "url": "https://vercel.com/kimchiwrices-projects", "bg": "var(--gold-dim)", "color": "var(--gold)" },        { "icon": "🐙", "name": "GitHub", "desc": "All repositories", "url": "https://github.com/kimchiwrice", "bg": "var(--green-dim)", "color": "var(--green)" }
+    ],
+    "tools": [
+        { "icon": "🧠", "name": "Notion", "desc": "Business OS · CRM · Sprints", "url": "https://notion.so", "color": "var(--purple)" },
+        { "icon": "📧", "name": "Gmail", "desc": "Email & outreach pipeline", "url": "https://mail.google.com", "color": "var(--cyan)" },
+        { "icon": "📅", "name": "Google Calendar", "desc": "Schedule & shifts", "url": "https://calendar.google.com", "color": "var(--green)" },
+        { "icon": "▲", "name": "Vercel", "desc": "Hosting & deployments", "url": "https://vercel.com/kimchiwrices-projects", "color": "var(--gold)" },
+        { "icon": "🐙", "name": "GitHub", "desc": "Code repositories", "url": "https://github.com/kimchiwrice", "color": "var(--text-2)" },
+        { "icon": "📍", "name": "Google Business Profile", "desc": "T4 Folsom GBP management", "url": "https://business.google.com", "color": "var(--green)" },
+        { "icon": "🎨", "name": "Canva", "desc": "Designs & social graphics", "url": "https://canva.com", "color": "var(--purple)" },
+        { "icon": "📋", "name": "Formspree", "desc": "Form submissions & leads", "url": "https://formspree.io/forms", "color": "var(--gold)" },
+        { "icon": "📁", "name": "Google Drive", "desc": "Files & documents", "url": "https://drive.google.com", "color": "var(--cyan)" },
+        { "icon": "📊", "name": "Google Analytics", "desc": "Traffic & conversions", "url": "https://analytics.google.com", "color": "var(--gold)" },
+        { "icon": "🔍", "name": "Search Console", "desc": "SEO & indexing", "url": "https://search.google.com/search-console", "color": "var(--green)" },
+        { "icon": "📸", "name": "Instagram @t4folsom", "desc": "T4 social media", "url": "https://instagram.com/t4folsom", "color": "var(--purple)" }
+    ],
+    "systems": [
+        { "icon": "📋", "name": "Daily Self-Audit", "desc": "Runs 8am — scores all systems, sets priorities", "status": "Active" },
+        { "icon": "📊", "name": "Sunday Deep Review", "desc": "Runs 7pm Sun — 10-dimension scorecard", "status": "Active" },
+        { "icon": "📝", "name": "Weekly Brief", "desc": "Runs 8pm Sun — progress report saved to machine", "status": "Active" },
+        { "icon": "🔄", "name": "Continuous Improvement", "desc": "Framework doc + audit engine for all projects", "status": "Active" },
+        { "icon": "🧠", "name": "Memory System", "desc": "3-layer self-correcting — standards evolution + checkpoints + audit", "status": "Active" }
+    ],
+    "ventures": [
+        { "icon": "🎬", "name": "Trinh Media", "desc": "Premium cinematic web design for local businesses", "status": "Primary", "url": "https://trinh-media-site.vercel.app", "color": "var(--gold)" },
+        { "icon": "🧋", "name": "T4 Tea For U", "desc": "Boba tea — digital presence managed via Trinh Media", "status": "Live", "url": "https://t4-folsom.vercel.app", "color": "var(--green)" }
+    ],
+    "lastUpdated": "2026-04-20T23:20:00"
+}

@@ -762,191 +762,137 @@
         });
     });
 
-    // ===== QUICK ACTIONS =====
-    const quickActions = [
-        { icon: '🧠', name: 'Notion Brain', desc: 'Business OS · CRM · Sprints', url: 'https://notion.so', bg: 'var(--purple-dim)', color: 'var(--purple)' },
-        { icon: '📧', name: 'Gmail', desc: 'Inbox & outreach', url: 'https://mail.google.com', bg: 'var(--cyan-dim)', color: 'var(--cyan)' },
-        { icon: '▲', name: 'Vercel Dashboard', desc: 'Deployments & domains', url: 'https://vercel.com/kimchiwrices-projects', bg: 'var(--gold-dim)', color: 'var(--gold)' },
-        { icon: '🐙', name: 'GitHub', desc: 'All repositories', url: 'https://github.com/kimchiwrice', bg: 'var(--green-dim)', color: 'var(--green)' },
-    ];
+    // ===== LOAD LIVE DATA =====
+    fetch('data.json?' + Date.now())
+        .then(r => r.json())
+        .then(D => {
+            // --- Stats ---
+            const statEls = document.querySelectorAll('.stat-val');
+            statEls[0].textContent = D.stats.liveSites;
+            statEls[1].textContent = D.stats.tasksDone;
+            // repos filled by GitHub API below
+            statEls[3].textContent = D.stats.deploys;
 
-    document.getElementById('quick-actions').innerHTML = quickActions.map(a => `
-        <a class="lnk" href="${a.url}" target="_blank">
-            <div class="lnk-icon" style="background:${a.bg}">${a.icon}</div>
-            <div class="lnk-body">
-                <div class="lnk-name">${a.name}</div>
-                <div class="lnk-desc">${a.desc}</div>
-            </div>
-            <div class="lnk-arrow">→</div>
-        </a>
-    `).join('');
+            // --- Roadmap ---
+            const phases = document.querySelectorAll('.phase-item');
+            const rm = [D.roadmap.p1, D.roadmap.p2, D.roadmap.p3, D.roadmap.p4];
+            phases.forEach((el, i) => {
+                el.querySelector('.phase-prog').textContent = rm[i].progress;
+                if (rm[i].progress !== '—' && rm[i].progress !== '0/5') {
+                    el.classList.add('active');
+                } else {
+                    el.classList.remove('active');
+                }
+            });
 
-    // ===== DEPLOYS =====
-    const deploys = [
-        { name: 'T4 Folsom', msg: 'Fix: menu image loading', hash: '563c5bd', when: 'Today' },
-        { name: 'T4 Folsom', msg: 'V2: Full menu + ordering', hash: '724312e', when: 'Today' },
-        { name: 'Trinh Media', msg: 'Cinematic v2 launch', hash: 'main', when: 'Today' },
-    ];
-
-    document.getElementById('deploy-log').innerHTML = deploys.map(d => `
-        <div class="deploy">
-            <span class="deploy-dot ok"></span>
-            <span class="deploy-name">${d.name} — ${d.msg}</span>
-            <span class="deploy-hash">${d.hash}</span>
-            <span class="deploy-when">${d.when}</span>
-        </div>
-    `).join('');
-
-    // ===== PORTFOLIO =====
-    const portfolio = [
-        {
-            name: 'Trinh Media',
-            type: 'Agency Portfolio',
-            url: 'https://trinh-media-site.vercel.app',
-            emoji: '🎬',
-            desc: 'Cinematic scroll-driven agency site with GSAP animations, video hero, 3D tilt cards, and live contact form.',
-            tags: ['HTML/CSS/JS', 'GSAP', 'Formspree', 'Vercel']
-        },
-        {
-            name: 'T4 Tea For U',
-            type: 'Restaurant · 92 Items · Live Ordering',
-            url: 'https://t4-folsom.vercel.app',
-            emoji: '🧋',
-            desc: 'Full menu browser with 102 product images, DoorDash and Grubhub ordering integration, and real-time open/closed status.',
-            tags: ['HTML/CSS/JS', 'DoorDash API', 'Grubhub', '102 Images']
-        },
-        {
-            name: 'Underground Reptiles',
-            type: 'E-Commerce',
-            url: 'https://underground-reptiles.vercel.app',
-            emoji: '🦎',
-            desc: 'Exotic reptile shop with animated product catalog and premium dark design.',
-            tags: ['HTML/CSS/JS', 'Vercel']
-        },
-        {
-            name: "Emyie's Shop",
-            type: 'Retail Storefront',
-            url: 'https://emyies-shop.vercel.app',
-            emoji: '🛍️',
-            desc: 'Clean, modern retail storefront with product showcase and brand identity.',
-            tags: ['HTML/CSS/JS', 'Vercel']
-        },
-        {
-            name: 'Paws & Co',
-            type: 'Pet Services',
-            url: 'https://paws-and-co-eta.vercel.app',
-            emoji: '🐾',
-            desc: 'Pet care services site with warm design and service booking flow.',
-            tags: ['HTML/CSS/JS', 'Vercel']
-        }
-    ];
-
-    document.getElementById('folio-grid').innerHTML = portfolio.map(p => `
-        <a class="folio" href="${p.url}" target="_blank">
-            <div class="folio-preview">
-                <div class="folio-preview-ph" data-url="${p.url}">${p.emoji}</div>
-                <div class="folio-badge"><span class="dot" style="width:4px;height:4px;box-shadow:none"></span> LIVE</div>
-            </div>
-            <div class="folio-info">
-                <div class="folio-row">
-                    <div>
-                        <div class="folio-name">${p.name}</div>
-                        <div class="folio-type">${p.type}</div>
+            // --- Quick Actions ---
+            document.getElementById('quick-actions').innerHTML = D.quickActions.map(a => `
+                <a class="lnk" href="${a.url}" target="_blank">
+                    <div class="lnk-icon" style="background:${a.bg}">${a.icon}</div>
+                    <div class="lnk-body">
+                        <div class="lnk-name">${a.name}</div>
+                        <div class="lnk-desc">${a.desc}</div>
                     </div>
-                    <div class="lnk-arrow" style="font-size:0.8rem">→</div>
+                    <div class="lnk-arrow">&rarr;</div>
+                </a>
+            `).join('');
+
+            // --- Deploys ---
+            document.getElementById('deploy-log').innerHTML = D.deploys.map(d => `
+                <div class="deploy">
+                    <span class="deploy-dot ok"></span>
+                    <span class="deploy-name">${d.project} — ${d.msg}</span>
+                    <span class="deploy-hash">${d.hash}</span>
+                    <span class="deploy-when">${d.when}</span>
                 </div>
-                <div class="folio-desc">${p.desc}</div>
-                <div class="folio-tech">${p.tags.map(t => `<span class="folio-tag">${t}</span>`).join('')}</div>
-            </div>
-        </a>
-    `).join('');
+            `).join('');
 
-    // Load live previews after page load
-    setTimeout(() => {
-        document.querySelectorAll('.folio-preview-ph').forEach(ph => {
-            const url = ph.dataset.url;
-            if (!url) return;
-            const iframe = document.createElement('iframe');
-            iframe.src = url;
-            iframe.loading = 'lazy';
-            iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
-            iframe.style.cssText = 'width:300%;height:300%;transform:scale(0.3333);transform-origin:top left;border:none;pointer-events:none;position:absolute;top:0;left:0;';
-            iframe.onload = () => { ph.style.opacity = '0'; };
-            ph.parentElement.appendChild(iframe);
-        });
-    }, 2000);
+            // --- Portfolio ---
+            document.getElementById('folio-grid').innerHTML = D.portfolio.map(p => `
+                <a class="folio" href="${p.url}" target="_blank">
+                    <div class="folio-preview">
+                        <div class="folio-preview-ph" data-url="${p.url}">${p.emoji}</div>
+                        <div class="folio-badge"><span class="dot" style="width:4px;height:4px;box-shadow:none"></span> LIVE</div>
+                    </div>
+                    <div class="folio-info">
+                        <div class="folio-row">
+                            <div>
+                                <div class="folio-name">${p.name}</div>
+                                <div class="folio-type">${p.type}</div>
+                            </div>
+                            <div class="lnk-arrow" style="font-size:0.8rem">&rarr;</div>
+                        </div>
+                        <div class="folio-desc">${p.desc}</div>
+                        <div class="folio-tech">${p.tags.map(t => `<span class="folio-tag">${t}</span>`).join('')}</div>
+                    </div>
+                </a>
+            `).join('');
 
-    // ===== TOOLS =====
-    const tools = [
-        { icon: '🧠', name: 'Notion', desc: 'Business OS · CRM · Sprints', url: 'https://notion.so', color: 'var(--purple)' },
-        { icon: '📧', name: 'Gmail', desc: 'Email & outreach pipeline', url: 'https://mail.google.com', color: 'var(--cyan)' },
-        { icon: '📅', name: 'Google Calendar', desc: 'Schedule & shifts', url: 'https://calendar.google.com', color: 'var(--green)' },
-        { icon: '▲', name: 'Vercel', desc: 'Hosting & deployments', url: 'https://vercel.com/kimchiwrices-projects', color: 'var(--gold)' },
-        { icon: '🐙', name: 'GitHub', desc: 'Code repositories', url: 'https://github.com/kimchiwrice', color: 'var(--text-2)' },
-        { icon: '📍', name: 'Google Business Profile', desc: 'T4 Folsom GBP management', url: 'https://business.google.com', color: 'var(--green)' },
-        { icon: '🎨', name: 'Canva', desc: 'Designs & social graphics', url: 'https://canva.com', color: 'var(--purple)' },
-        { icon: '📋', name: 'Formspree', desc: 'Form submissions & leads', url: 'https://formspree.io/forms', color: 'var(--gold)' },
-        { icon: '📁', name: 'Google Drive', desc: 'Files & documents', url: 'https://drive.google.com', color: 'var(--cyan)' },
-        { icon: '📊', name: 'Google Analytics', desc: 'Traffic & conversions', url: 'https://analytics.google.com', color: 'var(--gold)' },
-        { icon: '🔍', name: 'Search Console', desc: 'SEO & indexing', url: 'https://search.google.com/search-console', color: 'var(--green)' },
-        { icon: '📸', name: 'Instagram @t4folsom', desc: 'T4 social media', url: 'https://instagram.com/t4folsom', color: 'var(--purple)' },
-    ];
+            // Load live previews
+            setTimeout(() => {
+                document.querySelectorAll('.folio-preview-ph').forEach(ph => {
+                    const url = ph.dataset.url;
+                    if (!url) return;
+                    const iframe = document.createElement('iframe');
+                    iframe.src = url;
+                    iframe.loading = 'lazy';
+                    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+                    iframe.style.cssText = 'width:300%;height:300%;transform:scale(0.3333);transform-origin:top left;border:none;pointer-events:none;position:absolute;top:0;left:0;';
+                    iframe.onload = () => { ph.style.opacity = '0'; };
+                    ph.parentElement.appendChild(iframe);
+                });
+            }, 2000);
 
-    document.getElementById('tools-grid').innerHTML = tools.map(t => `
-        <a class="lnk" href="${t.url}" target="_blank">
-            <div class="lnk-icon" style="background:rgba(255,255,255,0.03)">${t.icon}</div>
-            <div class="lnk-body">
-                <div class="lnk-name">${t.name}</div>
-                <div class="lnk-desc">${t.desc}</div>
-            </div>
-            <div class="lnk-arrow">→</div>
-        </a>
-    `).join('');
+            // --- Tools ---
+            document.getElementById('tools-grid').innerHTML = D.tools.map(t => `
+                <a class="lnk" href="${t.url}" target="_blank">
+                    <div class="lnk-icon" style="background:rgba(255,255,255,0.03)">${t.icon}</div>
+                    <div class="lnk-body">
+                        <div class="lnk-name">${t.name}</div>
+                        <div class="lnk-desc">${t.desc}</div>
+                    </div>
+                    <div class="lnk-arrow">&rarr;</div>
+                </a>
+            `).join('');
 
-    // ===== SYSTEMS =====
-    const systems = [
-        { icon: '📋', name: 'Daily Self-Audit', desc: 'Runs 8am — scores all systems, sets priorities', status: 'Active', color: 'var(--green)' },
-        { icon: '📊', name: 'Sunday Deep Review', desc: 'Runs 7pm Sun — 10-dimension scorecard', status: 'Active', color: 'var(--green)' },
-        { icon: '📝', name: 'Weekly Brief', desc: 'Runs 8pm Sun — progress report saved to machine', status: 'Active', color: 'var(--green)' },
-        { icon: '🔄', name: 'Continuous Improvement', desc: 'Framework doc + audit engine for all projects', status: 'Active', color: 'var(--green)' },
-        { icon: '🧠', name: 'Memory System', desc: '3-layer self-correcting — standards evolution + checkpoints + audit', status: 'Active', color: 'var(--green)' },
-    ];
+            // --- Systems ---
+            document.getElementById('sys-grid').innerHTML = D.systems.map(s => `
+                <div class="lnk" style="cursor:default">
+                    <div class="lnk-icon" style="background:var(--green-dim)">${s.icon}</div>
+                    <div class="lnk-body">
+                        <div class="lnk-name">${s.name}</div>
+                        <div class="lnk-desc">${s.desc}</div>
+                    </div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:var(--green);letter-spacing:0.06em;text-transform:uppercase">${s.status}</div>
+                </div>
+            `).join('');
 
-    document.getElementById('sys-grid').innerHTML = systems.map(s => `
-        <div class="lnk" style="cursor:default">
-            <div class="lnk-icon" style="background:var(--green-dim)">${s.icon}</div>
-            <div class="lnk-body">
-                <div class="lnk-name">${s.name}</div>
-                <div class="lnk-desc">${s.desc}</div>
-            </div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:${s.color};letter-spacing:0.06em;text-transform:uppercase">${s.status}</div>
-        </div>
-    `).join('');
+            // --- Business Ventures ---
+            document.getElementById('biz-grid').innerHTML = D.ventures.map(b => `
+                <a class="lnk" href="${b.url}" target="_blank">
+                    <div class="lnk-icon" style="background:${b.color === 'var(--gold)' ? 'var(--gold-dim)' : 'var(--green-dim)'}">${b.icon}</div>
+                    <div class="lnk-body">
+                        <div class="lnk-name">${b.name}</div>
+                        <div class="lnk-desc">${b.desc}</div>
+                    </div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:${b.color};letter-spacing:0.06em;text-transform:uppercase">${b.status}</div>
+                </a>
+            `).join('');
 
-    // ===== BUSINESS VENTURES =====
-    const biz = [
-        { icon: '🎬', name: 'Trinh Media', desc: 'Premium cinematic web design for local businesses', status: 'Primary', url: 'https://trinh-media-site.vercel.app', color: 'var(--gold)' },
-        { icon: '🧋', name: 'T4 Tea For U', desc: 'Boba tea — digital presence managed via Trinh Media', status: 'Live', url: 'https://t4-folsom.vercel.app', color: 'var(--green)' },
-    ];
-
-    document.getElementById('biz-grid').innerHTML = biz.map(b => `
-        <a class="lnk" href="${b.url}" target="_blank">
-            <div class="lnk-icon" style="background:${b.color === 'var(--gold)' ? 'var(--gold-dim)' : 'var(--green-dim)'}">${b.icon}</div>
-            <div class="lnk-body">
-                <div class="lnk-name">${b.name}</div>
-                <div class="lnk-desc">${b.desc}</div>
-            </div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:${b.color};letter-spacing:0.06em;text-transform:uppercase">${b.status}</div>
-        </a>
-    `).join('');
+            // --- Last Updated ---
+            if (D.lastUpdated) {
+                const updated = new Date(D.lastUpdated);
+                const statusEl = document.querySelector('.hdr-status');
+                if (statusEl) statusEl.innerHTML = `<span class="dot"></span> Synced ${updated.toLocaleDateString('en-US', { month:'short', day:'numeric' })}`;
+            }
+        })
+        .catch(() => { console.log('data.json not found, using defaults'); });
 
     // ===== GITHUB LIVE DATA =====
-    fetch('https://api.github.com/users/kimchiwrice/repos?sort=updated&per_page=5')
+    fetch('https://api.github.com/users/kimchiwrice/repos?sort=updated&per_page=10')
         .then(r => r.json())
         .then(repos => {
             if (!repos.length) return;
-            document.querySelector('[data-stat="repos"]')?.setAttribute('data-val', repos.length);
-            // Update repos count
             const repoStat = document.querySelectorAll('.stat-val')[2];
             if (repoStat) repoStat.textContent = repos.length;
         })

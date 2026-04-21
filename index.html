@@ -102,7 +102,6 @@
             max-width: 480px;
             margin: 0 auto;
             padding: calc(var(--safe-top) + 16px) 16px calc(var(--safe-bottom) + 80px);
-            opacity: 0;
         }
 
         /* ===== HEADER ===== */
@@ -219,8 +218,6 @@
             position: relative;
             overflow: hidden;
             transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            opacity: 0;
-            transform: translateY(15px);
         }
 
         .stat::before {
@@ -959,30 +956,27 @@
 
     // ===== ENTRANCE ANIMATION =====
     function playEntrance() {
-        // Set initial hidden states
-        gsap.set('#app', { opacity: 0 });
-        gsap.set(['.hdr-greeting', '.hdr-name', '.hdr-title', '.hdr-time', '.hdr-status'], { opacity: 0 });
-        gsap.set('.stat', { opacity: 0, y: 15 });
-        gsap.set('.sec', { opacity: 0, y: 15 });
+        // Animate from offset positions — content visible by default as fallback
+        gsap.fromTo('.hdr-greeting', { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' });
+        gsap.fromTo('.hdr-name', { opacity: 0, x: -15 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power3.out', delay: 0.1 });
+        gsap.fromTo('.hdr-title', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power3.out', delay: 0.2 });
+        gsap.fromTo('.hdr-time', { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power3.out', delay: 0.15 });
+        gsap.fromTo('.hdr-status', { opacity: 0, x: 8 }, { opacity: 1, x: 0, duration: 0.5, ease: 'power3.out', delay: 0.25 });
 
-        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+        gsap.fromTo('.stat', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power3.out', delay: 0.3 });
 
-        tl.to('#app', { opacity: 1, duration: 0.3 })
-          .to('.hdr-greeting', { opacity: 1, y: 0, duration: 0.4 }, 0.15)
-          .to('.hdr-name', { opacity: 1, duration: 0.5 }, 0.25)
-          .to('.hdr-title', { opacity: 1, duration: 0.4 }, 0.4)
-          .to('.hdr-time', { opacity: 1, duration: 0.3 }, 0.35)
-          .to('.hdr-status', { opacity: 1, duration: 0.4 }, 0.45)
-          .to('.stat', {
-              opacity: 1, y: 0, duration: 0.5, stagger: 0.08
-          }, 0.5)
-          .add(() => {
-              document.querySelectorAll('.stat-val').forEach(el => {
-                  const target = parseInt(el.dataset.target) || 0;
-                  animateCounter(el, target);
-              });
-          }, 0.6)
-          .to('.sec', { opacity: 1, y: 0, duration: 0.4, stagger: 0.12 }, 0.8);
+        // Animate counters
+        setTimeout(() => {
+            document.querySelectorAll('.stat-val').forEach(el => {
+                const target = parseInt(el.dataset.target) || 0;
+                if (target > 0) animateCounter(el, target);
+            });
+        }, 400);
+
+        gsap.fromTo('.sec', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.1, ease: 'power3.out', delay: 0.5 });
+
+        // Roadmap fill
+        gsap.fromTo('#roadmap-fill', { width: '0%' }, { width: '30%', duration: 1.5, ease: 'power2.inOut', delay: 0.8 });
     }
 
     // ===== NAV WITH GSAP TRANSITIONS =====
@@ -1191,7 +1185,7 @@
             // Play entrance AFTER data loaded
             playEntrance();
         })
-        .catch(() => { document.getElementById('app').style.opacity = '1'; playEntrance(); });
+        .catch(() => { playEntrance(); });
 
     // ===== GITHUB LIVE DATA =====
     fetch('https://api.github.com/users/kimchiwrice/repos?sort=updated&per_page=10')

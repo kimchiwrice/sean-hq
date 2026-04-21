@@ -13,6 +13,7 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
     <link rel="apple-touch-icon" href="icon-192.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -22,12 +23,13 @@
             --bg-3: #161820;
             --bg-card: rgba(255,255,255,0.025);
             --bg-card-hover: rgba(255,255,255,0.055);
-            --border: rgba(255,255,255,0.05);
-            --border-hover: rgba(201,168,76,0.35);
+            --border: rgba(255,255,255,0.06);
+            --border-hover: rgba(201,168,76,0.4);
             --text: #F0EDE8;
             --text-2: rgba(240,237,232,0.6);
             --text-3: rgba(240,237,232,0.35);
             --gold: #C9A84C;
+            --gold-glow: rgba(201,168,76,0.25);
             --gold-dim: rgba(201,168,76,0.12);
             --green: #34D399;
             --green-dim: rgba(52,211,153,0.1);
@@ -51,6 +53,12 @@
             overflow-x: hidden;
         }
 
+        /* ===== PARTICLE CANVAS ===== */
+        #particles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+        }
+
         /* ===== AMBIENT BG ===== */
         .ambient {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -59,22 +67,30 @@
         .ambient::before {
             content: '';
             position: absolute; top: -30%; right: -20%;
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(201,168,76,0.04) 0%, transparent 65%);
+            width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 60%);
+            animation: ambientFloat 20s ease-in-out infinite;
         }
         .ambient::after {
             content: '';
             position: absolute; bottom: -20%; left: -20%;
-            width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(6,182,212,0.03) 0%, transparent 65%);
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(6,182,212,0.04) 0%, transparent 60%);
+            animation: ambientFloat 25s ease-in-out infinite reverse;
+        }
+
+        @keyframes ambientFloat {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(30px, -20px); }
+            66% { transform: translate(-20px, 15px); }
         }
 
         /* Subtle grid */
         .grid-bg {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background-image:
-                linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
             background-size: 48px 48px;
             pointer-events: none; z-index: 0;
             mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black, transparent);
@@ -86,11 +102,12 @@
             max-width: 480px;
             margin: 0 auto;
             padding: calc(var(--safe-top) + 16px) 16px calc(var(--safe-bottom) + 80px);
+            opacity: 0;
         }
 
         /* ===== HEADER ===== */
         .hdr {
-            padding: 8px 0 24px;
+            padding: 8px 0 28px;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
@@ -105,6 +122,7 @@
             text-transform: uppercase;
             color: var(--gold);
             font-weight: 500;
+            opacity: 0;
         }
 
         .hdr-name {
@@ -112,6 +130,11 @@
             font-weight: 800;
             letter-spacing: -0.03em;
             line-height: 1.1;
+            background: linear-gradient(135deg, var(--text) 0%, rgba(201,168,76,0.8) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0;
         }
 
         .hdr-title {
@@ -119,6 +142,7 @@
             color: var(--text-2);
             font-weight: 400;
             margin-top: 2px;
+            opacity: 0;
         }
 
         .hdr-right {
@@ -133,6 +157,7 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.65rem;
             color: var(--text-3);
+            opacity: 0;
         }
 
         .hdr-status {
@@ -144,19 +169,42 @@
             color: var(--green);
             letter-spacing: 0.08em;
             text-transform: uppercase;
+            opacity: 0;
         }
 
         .dot {
-            width: 5px; height: 5px;
+            width: 6px; height: 6px;
             background: var(--green);
             border-radius: 50%;
-            box-shadow: 0 0 8px rgba(52,211,153,0.5);
-            animation: blink 2.5s ease-in-out infinite;
+            position: relative;
         }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
+        .dot::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            border: 1px solid rgba(52,211,153,0.3);
+            animation: pulse-ring 2.5s ease-out infinite;
+        }
+
+        .dot::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: var(--green);
+            animation: pulse-dot 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; box-shadow: 0 0 6px rgba(52,211,153,0.5); }
+            50% { opacity: 0.6; box-shadow: 0 0 12px rgba(52,211,153,0.8); }
         }
 
         /* ===== STATS ROW ===== */
@@ -164,52 +212,77 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 6px;
-            margin-bottom: 24px;
+            margin-bottom: 26px;
         }
 
         .stat {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px 8px;
+            border-radius: 14px;
+            padding: 14px 8px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(201,168,76,0.06), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .stat:hover::before { opacity: 1; }
+
+        .stat:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3), 0 0 20px rgba(201,168,76,0.06);
         }
 
         .stat-val {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             font-weight: 700;
             background: linear-gradient(135deg, var(--gold), #E8D48A);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            position: relative;
+            z-index: 1;
         }
 
         .stat-lbl {
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             color: var(--text-3);
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-top: 2px;
+            letter-spacing: 0.12em;
+            margin-top: 4px;
             font-weight: 500;
+            position: relative;
+            z-index: 1;
         }
 
         /* ===== SECTION ===== */
-        .sec {
-            margin-bottom: 24px;
-        }
+        .sec { margin-bottom: 26px; }
 
         .sec-hdr {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .sec-dot {
             width: 4px; height: 4px;
             border-radius: 50%;
             background: var(--gold);
+            box-shadow: 0 0 6px var(--gold-glow);
         }
 
         .sec-title {
@@ -242,7 +315,7 @@
             padding: 14px 16px;
             text-decoration: none;
             color: var(--text);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
         }
@@ -251,17 +324,29 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(201,168,76,0.03), transparent 60%);
+            background: linear-gradient(135deg, rgba(201,168,76,0.04), transparent 60%);
             opacity: 0;
-            transition: opacity 0.25s;
+            transition: opacity 0.3s;
+        }
+
+        .lnk::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(201,168,76,0.06) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
         }
 
         .lnk:hover::before, .lnk:active::before { opacity: 1; }
+        .lnk:hover::after { opacity: 1; }
 
         .lnk:hover, .lnk:active {
             border-color: var(--border-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 0 1px rgba(201,168,76,0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(201,168,76,0.08);
         }
 
         .lnk-icon {
@@ -293,12 +378,12 @@
         .lnk-arrow {
             color: var(--text-3);
             font-size: 0.7rem;
-            transition: transform 0.2s;
+            transition: all 0.3s;
             position: relative;
             z-index: 1;
         }
 
-        .lnk:hover .lnk-arrow { transform: translateX(3px); color: var(--gold); }
+        .lnk:hover .lnk-arrow { transform: translateX(4px); color: var(--gold); }
 
         /* ===== PORTFOLIO CARDS ===== */
         .folio {
@@ -309,21 +394,32 @@
             overflow: hidden;
             text-decoration: none;
             color: var(--text);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            perspective: 800px;
         }
 
         .folio:hover {
             border-color: var(--border-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,168,76,0.1);
+            box-shadow: 0 16px 50px rgba(0,0,0,0.5), 0 0 30px rgba(201,168,76,0.08);
         }
 
         .folio-preview {
             width: 100%;
-            height: 160px;
+            height: 180px;
             position: relative;
             overflow: hidden;
             background: var(--bg-2);
+        }
+
+        .folio-preview::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 40px;
+            background: linear-gradient(transparent, var(--bg-card));
+            z-index: 3;
+            pointer-events: none;
         }
 
         .folio-preview iframe {
@@ -343,7 +439,21 @@
             justify-content: center;
             font-size: 2.5rem;
             background: linear-gradient(135deg, var(--bg-2), var(--bg-3));
-            transition: opacity 0.5s;
+            transition: opacity 0.6s;
+        }
+
+        /* Shimmer loading effect */
+        .folio-preview-ph::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+            animation: shimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
 
         .folio-badge {
@@ -362,12 +472,11 @@
             color: var(--green);
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            z-index: 2;
+            z-index: 4;
+            border: 1px solid rgba(52,211,153,0.15);
         }
 
-        .folio-info {
-            padding: 14px 16px 16px;
-        }
+        .folio-info { padding: 14px 16px 16px; }
 
         .folio-row {
             display: flex;
@@ -413,6 +522,7 @@
             color: var(--cyan);
             letter-spacing: 0.04em;
             font-weight: 500;
+            border: 1px solid rgba(6,182,212,0.1);
         }
 
         /* ===== DEPLOY LOG ===== */
@@ -420,10 +530,16 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 11px 14px;
+            padding: 12px 14px;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 10px;
+            transition: all 0.25s;
+        }
+
+        .deploy:hover {
+            border-color: rgba(52,211,153,0.2);
+            background: rgba(52,211,153,0.02);
         }
 
         .deploy-dot {
@@ -432,13 +548,12 @@
             flex-shrink: 0;
         }
 
-        .deploy-dot.ok { background: var(--green); box-shadow: 0 0 6px rgba(52,211,153,0.3); }
-
-        .deploy-name {
-            flex: 1;
-            font-size: 0.75rem;
-            font-weight: 500;
+        .deploy-dot.ok {
+            background: var(--green);
+            box-shadow: 0 0 8px rgba(52,211,153,0.4);
         }
+
+        .deploy-name { flex: 1; font-size: 0.75rem; font-weight: 500; }
 
         .deploy-hash {
             font-family: 'JetBrains Mono', monospace;
@@ -453,37 +568,64 @@
         }
 
         /* ===== ROADMAP ===== */
+        .roadmap-wrap { position: relative; }
+
+        .roadmap-track {
+            position: absolute;
+            top: 50%; left: 0; right: 0;
+            height: 2px;
+            background: var(--border);
+            transform: translateY(-50%);
+            z-index: 0;
+            border-radius: 1px;
+        }
+
+        .roadmap-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold), rgba(201,168,76,0.3));
+            border-radius: 1px;
+            width: 0%;
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px var(--gold-glow);
+        }
+
         .phase {
             display: flex;
             align-items: stretch;
             gap: 0;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
+            position: relative;
+            z-index: 1;
         }
 
         .phase-item {
             flex: 1;
-            padding: 12px 8px;
+            padding: 14px 8px;
             text-align: center;
-            border-right: 1px solid var(--border);
             position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            transition: all 0.5s;
         }
 
-        .phase-item:last-child { border-right: none; }
+        .phase-item:first-child { border-radius: 12px 0 0 12px; }
+        .phase-item:last-child { border-radius: 0 12px 12px 0; border-right: 1px solid var(--border); }
+        .phase-item + .phase-item { border-left: none; }
 
         .phase-item.active {
             background: var(--gold-dim);
+            border-color: rgba(201,168,76,0.2);
+            box-shadow: inset 0 0 20px rgba(201,168,76,0.05);
         }
 
-        .phase-item.active .phase-num { color: var(--gold); }
+        .phase-item.active .phase-num { color: var(--gold); text-shadow: 0 0 10px var(--gold-glow); }
+        .phase-item.active .phase-lbl { color: var(--text-2); }
 
         .phase-num {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.85rem;
             font-weight: 700;
             color: var(--text-3);
+            transition: all 0.4s;
         }
 
         .phase-lbl {
@@ -492,9 +634,8 @@
             text-transform: uppercase;
             letter-spacing: 0.08em;
             margin-top: 2px;
+            transition: all 0.4s;
         }
-
-        .phase-item.active .phase-lbl { color: var(--text-2); }
 
         .phase-prog {
             font-family: 'JetBrains Mono', monospace;
@@ -507,7 +648,7 @@
         .bnav {
             position: fixed;
             bottom: 0; left: 0; right: 0;
-            background: rgba(8,9,14,0.92);
+            background: rgba(8,9,14,0.95);
             backdrop-filter: blur(24px) saturate(180%);
             -webkit-backdrop-filter: blur(24px) saturate(180%);
             border-top: 1px solid rgba(255,255,255,0.04);
@@ -524,13 +665,13 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2px;
+            gap: 3px;
             padding: 10px 0 8px;
             background: none;
             border: none;
             color: var(--text-3);
             cursor: pointer;
-            transition: color 0.2s;
+            transition: all 0.3s;
             position: relative;
         }
 
@@ -542,12 +683,24 @@
             position: absolute;
             top: 0; left: 50%;
             transform: translateX(-50%);
-            width: 20px; height: 2px;
+            width: 24px; height: 2px;
             background: var(--gold);
             border-radius: 0 0 2px 2px;
+            box-shadow: 0 2px 8px var(--gold-glow);
         }
 
-        .bnav-ico { font-size: 1.15rem; line-height: 1; }
+        .bnav-btn.active::after {
+            content: '';
+            position: absolute;
+            top: -4px; left: 50%;
+            transform: translateX(-50%);
+            width: 40px; height: 8px;
+            background: radial-gradient(ellipse, var(--gold-glow), transparent);
+            pointer-events: none;
+        }
+
+        .bnav-ico { font-size: 1.15rem; line-height: 1; transition: transform 0.2s; }
+        .bnav-btn:active .bnav-ico { transform: scale(0.9); }
 
         .bnav-lbl {
             font-family: 'JetBrains Mono', monospace;
@@ -559,18 +712,13 @@
 
         /* ===== VIEW SYSTEM ===== */
         .view { display: none; }
-        .view.on { display: block; animation: viewIn 0.3s ease; }
-
-        @keyframes viewIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .view.on { display: block; }
 
         /* ===== RESPONSIVE ===== */
         @media (min-width: 768px) {
             .app { max-width: 560px; padding-top: 40px; }
             .stats { grid-template-columns: repeat(4, 1fr); }
-            .folio-preview { height: 200px; }
+            .folio-preview { height: 220px; }
         }
 
         @media (max-width: 360px) {
@@ -585,15 +733,16 @@
     </style>
 </head>
 <body>
+    <canvas id="particles"></canvas>
     <div class="ambient"></div>
     <div class="grid-bg"></div>
 
-    <div class="app">
+    <div class="app" id="app">
         <header class="hdr">
             <div class="hdr-left">
                 <div class="hdr-greeting" id="greet"></div>
                 <div class="hdr-name">Sean Trinh</div>
-                <div class="hdr-title">Operator · Builder · Designer</div>
+                <div class="hdr-title">Operator &middot; Builder &middot; Designer</div>
             </div>
             <div class="hdr-right">
                 <div class="hdr-time" id="clock"></div>
@@ -603,21 +752,21 @@
 
         <!-- ===== HQ VIEW ===== -->
         <div class="view on" id="v-hq">
-            <div class="stats">
+            <div class="stats" id="stats-grid">
                 <div class="stat">
-                    <div class="stat-val">5</div>
+                    <div class="stat-val" data-target="5">0</div>
                     <div class="stat-lbl">Live Sites</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-val">38</div>
+                    <div class="stat-val" data-target="38">0</div>
                     <div class="stat-lbl">Tasks Done</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-val">2</div>
+                    <div class="stat-val" data-target="5">0</div>
                     <div class="stat-lbl">Repos</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-val">3</div>
+                    <div class="stat-val" data-target="4">0</div>
                     <div class="stat-lbl">Deploys</div>
                 </div>
             </div>
@@ -629,26 +778,29 @@
                     <span class="sec-title">100x Roadmap</span>
                     <span class="sec-line"></span>
                 </div>
-                <div class="phase">
-                    <div class="phase-item active">
-                        <div class="phase-num">P1</div>
-                        <div class="phase-lbl">Revenue On</div>
-                        <div class="phase-prog">2/5</div>
-                    </div>
-                    <div class="phase-item">
-                        <div class="phase-num">P2</div>
-                        <div class="phase-lbl">Proof Stack</div>
-                        <div class="phase-prog">0/5</div>
-                    </div>
-                    <div class="phase-item">
-                        <div class="phase-num">P3</div>
-                        <div class="phase-lbl">Lead Machine</div>
-                        <div class="phase-prog">—</div>
-                    </div>
-                    <div class="phase-item">
-                        <div class="phase-num">P4</div>
-                        <div class="phase-lbl">Scale</div>
-                        <div class="phase-prog">—</div>
+                <div class="roadmap-wrap">
+                    <div class="roadmap-track"><div class="roadmap-fill" id="roadmap-fill"></div></div>
+                    <div class="phase">
+                        <div class="phase-item active">
+                            <div class="phase-num">P1</div>
+                            <div class="phase-lbl">Revenue On</div>
+                            <div class="phase-prog">2/5</div>
+                        </div>
+                        <div class="phase-item">
+                            <div class="phase-num">P2</div>
+                            <div class="phase-lbl">Proof Stack</div>
+                            <div class="phase-prog">0/5</div>
+                        </div>
+                        <div class="phase-item">
+                            <div class="phase-num">P3</div>
+                            <div class="phase-lbl">Lead Machine</div>
+                            <div class="phase-prog">&mdash;</div>
+                        </div>
+                        <div class="phase-item">
+                            <div class="phase-num">P4</div>
+                            <div class="phase-lbl">Scale</div>
+                            <div class="phase-prog">&mdash;</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -679,7 +831,7 @@
             <div class="sec">
                 <div class="sec-hdr">
                     <span class="sec-dot"></span>
-                    <span class="sec-title">Portfolio — Live Work</span>
+                    <span class="sec-title">Portfolio &mdash; Live Work</span>
                     <span class="sec-line"></span>
                 </div>
                 <div class="grid grid-1" id="folio-grid" style="gap:14px"></div>
@@ -691,7 +843,7 @@
             <div class="sec">
                 <div class="sec-hdr">
                     <span class="sec-dot"></span>
-                    <span class="sec-title">Tools & Services</span>
+                    <span class="sec-title">Tools &amp; Services</span>
                     <span class="sec-line"></span>
                 </div>
                 <div class="grid grid-1" id="tools-grid"></div>
@@ -722,24 +874,71 @@
     <!-- Bottom Nav -->
     <nav class="bnav">
         <button class="bnav-btn active" data-v="v-hq">
-            <span class="bnav-ico">⚡</span>
+            <span class="bnav-ico">&#9889;</span>
             <span class="bnav-lbl">HQ</span>
         </button>
         <button class="bnav-btn" data-v="v-work">
-            <span class="bnav-ico">💎</span>
+            <span class="bnav-ico">&#128142;</span>
             <span class="bnav-lbl">Work</span>
         </button>
         <button class="bnav-btn" data-v="v-tools">
-            <span class="bnav-ico">🔧</span>
+            <span class="bnav-ico">&#128295;</span>
             <span class="bnav-lbl">Tools</span>
         </button>
         <button class="bnav-btn" data-v="v-sys">
-            <span class="bnav-ico">🧠</span>
+            <span class="bnav-ico">&#129504;</span>
             <span class="bnav-lbl">Systems</span>
         </button>
     </nav>
 
     <script>
+    // ===== PARTICLE SYSTEM =====
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+        constructor() {
+            this.reset();
+        }
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 1.5 + 0.3;
+            this.speedX = (Math.random() - 0.5) * 0.3;
+            this.speedY = (Math.random() - 0.5) * 0.3;
+            this.opacity = Math.random() * 0.3 + 0.05;
+            this.color = Math.random() > 0.7 ? '201,168,76' : '240,237,232';
+        }
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${this.color},${this.opacity})`;
+            ctx.fill();
+        }
+    }
+
+    for (let i = 0; i < 40; i++) particles.push(new Particle());
+
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
     // ===== CLOCK =====
     const clockEl = document.getElementById('clock');
     const greetEl = document.getElementById('greet');
@@ -751,14 +950,104 @@
     }
     tick(); setInterval(tick, 10000);
 
-    // ===== NAV =====
+    // ===== ANIMATED COUNTERS =====
+    function animateCounter(el, target) {
+        const dur = 1.2;
+        const obj = { val: 0 };
+        gsap.to(obj, {
+            val: target,
+            duration: dur,
+            ease: 'power2.out',
+            onUpdate: () => { el.textContent = Math.round(obj.val); }
+        });
+    }
+
+    // ===== ENTRANCE ANIMATION =====
+    function playEntrance() {
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+        tl.to('#app', { opacity: 1, duration: 0.3 })
+          .from('.hdr-greeting', { opacity: 0, y: -10, duration: 0.4 }, 0.1)
+          .from('.hdr-name', { opacity: 0, x: -20, duration: 0.5 }, 0.2)
+          .from('.hdr-title', { opacity: 0, duration: 0.4 }, 0.35)
+          .from('.hdr-time', { opacity: 0, duration: 0.3 }, 0.3)
+          .from('.hdr-status', { opacity: 0, x: 10, duration: 0.4 }, 0.4)
+          .to('.stat', {
+              opacity: 1, y: 0, duration: 0.5, stagger: 0.08
+          }, 0.4)
+          .add(() => {
+              document.querySelectorAll('.stat-val').forEach(el => {
+                  const target = parseInt(el.dataset.target) || 0;
+                  animateCounter(el, target);
+              });
+          }, 0.5)
+          .from('.sec', { opacity: 0, y: 15, duration: 0.4, stagger: 0.12 }, 0.7)
+          .to('#roadmap-fill', { width: '30%', duration: 1.2, ease: 'power2.inOut' }, 1);
+    }
+
+    // ===== NAV WITH GSAP TRANSITIONS =====
+    let currentView = 'v-hq';
     document.querySelectorAll('.bnav-btn').forEach(b => {
         b.addEventListener('click', () => {
+            const targetId = b.dataset.v;
+            if (targetId === currentView) return;
+
             document.querySelectorAll('.bnav-btn').forEach(x => x.classList.remove('active'));
-            document.querySelectorAll('.view').forEach(x => x.classList.remove('on'));
             b.classList.add('active');
-            document.getElementById(b.dataset.v).classList.add('on');
+
+            const oldView = document.getElementById(currentView);
+            const newView = document.getElementById(targetId);
+
+            gsap.to(oldView, {
+                opacity: 0, y: -10, duration: 0.2, ease: 'power2.in',
+                onComplete: () => {
+                    oldView.classList.remove('on');
+                    newView.classList.add('on');
+                    gsap.fromTo(newView,
+                        { opacity: 0, y: 15 },
+                        { opacity: 1, y: 0, duration: 0.35, ease: 'power3.out' }
+                    );
+
+                    // Stagger animate children
+                    const items = newView.querySelectorAll('.lnk, .folio, .deploy');
+                    if (items.length) {
+                        gsap.fromTo(items,
+                            { opacity: 0, y: 10 },
+                            { opacity: 1, y: 0, duration: 0.3, stagger: 0.04, ease: 'power2.out', delay: 0.1 }
+                        );
+                    }
+                }
+            });
+
+            currentView = targetId;
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+
+    // ===== MOUSE GLOW ON LINK CARDS =====
+    document.addEventListener('mousemove', e => {
+        document.querySelectorAll('.lnk').forEach(el => {
+            const rect = el.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            el.style.setProperty('--mx', x + '%');
+            el.style.setProperty('--my', y + '%');
+        });
+    });
+
+    // ===== 3D TILT ON PORTFOLIO CARDS =====
+    document.addEventListener('mousemove', e => {
+        document.querySelectorAll('.folio').forEach(card => {
+            const rect = card.getBoundingClientRect();
+            if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
+                gsap.to(card, { rotateX: 0, rotateY: 0, duration: 0.4, ease: 'power2.out' });
+                return;
+            }
+            const x = (e.clientX - rect.left) / rect.width;
+            const y = (e.clientY - rect.top) / rect.height;
+            const tiltX = (y - 0.5) * -6;
+            const tiltY = (x - 0.5) * 6;
+            gsap.to(card, { rotateX: tiltX, rotateY: tiltY, duration: 0.3, ease: 'power2.out', transformPerspective: 800 });
         });
     });
 
@@ -766,24 +1055,37 @@
     fetch('data.json?' + Date.now())
         .then(r => r.json())
         .then(D => {
-            // --- Stats ---
+            // --- Stats targets ---
             const statEls = document.querySelectorAll('.stat-val');
-            statEls[0].textContent = D.stats.liveSites;
-            statEls[1].textContent = D.stats.tasksDone;
-            // repos filled by GitHub API below
-            statEls[3].textContent = D.stats.deploys;
+            statEls[0].dataset.target = D.stats.liveSites;
+            statEls[1].dataset.target = D.stats.tasksDone;
+            statEls[3].dataset.target = D.stats.deploys;
 
             // --- Roadmap ---
             const phases = document.querySelectorAll('.phase-item');
             const rm = [D.roadmap.p1, D.roadmap.p2, D.roadmap.p3, D.roadmap.p4];
+            let totalComplete = 0;
+            let totalItems = 0;
             phases.forEach((el, i) => {
                 el.querySelector('.phase-prog').textContent = rm[i].progress;
-                if (rm[i].progress !== '—' && rm[i].progress !== '0/5') {
-                    el.classList.add('active');
+                if (rm[i].progress !== '\u2014' && rm[i].progress !== '—') {
+                    const parts = rm[i].progress.split('/');
+                    if (parts.length === 2) {
+                        totalComplete += parseInt(parts[0]);
+                        totalItems += parseInt(parts[1]);
+                    }
+                    if (parseInt(parts[0]) > 0) el.classList.add('active');
+                    else el.classList.remove('active');
                 } else {
                     el.classList.remove('active');
                 }
             });
+
+            // Calculate roadmap fill percentage
+            const fillPct = totalItems > 0 ? Math.max((totalComplete / 20) * 100, 5) : 5;
+            setTimeout(() => {
+                gsap.to('#roadmap-fill', { width: fillPct + '%', duration: 1.5, ease: 'power2.inOut' });
+            }, 800);
 
             // --- Quick Actions ---
             document.getElementById('quick-actions').innerHTML = D.quickActions.map(a => `
@@ -801,7 +1103,7 @@
             document.getElementById('deploy-log').innerHTML = D.deploys.map(d => `
                 <div class="deploy">
                     <span class="deploy-dot ok"></span>
-                    <span class="deploy-name">${d.project} — ${d.msg}</span>
+                    <span class="deploy-name">${d.project} &mdash; ${d.msg}</span>
                     <span class="deploy-hash">${d.hash}</span>
                     <span class="deploy-when">${d.when}</span>
                 </div>
@@ -812,7 +1114,7 @@
                 <a class="folio" href="${p.url}" target="_blank">
                     <div class="folio-preview">
                         <div class="folio-preview-ph" data-url="${p.url}">${p.emoji}</div>
-                        <div class="folio-badge"><span class="dot" style="width:4px;height:4px;box-shadow:none"></span> LIVE</div>
+                        <div class="folio-badge"><span class="dot" style="width:4px;height:4px"></span> LIVE</div>
                     </div>
                     <div class="folio-info">
                         <div class="folio-row">
@@ -838,7 +1140,7 @@
                     iframe.loading = 'lazy';
                     iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
                     iframe.style.cssText = 'width:300%;height:300%;transform:scale(0.3333);transform-origin:top left;border:none;pointer-events:none;position:absolute;top:0;left:0;';
-                    iframe.onload = () => { ph.style.opacity = '0'; };
+                    iframe.onload = () => { gsap.to(ph, { opacity: 0, duration: 0.5 }); };
                     ph.parentElement.appendChild(iframe);
                 });
             }, 2000);
@@ -885,8 +1187,11 @@
                 const statusEl = document.querySelector('.hdr-status');
                 if (statusEl) statusEl.innerHTML = `<span class="dot"></span> Synced ${updated.toLocaleDateString('en-US', { month:'short', day:'numeric' })}`;
             }
+
+            // Play entrance AFTER data loaded
+            playEntrance();
         })
-        .catch(() => { console.log('data.json not found, using defaults'); });
+        .catch(() => { document.getElementById('app').style.opacity = '1'; playEntrance(); });
 
     // ===== GITHUB LIVE DATA =====
     fetch('https://api.github.com/users/kimchiwrice/repos?sort=updated&per_page=10')
@@ -894,7 +1199,7 @@
         .then(repos => {
             if (!repos.length) return;
             const repoStat = document.querySelectorAll('.stat-val')[2];
-            if (repoStat) repoStat.textContent = repos.length;
+            if (repoStat) repoStat.dataset.target = repos.length;
         })
         .catch(() => {});
 

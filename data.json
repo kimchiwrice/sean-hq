@@ -1,7 +1,7 @@
 {
     "stats": {
         "liveSites": 5,
-        "tasksDone": 42,
+        "tasksDone": 48,
         "deploys": 6
     },
     "hoursLog": {
@@ -34,6 +34,24 @@
     },
     "deploys": [
         {
+            "project": "Trinh Media",
+            "msg": "Cowork foundation: about-me, voice, anti-AI, templates",
+            "hash": "latest",
+            "when": "Apr 21"
+        },
+        {
+            "project": "Trinh Media",
+            "msg": "Add DESIGN.md system + universal client generator",
+            "hash": "latest",
+            "when": "Apr 21"
+        },
+        {
+            "project": "Trinh Media",
+            "msg": "Stats fix + counter fallback + real screenshots",
+            "hash": "f3361be",
+            "when": "Apr 21"
+        },
+        {
             "project": "HQ Command Center",
             "msg": "Add hours tracker + AI tools ecosystem",
             "hash": "latest",
@@ -55,18 +73,6 @@
             "project": "HQ Command Center",
             "msg": "Wire live data.json",
             "hash": "cc04515",
-            "when": "Apr 20"
-        },
-        {
-            "project": "T4 Folsom",
-            "msg": "Fix: menu image loading",
-            "hash": "563c5bd",
-            "when": "Apr 20"
-        },
-        {
-            "project": "T4 Folsom",
-            "msg": "V2: Full menu + ordering",
-            "hash": "724312e",
             "when": "Apr 20"
         }
     ],
@@ -332,5 +338,5 @@
             "status": "BUILDING"
         }
     ],
-    "lastUpdated": "2026-04-21T08:00:00"
+    "lastUpdated": "2026-04-21T02:10:00"
 }

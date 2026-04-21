@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>HQ — Sean Trinh</title>
+    <meta name="description" content="Operator command center">
+    <meta name="theme-color" content="#08090E">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="HQ">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #08090E;
+            --bg-2: #0F1117;
+            --bg-3: #161820;
+            --bg-card: rgba(255,255,255,0.025);
+            --bg-card-hover: rgba(255,255,255,0.055);
+            --border: rgba(255,255,255,0.05);
+            --border-hover: rgba(201,168,76,0.35);
+            --text: #F0EDE8;
+            --text-2: rgba(240,237,232,0.6);
+            --text-3: rgba(240,237,232,0.35);
+            --gold: #C9A84C;
+            --gold-dim: rgba(201,168,76,0.12);
+            --green: #34D399;
+            --green-dim: rgba(52,211,153,0.1);
+            --cyan: #06B6D4;
+            --cyan-dim: rgba(6,182,212,0.08);
+            --purple: #A78BFA;
+            --purple-dim: rgba(167,139,250,0.08);
+            --red: #FB7185;
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100dvh;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ===== AMBIENT BG ===== */
+        .ambient {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none; z-index: 0;
+        }
+        .ambient::before {
+            content: '';
+            position: absolute; top: -30%; right: -20%;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(201,168,76,0.04) 0%, transparent 65%);
+        }
+        .ambient::after {
+            content: '';
+            position: absolute; bottom: -20%; left: -20%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(6,182,212,0.03) 0%, transparent 65%);
+        }
+
+        /* Subtle grid */
+        .grid-bg {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none; z-index: 0;
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black, transparent);
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+        .app {
+            position: relative; z-index: 1;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: calc(var(--safe-top) + 16px) 16px calc(var(--safe-bottom) + 80px);
+        }
+
+        /* ===== HEADER ===== */
+        .hdr {
+            padding: 8px 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .hdr-left { display: flex; flex-direction: column; gap: 2px; }
+
+        .hdr-greeting {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            font-weight: 500;
+        }
+
+        .hdr-name {
+            font-size: 1.65rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+
+        .hdr-title {
+            font-size: 0.75rem;
+            color: var(--text-2);
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        .hdr-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+            padding-top: 4px;
+        }
+
+        .hdr-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-3);
+        }
+
+        .hdr-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.55rem;
+            color: var(--green);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .dot {
+            width: 5px; height: 5px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(52,211,153,0.5);
+            animation: blink 2.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* ===== STATS ROW ===== */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-bottom: 24px;
+        }
+
+        .stat {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 8px;
+            text-align: center;
+        }
+
+        .stat-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gold), #E8D48A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-lbl {
+            font-size: 0.55rem;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 2px;
+            font-weight: 500;
+        }
+
+        /* ===== SECTION ===== */
+        .sec {
+            margin-bottom: 24px;
+        }
+
+        .sec-hdr {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .sec-dot {
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: var(--gold);
+        }
+
+        .sec-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-2);
+            font-weight: 500;
+        }
+
+        .sec-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border), transparent);
+        }
+
+        /* ===== LINK CARDS ===== */
+        .grid { display: grid; gap: 8px; }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-1 { grid-template-columns: 1fr; }
+
+        .lnk {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 16px;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lnk::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(201,168,76,0.03), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.25s;
+        }
+
+        .lnk:hover::before, .lnk:active::before { opacity: 1; }
+
+        .lnk:hover, .lnk:active {
+            border-color: var(--border-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 0 1px rgba(201,168,76,0.08);
+        }
+
+        .lnk-icon {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .lnk-body { flex: 1; min-width: 0; position: relative; z-index: 1; }
+
+        .lnk-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .lnk-desc {
+            font-size: 0.65rem;
+            color: var(--text-3);
+            margin-top: 1px;
+        }
+
+        .lnk-arrow {
+            color: var(--text-3);
+            font-size: 0.7rem;
+            transition: transform 0.2s;
+            position: relative;
+            z-index: 1;
+        }
+
+        .lnk:hover .lnk-arrow { transform: translateX(3px); color: var(--gold); }
+
+        /* ===== PORTFOLIO CARDS ===== */
+        .folio {
+            display: block;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .folio:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,168,76,0.1);
+        }
+
+        .folio-preview {
+            width: 100%;
+            height: 160px;
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-2);
+        }
+
+        .folio-preview iframe {
+            width: 300%;
+            height: 300%;
+            transform: scale(0.3333);
+            transform-origin: top left;
+            border: none;
+            pointer-events: none;
+        }
+
+        .folio-preview-ph {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--bg-2), var(--bg-3));
+            transition: opacity 0.5s;
+        }
+
+        .folio-badge {
+            position: absolute;
+            top: 10px; right: 10px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(8,9,14,0.85);
+            backdrop-filter: blur(8px);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.55rem;
+            font-weight: 600;
+            color: var(--green);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+
+        .folio-info {
+            padding: 14px 16px 16px;
+        }
+
+        .folio-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .folio-name {
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .folio-type {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.55rem;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 3px;
+        }
+
+        .folio-desc {
+            font-size: 0.7rem;
+            color: var(--text-2);
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+
+        .folio-tech {
+            display: flex;
+            gap: 4px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .folio-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.5rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: var(--cyan-dim);
+            color: var(--cyan);
+            letter-spacing: 0.04em;
+            font-weight: 500;
+        }
+
+        /* ===== DEPLOY LOG ===== */
+        .deploy {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .deploy-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .deploy-dot.ok { background: var(--green); box-shadow: 0 0 6px rgba(52,211,153,0.3); }
+
+        .deploy-name {
+            flex: 1;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .deploy-hash {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--text-3);
+        }
+
+        .deploy-when {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--text-3);
+        }
+
+        /* ===== ROADMAP ===== */
+        .phase {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .phase-item {
+            flex: 1;
+            padding: 12px 8px;
+            text-align: center;
+            border-right: 1px solid var(--border);
+            position: relative;
+        }
+
+        .phase-item:last-child { border-right: none; }
+
+        .phase-item.active {
+            background: var(--gold-dim);
+        }
+
+        .phase-item.active .phase-num { color: var(--gold); }
+
+        .phase-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-3);
+        }
+
+        .phase-lbl {
+            font-size: 0.5rem;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 2px;
+        }
+
+        .phase-item.active .phase-lbl { color: var(--text-2); }
+
+        .phase-prog {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.5rem;
+            color: var(--gold);
+            margin-top: 4px;
+        }
+
+        /* ===== BOTTOM NAV ===== */
+        .bnav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(8,9,14,0.92);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-top: 1px solid rgba(255,255,255,0.04);
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            z-index: 100;
+            padding-bottom: var(--safe-bottom);
+        }
+
+        .bnav-btn {
+            flex: 1;
+            max-width: 90px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 10px 0 8px;
+            background: none;
+            border: none;
+            color: var(--text-3);
+            cursor: pointer;
+            transition: color 0.2s;
+            position: relative;
+        }
+
+        .bnav-btn.active { color: var(--gold); }
+        .bnav-btn:hover { color: var(--text); }
+
+        .bnav-btn.active::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 20px; height: 2px;
+            background: var(--gold);
+            border-radius: 0 0 2px 2px;
+        }
+
+        .bnav-ico { font-size: 1.15rem; line-height: 1; }
+
+        .bnav-lbl {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.5rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        /* ===== VIEW SYSTEM ===== */
+        .view { display: none; }
+        .view.on { display: block; animation: viewIn 0.3s ease; }
+
+        @keyframes viewIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (min-width: 768px) {
+            .app { max-width: 560px; padding-top: 40px; }
+            .stats { grid-template-columns: repeat(4, 1fr); }
+            .folio-preview { height: 200px; }
+        }
+
+        @media (max-width: 360px) {
+            .hdr-name { font-size: 1.4rem; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <div class="ambient"></div>
+    <div class="grid-bg"></div>
+
+    <div class="app">
+        <header class="hdr">
+            <div class="hdr-left">
+                <div class="hdr-greeting" id="greet"></div>
+                <div class="hdr-name">Sean Trinh</div>
+                <div class="hdr-title">Operator · Builder · Designer</div>
+            </div>
+            <div class="hdr-right">
+                <div class="hdr-time" id="clock"></div>
+                <div class="hdr-status"><span class="dot"></span> Systems Online</div>
+            </div>
+        </header>
+
+        <!-- ===== HQ VIEW ===== -->
+        <div class="view on" id="v-hq">
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-val">5</div>
+                    <div class="stat-lbl">Live Sites</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-val">38</div>
+                    <div class="stat-lbl">Tasks Done</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-val">2</div>
+                    <div class="stat-lbl">Repos</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-val">3</div>
+                    <div class="stat-lbl">Deploys</div>
+                </div>
+            </div>
+
+            <!-- Roadmap -->
+            <div class="sec">
+                <div class="sec-hdr">
+                    <span class="sec-dot"></span>
+                    <span class="sec-title">100x Roadmap</span>
+                    <span class="sec-line"></span>
+                </div>
+                <div class="phase">
+                    <div class="phase-item active">
+                        <div class="phase-num">P1</div>
+                        <div class="phase-lbl">Revenue On</div>
+                        <div class="phase-prog">2/5</div>
+                    </div>
+                    <div class="phase-item">
+                        <div class="phase-num">P2</div>
+                        <div class="phase-lbl">Proof Stack</div>
+                        <div class="phase-prog">0/5</div>
+                    </div>
+                    <div class="phase-item">
+                        <div class="phase-num">P3</div>
+                        <div class="phase-lbl">Lead Machine</div>
+                        <div class="phase-prog">—</div>
+                    </div>
+                    <div class="phase-item">
+                        <div class="phase-num">P4</div>
+                        <div class="phase-lbl">Scale</div>
+                        <div class="phase-prog">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="sec">
+                <div class="sec-hdr">
+                    <span class="sec-dot"></span>
+                    <span class="sec-title">Quick Actions</span>
+                    <span class="sec-line"></span>
+                </div>
+                <div class="grid grid-1" id="quick-actions"></div>
+            </div>
+
+            <!-- Recent Deploys -->
+            <div class="sec">
+                <div class="sec-hdr">
+                    <span class="sec-dot"></span>
+                    <span class="sec-title">Recent Deploys</span>
+                    <span class="sec-line"></span>
+                </div>
+                <div class="grid grid-1" id="deploy-log"></div>
+            </div>
+        </div>
+
+        <!-- ===== PORTFOLIO VIEW ===== -->
+        <div class="view" id="v-work">
+            <div class="sec">
+                <div class="sec-hdr">
+                    <span class="sec-dot"></span>
+                    <span class="sec-title">Portfolio — Live Work</span>
+                    <span class="sec-line"></span>
+                </div>
+                <div class="grid grid-1" id="folio-grid" style="gap:14px"></div>
+            </div>
+        </div>
+
+        <!-- ===== TOOLS VIEW ===== -->
+        <div class="view" id="v-tools">
+            <div class="sec">
+                <div class="sec-hdr">
+                    <span class="sec-dot"></span>
+                    <span class="sec-title">Tools & Services</span>
+                    <span class="sec-line"></span>
+                </div>
+                <div class="grid grid-1" id="tools-grid"></div>
+            </div>
+        </div>
+
+        <!-- ===== SYSTEMS VIEW ===== -->
+        <div class="view" id="v-sys">
+            <div class="sec">
+                <div class="sec-hdr">
+                    <span class="sec-dot"></span>
+                    <span class="sec-title">Active Systems</span>
+                    <span class="sec-line"></span>
+                </div>
+                <div class="grid grid-1" id="sys-grid"></div>
+            </div>
+            <div class="sec" style="margin-top:20px">
+                <div class="sec-hdr">
+                    <span class="sec-dot"></span>
+                    <span class="sec-title">Business Ventures</span>
+                    <span class="sec-line"></span>
+                </div>
+                <div class="grid grid-1" id="biz-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bnav">
+        <button class="bnav-btn active" data-v="v-hq">
+            <span class="bnav-ico">⚡</span>
+            <span class="bnav-lbl">HQ</span>
+        </button>
+        <button class="bnav-btn" data-v="v-work">
+            <span class="bnav-ico">💎</span>
+            <span class="bnav-lbl">Work</span>
+        </button>
+        <button class="bnav-btn" data-v="v-tools">
+            <span class="bnav-ico">🔧</span>
+            <span class="bnav-lbl">Tools</span>
+        </button>
+        <button class="bnav-btn" data-v="v-sys">
+            <span class="bnav-ico">🧠</span>
+            <span class="bnav-lbl">Systems</span>
+        </button>
+    </nav>
+
+    <script>
+    // ===== CLOCK =====
+    const clockEl = document.getElementById('clock');
+    const greetEl = document.getElementById('greet');
+    function tick() {
+        const d = new Date();
+        const h = d.getHours();
+        greetEl.textContent = (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening');
+        clockEl.textContent = d.toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit', hour12:true });
+    }
+    tick(); setInterval(tick, 10000);
+
+    // ===== NAV =====
+    document.querySelectorAll('.bnav-btn').forEach(b => {
+        b.addEventListener('click', () => {
+            document.querySelectorAll('.bnav-btn').forEach(x => x.classList.remove('active'));
+            document.querySelectorAll('.view').forEach(x => x.classList.remove('on'));
+            b.classList.add('active');
+            document.getElementById(b.dataset.v).classList.add('on');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+
+    // ===== QUICK ACTIONS =====
+    const quickActions = [
+        { icon: '🧠', name: 'Notion Brain', desc: 'Business OS · CRM · Sprints', url: 'https://notion.so', bg: 'var(--purple-dim)', color: 'var(--purple)' },
+        { icon: '📧', name: 'Gmail', desc: 'Inbox & outreach', url: 'https://mail.google.com', bg: 'var(--cyan-dim)', color: 'var(--cyan)' },
+        { icon: '▲', name: 'Vercel Dashboard', desc: 'Deployments & domains', url: 'https://vercel.com/kimchiwrices-projects', bg: 'var(--gold-dim)', color: 'var(--gold)' },
+        { icon: '🐙', name: 'GitHub', desc: 'All repositories', url: 'https://github.com/kimchiwrice', bg: 'var(--green-dim)', color: 'var(--green)' },
+    ];
+
+    document.getElementById('quick-actions').innerHTML = quickActions.map(a => `
+        <a class="lnk" href="${a.url}" target="_blank">
+            <div class="lnk-icon" style="background:${a.bg}">${a.icon}</div>
+            <div class="lnk-body">
+                <div class="lnk-name">${a.name}</div>
+                <div class="lnk-desc">${a.desc}</div>
+            </div>
+            <div class="lnk-arrow">→</div>
+        </a>
+    `).join('');
+
+    // ===== DEPLOYS =====
+    const deploys = [
+        { name: 'T4 Folsom', msg: 'Fix: menu image loading', hash: '563c5bd', when: 'Today' },
+        { name: 'T4 Folsom', msg: 'V2: Full menu + ordering', hash: '724312e', when: 'Today' },
+        { name: 'Trinh Media', msg: 'Cinematic v2 launch', hash: 'main', when: 'Today' },
+    ];
+
+    document.getElementById('deploy-log').innerHTML = deploys.map(d => `
+        <div class="deploy">
+            <span class="deploy-dot ok"></span>
+            <span class="deploy-name">${d.name} — ${d.msg}</span>
+            <span class="deploy-hash">${d.hash}</span>
+            <span class="deploy-when">${d.when}</span>
+        </div>
+    `).join('');
+
+    // ===== PORTFOLIO =====
+    const portfolio = [
+        {
+            name: 'Trinh Media',
+            type: 'Agency Portfolio',
+            url: 'https://trinh-media-site.vercel.app',
+            emoji: '🎬',
+            desc: 'Cinematic scroll-driven agency site with GSAP animations, video hero, 3D tilt cards, and live contact form.',
+            tags: ['HTML/CSS/JS', 'GSAP', 'Formspree', 'Vercel']
+        },
+        {
+            name: 'T4 Tea For U',
+            type: 'Restaurant · 92 Items · Live Ordering',
+            url: 'https://t4-folsom.vercel.app',
+            emoji: '🧋',
+            desc: 'Full menu browser with 102 product images, DoorDash and Grubhub ordering integration, and real-time open/closed status.',
+            tags: ['HTML/CSS/JS', 'DoorDash API', 'Grubhub', '102 Images']
+        },
+        {
+            name: 'Underground Reptiles',
+            type: 'E-Commerce',
+            url: 'https://underground-reptiles.vercel.app',
+            emoji: '🦎',
+            desc: 'Exotic reptile shop with animated product catalog and premium dark design.',
+            tags: ['HTML/CSS/JS', 'Vercel']
+        },
+        {
+            name: "Emyie's Shop",
+            type: 'Retail Storefront',
+            url: 'https://emyies-shop.vercel.app',
+            emoji: '🛍️',
+            desc: 'Clean, modern retail storefront with product showcase and brand identity.',
+            tags: ['HTML/CSS/JS', 'Vercel']
+        },
+        {
+            name: 'Paws & Co',
+            type: 'Pet Services',
+            url: 'https://paws-and-co-eta.vercel.app',
+            emoji: '🐾',
+            desc: 'Pet care services site with warm design and service booking flow.',
+            tags: ['HTML/CSS/JS', 'Vercel']
+        }
+    ];
+
+    document.getElementById('folio-grid').innerHTML = portfolio.map(p => `
+        <a class="folio" href="${p.url}" target="_blank">
+            <div class="folio-preview">
+                <div class="folio-preview-ph" data-url="${p.url}">${p.emoji}</div>
+                <div class="folio-badge"><span class="dot" style="width:4px;height:4px;box-shadow:none"></span> LIVE</div>
+            </div>
+            <div class="folio-info">
+                <div class="folio-row">
+                    <div>
+                        <div class="folio-name">${p.name}</div>
+                        <div class="folio-type">${p.type}</div>
+                    </div>
+                    <div class="lnk-arrow" style="font-size:0.8rem">→</div>
+                </div>
+                <div class="folio-desc">${p.desc}</div>
+                <div class="folio-tech">${p.tags.map(t => `<span class="folio-tag">${t}</span>`).join('')}</div>
+            </div>
+        </a>
+    `).join('');
+
+    // Load live previews after page load
+    setTimeout(() => {
+        document.querySelectorAll('.folio-preview-ph').forEach(ph => {
+            const url = ph.dataset.url;
+            if (!url) return;
+            const iframe = document.createElement('iframe');
+            iframe.src = url;
+            iframe.loading = 'lazy';
+            iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+            iframe.style.cssText = 'width:300%;height:300%;transform:scale(0.3333);transform-origin:top left;border:none;pointer-events:none;position:absolute;top:0;left:0;';
+            iframe.onload = () => { ph.style.opacity = '0'; };
+            ph.parentElement.appendChild(iframe);
+        });
+    }, 2000);
+
+    // ===== TOOLS =====
+    const tools = [
+        { icon: '🧠', name: 'Notion', desc: 'Business OS · CRM · Sprints', url: 'https://notion.so', color: 'var(--purple)' },
+        { icon: '📧', name: 'Gmail', desc: 'Email & outreach pipeline', url: 'https://mail.google.com', color: 'var(--cyan)' },
+        { icon: '📅', name: 'Google Calendar', desc: 'Schedule & shifts', url: 'https://calendar.google.com', color: 'var(--green)' },
+        { icon: '▲', name: 'Vercel', desc: 'Hosting & deployments', url: 'https://vercel.com/kimchiwrices-projects', color: 'var(--gold)' },
+        { icon: '🐙', name: 'GitHub', desc: 'Code repositories', url: 'https://github.com/kimchiwrice', color: 'var(--text-2)' },
+        { icon: '📍', name: 'Google Business Profile', desc: 'T4 Folsom GBP management', url: 'https://business.google.com', color: 'var(--green)' },
+        { icon: '🎨', name: 'Canva', desc: 'Designs & social graphics', url: 'https://canva.com', color: 'var(--purple)' },
+        { icon: '📋', name: 'Formspree', desc: 'Form submissions & leads', url: 'https://formspree.io/forms', color: 'var(--gold)' },
+        { icon: '📁', name: 'Google Drive', desc: 'Files & documents', url: 'https://drive.google.com', color: 'var(--cyan)' },
+        { icon: '📊', name: 'Google Analytics', desc: 'Traffic & conversions', url: 'https://analytics.google.com', color: 'var(--gold)' },
+        { icon: '🔍', name: 'Search Console', desc: 'SEO & indexing', url: 'https://search.google.com/search-console', color: 'var(--green)' },
+        { icon: '📸', name: 'Instagram @t4folsom', desc: 'T4 social media', url: 'https://instagram.com/t4folsom', color: 'var(--purple)' },
+    ];
+
+    document.getElementById('tools-grid').innerHTML = tools.map(t => `
+        <a class="lnk" href="${t.url}" target="_blank">
+            <div class="lnk-icon" style="background:rgba(255,255,255,0.03)">${t.icon}</div>
+            <div class="lnk-body">
+                <div class="lnk-name">${t.name}</div>
+                <div class="lnk-desc">${t.desc}</div>
+            </div>
+            <div class="lnk-arrow">→</div>
+        </a>
+    `).join('');
+
+    // ===== SYSTEMS =====
+    const systems = [
+        { icon: '📋', name: 'Daily Self-Audit', desc: 'Runs 8am — scores all systems, sets priorities', status: 'Active', color: 'var(--green)' },
+        { icon: '📊', name: 'Sunday Deep Review', desc: 'Runs 7pm Sun — 10-dimension scorecard', status: 'Active', color: 'var(--green)' },
+        { icon: '📝', name: 'Weekly Brief', desc: 'Runs 8pm Sun — progress report saved to machine', status: 'Active', color: 'var(--green)' },
+        { icon: '🔄', name: 'Continuous Improvement', desc: 'Framework doc + audit engine for all projects', status: 'Active', color: 'var(--green)' },
+        { icon: '🧠', name: 'Memory System', desc: '3-layer self-correcting — standards evolution + checkpoints + audit', status: 'Active', color: 'var(--green)' },
+    ];
+
+    document.getElementById('sys-grid').innerHTML = systems.map(s => `
+        <div class="lnk" style="cursor:default">
+            <div class="lnk-icon" style="background:var(--green-dim)">${s.icon}</div>
+            <div class="lnk-body">
+                <div class="lnk-name">${s.name}</div>
+                <div class="lnk-desc">${s.desc}</div>
+            </div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:${s.color};letter-spacing:0.06em;text-transform:uppercase">${s.status}</div>
+        </div>
+    `).join('');
+
+    // ===== BUSINESS VENTURES =====
+    const biz = [
+        { icon: '🎬', name: 'Trinh Media', desc: 'Premium cinematic web design for local businesses', status: 'Primary', url: 'https://trinh-media-site.vercel.app', color: 'var(--gold)' },
+        { icon: '🧋', name: 'T4 Tea For U', desc: 'Boba tea — digital presence managed via Trinh Media', status: 'Live', url: 'https://t4-folsom.vercel.app', color: 'var(--green)' },
+    ];
+
+    document.getElementById('biz-grid').innerHTML = biz.map(b => `
+        <a class="lnk" href="${b.url}" target="_blank">
+            <div class="lnk-icon" style="background:${b.color === 'var(--gold)' ? 'var(--gold-dim)' : 'var(--green-dim)'}">${b.icon}</div>
+            <div class="lnk-body">
+                <div class="lnk-name">${b.name}</div>
+                <div class="lnk-desc">${b.desc}</div>
+            </div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:${b.color};letter-spacing:0.06em;text-transform:uppercase">${b.status}</div>
+        </a>
+    `).join('');
+
+    // ===== GITHUB LIVE DATA =====
+    fetch('https://api.github.com/users/kimchiwrice/repos?sort=updated&per_page=5')
+        .then(r => r.json())
+        .then(repos => {
+            if (!repos.length) return;
+            document.querySelector('[data-stat="repos"]')?.setAttribute('data-val', repos.length);
+            // Update repos count
+            const repoStat = document.querySelectorAll('.stat-val')[2];
+            if (repoStat) repoStat.textContent = repos.length;
+        })
+        .catch(() => {});
+
+    // ===== SERVICE WORKER =====
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+    </script>
+</body>
+</html>

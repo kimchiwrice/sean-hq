@@ -577,8 +577,8 @@
             background: linear-gradient(90deg, var(--gold), rgba(201,168,76,0.3));
             border-radius: 1px;
             width: 0%;
-            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 10px var(--gold-glow);
+            transition: width 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 12px var(--gold-glow);
         }
 
         .phase {
@@ -701,6 +701,35 @@
             text-transform: uppercase;
             font-weight: 500;
         }
+
+        /* ===== ENTRANCE ANIMATIONS (CSS) ===== */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideRight {
+            from { opacity: 0; transform: translateX(-15px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .hdr-greeting { animation: fadeIn 0.5s ease both 0.1s; }
+        .hdr-name { animation: slideRight 0.6s ease both 0.2s; }
+        .hdr-title { animation: fadeIn 0.5s ease both 0.35s; }
+        .hdr-time { animation: fadeIn 0.4s ease both 0.2s; }
+        .hdr-status { animation: fadeIn 0.5s ease both 0.35s; }
+        .stat { animation: fadeUp 0.5s ease both; }
+        .stat:nth-child(1) { animation-delay: 0.3s; }
+        .stat:nth-child(2) { animation-delay: 0.38s; }
+        .stat:nth-child(3) { animation-delay: 0.46s; }
+        .stat:nth-child(4) { animation-delay: 0.54s; }
+        .sec { animation: fadeUp 0.45s ease both; }
+        .sec:nth-child(1) { animation-delay: 0.5s; }
+        .sec:nth-child(2) { animation-delay: 0.6s; }
+        .sec:nth-child(3) { animation-delay: 0.7s; }
 
         /* ===== VIEW SYSTEM ===== */
         .view { display: none; }
@@ -955,28 +984,18 @@
     }
 
     // ===== ENTRANCE ANIMATION =====
-    function playEntrance() {
-        // Animate from offset positions — content visible by default as fallback
-        gsap.fromTo('.hdr-greeting', { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' });
-        gsap.fromTo('.hdr-name', { opacity: 0, x: -15 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power3.out', delay: 0.1 });
-        gsap.fromTo('.hdr-title', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power3.out', delay: 0.2 });
-        gsap.fromTo('.hdr-time', { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power3.out', delay: 0.15 });
-        gsap.fromTo('.hdr-status', { opacity: 0, x: 8 }, { opacity: 1, x: 0, duration: 0.5, ease: 'power3.out', delay: 0.25 });
-
-        gsap.fromTo('.stat', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power3.out', delay: 0.3 });
-
-        // Animate counters
+    function runCounters() {
         setTimeout(() => {
             document.querySelectorAll('.stat-val').forEach(el => {
                 const target = parseInt(el.dataset.target) || 0;
                 if (target > 0) animateCounter(el, target);
             });
-        }, 400);
-
-        gsap.fromTo('.sec', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.1, ease: 'power3.out', delay: 0.5 });
-
+        }, 500);
         // Roadmap fill
-        gsap.fromTo('#roadmap-fill', { width: '0%' }, { width: '30%', duration: 1.5, ease: 'power2.inOut', delay: 0.8 });
+        setTimeout(() => {
+            const fill = document.getElementById('roadmap-fill');
+            if (fill) fill.style.width = '30%';
+        }, 900);
     }
 
     // ===== NAV WITH GSAP TRANSITIONS =====
@@ -1183,9 +1202,9 @@
             }
 
             // Play entrance AFTER data loaded
-            playEntrance();
+            runCounters();
         })
-        .catch(() => { playEntrance(); });
+        .catch(() => { runCounters(); });
 
     // ===== GITHUB LIVE DATA =====
     fetch('https://api.github.com/users/kimchiwrice/repos?sort=updated&per_page=10')

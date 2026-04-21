@@ -55,7 +55,7 @@ async function validateLocalJSON() {
     catch (e) { return [false, `JSON parse error: ${e.message}`]; }
 
     // Required keys
-    const required = ['stats','roadmap','deploys','portfolio','quickActions','tools','aiTools','hoursLog','systems','ventures','lastUpdated'];
+    const required = ['stats','roadmap','deploys','portfolio','quickActions','tools','aiTools','systems','ventures','lastUpdated'];
     const missing = required.filter(k => !(k in data));
     if (missing.length) return [false, `Missing keys: ${missing}`];
 

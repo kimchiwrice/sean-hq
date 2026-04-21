@@ -4,16 +4,6 @@
         "tasksDone": 49,
         "deploys": 7
     },
-    "hoursLog": {
-        "totalHours": 0,
-        "projects": {
-            "trinh-media": { "name": "Trinh Media", "hours": 0, "color": "var(--purple)" },
-            "t4-folsom": { "name": "T4 Folsom", "hours": 0, "color": "var(--green)" },
-            "hq": { "name": "HQ Command Center", "hours": 0, "color": "var(--gold)" },
-            "client-work": { "name": "Client Work", "hours": 0, "color": "var(--cyan)" },
-            "ops": { "name": "Ops & Systems", "hours": 0, "color": "var(--red)" }
-        }
-    },
     "roadmap": {
         "p1": {
             "name": "Revenue On",
@@ -59,7 +49,7 @@
         },
         {
             "project": "HQ Command Center",
-            "msg": "Add hours tracker + AI tools ecosystem",
+            "msg": "Cleanup: kill dead hoursLog + dedupe tools + .gitignore debug files",
             "hash": "latest",
             "when": "Apr 21"
         },
@@ -154,20 +144,6 @@
     ],
     "tools": [
         {
-            "icon": "\ud83e\udde0",
-            "name": "Notion",
-            "desc": "Business OS \u00b7 CRM \u00b7 Sprints",
-            "url": "https://notion.so",
-            "color": "var(--purple)"
-        },
-        {
-            "icon": "\ud83d\udce7",
-            "name": "Gmail",
-            "desc": "Email & outreach pipeline",
-            "url": "https://mail.google.com",
-            "color": "var(--cyan)"
-        },
-        {
             "icon": "\ud83d\udcc5",
             "name": "Google Calendar",
             "desc": "Schedule & shifts",
@@ -175,32 +151,11 @@
             "color": "var(--green)"
         },
         {
-            "icon": "\u25b2",
-            "name": "Vercel",
-            "desc": "Hosting & deployments",
-            "url": "https://vercel.com/kimchiwrices-projects",
-            "color": "var(--gold)"
-        },
-        {
-            "icon": "\ud83d\udc19",
-            "name": "GitHub",
-            "desc": "Code repositories",
-            "url": "https://github.com/kimchiwrice",
-            "color": "var(--text-2)"
-        },
-        {
             "icon": "\ud83d\udccd",
             "name": "Google Business Profile",
             "desc": "T4 Folsom GBP management",
             "url": "https://business.google.com",
             "color": "var(--green)"
-        },
-        {
-            "icon": "\ud83c\udfa8",
-            "name": "Canva",
-            "desc": "Designs & social graphics",
-            "url": "https://canva.com",
-            "color": "var(--purple)"
         },
         {
             "icon": "\ud83d\udccb",
@@ -242,7 +197,7 @@
         {
             "icon": "\ud83e\udd16",
             "name": "Claude",
-            "desc": "Strategy, code, automation, ops — primary AI operator",
+            "desc": "Strategy, code, automation, ops \u2014 primary AI operator",
             "url": "https://claude.ai",
             "color": "var(--gold)",
             "use": "Full-stack operator: builds sites, writes code, manages systems, runs deploys, strategic planning"
@@ -282,7 +237,7 @@
         {
             "icon": "\ud83d\uddbc\ufe0f",
             "name": "Google Gemini",
-            "desc": "Multimodal AI — text, image, video analysis",
+            "desc": "Multimodal AI \u2014 text, image, video analysis",
             "url": "https://gemini.google.com",
             "color": "var(--cyan)",
             "use": "Analyze screenshots, extract data from images, Google ecosystem integration, multimodal tasks"
@@ -314,10 +269,10 @@
             "status": "ACTIVE"
         },
         {
-            "icon": "\ud83d\udd04",
-            "name": "Notion \u2192 HQ Sync",
-            "desc": "Daily auto-sync tasks & deploys",
-            "status": "SCHEDULED"
+            "icon": "\ud83d\udcec",
+            "name": "Daily Outreach Engine",
+            "desc": "Weekday cold-email drafter \u2014 Gmail + Drive tracker",
+            "status": "READY"
         }
     ],
     "ventures": [
@@ -338,5 +293,5 @@
             "status": "BUILDING"
         }
     ],
-    "lastUpdated": "2026-04-21T02:10:00"
+    "lastUpdated": "2026-04-21T09:40:00"
 }

@@ -11,7 +11,7 @@
  *   node hq-update.js roadmap p1 "3/5"  # Update phase progress
  *   node hq-update.js show              # Print current stats
  *   node hq-update.js validate          # Run validation only
- *   node hq-update.js push              # Git add, commit, push
+ *   node hq-update.js push "commit msg" # Git add, commit, push
  */
 const fs = require('fs');
 const path = require('path');
@@ -60,7 +60,7 @@ function save(data) {
 
 function validate(data) {
     const errors = [];
-    const required = ['stats','roadmap','deploys','portfolio','quickActions','tools','aiTools','hoursLog','systems','ventures','lastUpdated'];
+    const required = ['stats','roadmap','deploys','portfolio','quickActions','tools','aiTools','systems','ventures','lastUpdated'];
     required.forEach(k => { if (!(k in data)) errors.push(`Missing key: ${k}`); });
     ['liveSites','tasksDone','deploys'].forEach(f => {
         if (typeof data.stats?.[f] !== 'number') errors.push(`stats.${f} is not a number`);
@@ -78,12 +78,6 @@ function showStats(data) {
     console.log(`  Deploys:     ${GREEN}${data.stats.deploys}${RESET}`);
     console.log(`  Portfolio:   ${data.portfolio.length} sites`);
     console.log(`  Roadmap:     P1=${data.roadmap.p1.progress} P2=${data.roadmap.p2.progress} P3=${data.roadmap.p3.progress} P4=${data.roadmap.p4.progress}`);
-    if (data.hoursLog) {
-        console.log(`  Hours:       ${GREEN}${data.hoursLog.totalHours}h${RESET} total`);
-        Object.values(data.hoursLog.projects).forEach(p => {
-            if (p.hours > 0) console.log(`    ${DIM}${p.name}: ${p.hours}h${RESET}`);
-        });
-    }
     console.log(`  Last Deploy: ${data.deploys[0]?.project} — ${data.deploys[0]?.msg}`);
     console.log(`  Updated:     ${data.lastUpdated}`);
     console.log(`${GOLD}━━━━━━━━━━━━━━━━━${RESET}\n`);
@@ -115,7 +109,6 @@ if (!cmd) {
     console.log(`  node hq-update.js site <n>                    Set liveSites count`);
     console.log(`  node hq-update.js deploys <n>                 Set deploys stat count`);
     console.log(`  node hq-update.js roadmap <p1-p4> "x/y"      Update phase progress`);
-    console.log(`  node hq-update.js hours "project-key" <n>      Add n hours to project`);
     console.log(`  node hq-update.js show                        Print current stats`);
     console.log(`  node hq-update.js validate                    Run validation only`);
     console.log(`  node hq-update.js push                        Git commit + push\n`);
@@ -159,27 +152,6 @@ switch (cmd) {
         data.stats.deploys = count;
         save(data);
         console.log(`${GREEN}✓ deploys stat: → ${count}${RESET}`);
-        break;
-    }
-    case 'hours': {
-        const [projectKey, hoursStr] = args;
-        const hrs = parseFloat(hoursStr);
-        if (!projectKey || isNaN(hrs)) {
-            console.error(`${RED}Usage: hours "project-key" <hours>${RESET}`);
-            console.log(`  Keys: ${Object.keys(data.hoursLog?.projects || {}).join(', ')}`);
-            process.exit(1);
-        }
-        if (!data.hoursLog) data.hoursLog = { totalHours: 0, projects: {} };
-        if (!data.hoursLog.projects[projectKey]) {
-            console.error(`${RED}Unknown project key: ${projectKey}${RESET}`);
-            console.log(`  Available: ${Object.keys(data.hoursLog.projects).join(', ')}`);
-            process.exit(1);
-        }
-        const old = data.hoursLog.projects[projectKey].hours || 0;
-        data.hoursLog.projects[projectKey].hours = old + hrs;
-        data.hoursLog.totalHours = Object.values(data.hoursLog.projects).reduce((s, p) => s + (p.hours || 0), 0);
-        save(data);
-        console.log(`${GREEN}✓ ${data.hoursLog.projects[projectKey].name}: ${old}h → ${old + hrs}h (total: ${data.hoursLog.totalHours}h)${RESET}`);
         break;
     }
     case 'roadmap': {

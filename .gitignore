@@ -1,10 +1,7 @@
-git_out.txt
-git_err.txt
-commit_msg.txt
-status_out.txt
-status_err.txt
-rm_out.txt
-rm_err.txt
+# Debug artifacts from batch scripts
+*.txt
+
+# Misc
 *.log
 .DS_Store
 Thumbs.db

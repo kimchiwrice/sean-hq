@@ -52,7 +52,7 @@ def validate_local_json():
         return False, f'JSON parse error: {e}'
 
     # Required keys
-    required = ['stats', 'roadmap', 'deploys', 'portfolio', 'quickActions', 'tools', 'systems', 'ventures', 'lastUpdated']
+    required = ['stats', 'roadmap', 'deploys', 'portfolio', 'quickActions', 'tools', 'aiTools', 'hoursLog', 'systems', 'ventures', 'lastUpdated']
     missing = [k for k in required if k not in data]
     if missing:
         return False, f'Missing keys: {missing}'

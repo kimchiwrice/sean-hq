@@ -1095,8 +1095,12 @@
 
     // ===== LOAD LIVE DATA =====
     fetch('data.json?' + Date.now())
-        .then(r => r.json())
+        .then(r => {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        })
         .then(D => {
+            if (!D.stats || !D.quickActions || !D.deploys) throw new Error('Malformed data.json — missing required fields');
             // --- Stats targets ---
             const statEls = document.querySelectorAll('.stat-val');
             statEls[0].dataset.target = D.stats.liveSites;
@@ -1233,7 +1237,23 @@
             // Play entrance AFTER data loaded
             runCounters();
         })
-        .catch(() => { runCounters(); });
+        .catch(err => {
+            console.error('data.json load failed:', err);
+            // Show error state — don't leave blank sections
+            const errCard = `<div class="lnk" style="border-color:rgba(251,113,133,0.3);cursor:default">
+                <div class="lnk-icon" style="background:rgba(251,113,133,0.1);font-size:1rem">⚠</div>
+                <div class="lnk-body">
+                    <div class="lnk-name" style="color:var(--red)">Data sync failed</div>
+                    <div class="lnk-desc">Showing cached values · Pull to refresh</div>
+                </div>
+            </div>`;
+            ['quick-actions','deploy-log'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el && !el.children.length) el.innerHTML = errCard;
+            });
+            // Still animate whatever hardcoded values exist
+            runCounters();
+        });
 
     // ===== GITHUB LIVE DATA =====
     fetch('https://api.github.com/users/kimchiwrice/repos?sort=updated&per_page=10')

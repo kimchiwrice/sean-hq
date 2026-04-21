@@ -260,6 +260,77 @@
             z-index: 1;
         }
 
+        /* ===== HOURS TRACKER ===== */
+        .hours-wrap { margin-bottom: 26px; }
+
+        .hours-total {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gold), #E8D48A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+
+        .hours-total span {
+            font-size: 0.6rem;
+            -webkit-text-fill-color: var(--text-3);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-left: 6px;
+        }
+
+        .hours-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .hours-label {
+            font-size: 0.6rem;
+            color: var(--text-2);
+            width: 90px;
+            flex-shrink: 0;
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .hours-track {
+            flex: 1;
+            height: 8px;
+            background: var(--bg-3);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hours-fill {
+            height: 100%;
+            border-radius: 4px;
+            width: 0%;
+            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hours-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.55rem;
+            color: var(--text-3);
+            width: 28px;
+            flex-shrink: 0;
+        }
+
+        /* ===== AI TOOL CARDS ===== */
+        .ai-tool-use {
+            font-size: 0.58rem;
+            color: var(--text-3);
+            margin-top: 3px;
+            line-height: 1.4;
+            font-style: italic;
+        }
+
         /* ===== SECTION ===== */
         .sec { margin-bottom: 26px; }
 
@@ -792,6 +863,19 @@
                 </div>
             </div>
 
+            <!-- Hours Tracker -->
+            <div class="sec">
+                <div class="sec-hdr">
+                    <span class="sec-dot"></span>
+                    <span class="sec-title">Hours Invested</span>
+                    <span class="sec-line"></span>
+                </div>
+                <div class="hours-wrap" id="hours-tracker">
+                    <div class="hours-total" id="hours-total">0<span>total hours</span></div>
+                    <div id="hours-bars"></div>
+                </div>
+            </div>
+
             <!-- Roadmap -->
             <div class="sec">
                 <div class="sec-hdr">
@@ -868,6 +952,14 @@
                     <span class="sec-line"></span>
                 </div>
                 <div class="grid grid-1" id="tools-grid"></div>
+            </div>
+            <div class="sec" style="margin-top:20px">
+                <div class="sec-hdr">
+                    <span class="sec-dot"></span>
+                    <span class="sec-title">AI Team</span>
+                    <span class="sec-line"></span>
+                </div>
+                <div class="grid grid-1" id="ai-tools-grid"></div>
             </div>
         </div>
 
@@ -1191,6 +1283,32 @@
                 });
             }, 2000);
 
+            // --- Hours Tracker ---
+            if (D.hoursLog) {
+                const projects = D.hoursLog.projects || {};
+                const total = D.hoursLog.totalHours || Object.values(projects).reduce((s, p) => s + (p.hours || 0), 0);
+                document.getElementById('hours-total').innerHTML = `${total}<span>total hours</span>`;
+                const maxH = Math.max(...Object.values(projects).map(p => p.hours || 0), 1);
+                document.getElementById('hours-bars').innerHTML = Object.values(projects)
+                    .sort((a, b) => (b.hours || 0) - (a.hours || 0))
+                    .map(p => {
+                        const pct = maxH > 0 ? Math.round(((p.hours || 0) / maxH) * 100) : 0;
+                        return `<div class="hours-bar-row">
+                            <div class="hours-label">${p.name}</div>
+                            <div class="hours-track">
+                                <div class="hours-fill" style="background:${p.color || 'var(--gold)'}" data-pct="${pct}"></div>
+                            </div>
+                            <div class="hours-val">${p.hours || 0}h</div>
+                        </div>`;
+                    }).join('');
+                // Animate bars after a short delay
+                setTimeout(() => {
+                    document.querySelectorAll('.hours-fill').forEach(bar => {
+                        bar.style.width = bar.dataset.pct + '%';
+                    });
+                }, 600);
+            }
+
             // --- Tools ---
             document.getElementById('tools-grid').innerHTML = D.tools.map(t => `
                 <a class="lnk" href="${t.url}" target="_blank">
@@ -1202,6 +1320,21 @@
                     <div class="lnk-arrow">&rarr;</div>
                 </a>
             `).join('');
+
+            // --- AI Tools ---
+            if (D.aiTools && D.aiTools.length) {
+                document.getElementById('ai-tools-grid').innerHTML = D.aiTools.map(t => `
+                    <a class="lnk" href="${t.url}" target="_blank">
+                        <div class="lnk-icon" style="background:rgba(255,255,255,0.03)">${t.icon}</div>
+                        <div class="lnk-body">
+                            <div class="lnk-name">${t.name}</div>
+                            <div class="lnk-desc">${t.desc}</div>
+                            <div class="ai-tool-use">${t.use}</div>
+                        </div>
+                        <div class="lnk-arrow">&rarr;</div>
+                    </a>
+                `).join('');
+            }
 
             // --- Systems ---
             document.getElementById('sys-grid').innerHTML = D.systems.map(s => `

@@ -2,7 +2,7 @@
     "stats": {
         "liveSites": 6,
         "tasksDone": 79,
-        "deploys": 10
+        "deploys": 11
     },
     "roadmap": {
         "p1": {
@@ -23,6 +23,12 @@
         }
     },
     "deploys": [
+        {
+            "project": "Aura Nail Lounge",
+            "msg": "10/10 luxury nail salon: 8 AI gallery images, cursor glow, shimmer, SVG icons, booking panel",
+            "hash": "7ccf06e",
+            "when": "Apr 22"
+        },
         {
             "project": "CleanSlate Junk",
             "msg": "Before/after slider, FAQ accordion, sticky CTA, text animations, grain texture",
@@ -319,5 +325,5 @@
             "status": "BUILDING"
         }
     ],
-    "lastUpdated": "2026-04-21T23:30:00"
+    "lastUpdated": "2026-04-22T06:45:00"
 }

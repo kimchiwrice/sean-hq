@@ -102,12 +102,12 @@
             "tags": ["HTML/CSS/JS", "DoorDash API", "Grubhub", "102 Images"]
         },
         {
-            "name": "Underground Reptiles",
-            "type": "E-Commerce",
-            "url": "https://underground-reptiles.vercel.app",
-            "emoji": "\ud83e\udd8e",
-            "desc": "Exotic reptile shop with animated product catalog and premium dark design.",
-            "tags": ["HTML/CSS/JS", "Vercel"]
+            "name": "Aura Nail Lounge",
+            "type": "Luxury Service",
+            "url": "https://auranailsla.vercel.app",
+            "emoji": "\u2728",
+            "desc": "Luxury nail salon with AI-generated imagery, cursor glow, text shimmer, parallax breaks, and interactive booking. 10/10 quality.",
+            "tags": ["HTML/CSS/JS", "Leonardo AI", "Vercel"]
         },
         {
             "name": "Emyie's Shop",

@@ -1,8 +1,8 @@
 {
     "stats": {
-        "liveSites": 5,
-        "tasksDone": 49,
-        "deploys": 7
+        "liveSites": 6,
+        "tasksDone": 79,
+        "deploys": 10
     },
     "roadmap": {
         "p1": {
@@ -23,6 +23,24 @@
         }
     },
     "deploys": [
+        {
+            "project": "CleanSlate Junk",
+            "msg": "Before/after slider, FAQ accordion, sticky CTA, text animations, grain texture",
+            "hash": "c5467de",
+            "when": "Apr 21"
+        },
+        {
+            "project": "CleanSlate Junk",
+            "msg": "Copy & UI overhaul: rewrite all text for authenticity, add service areas",
+            "hash": "264801e",
+            "when": "Apr 21"
+        },
+        {
+            "project": "CleanSlate Junk",
+            "msg": "Full image overhaul: 4 unique Leonardo AI scenes, Ken Burns, parallax",
+            "hash": "30203d9",
+            "when": "Apr 21"
+        },
         {
             "project": "Trinh Media",
             "msg": "Conversion architecture: FAQ, testimonials, scarcity, credential bar",
@@ -98,6 +116,14 @@
             "emoji": "\ud83d\uded2",
             "desc": "Clean, modern retail storefront with product showcase and brand identity.",
             "tags": ["HTML/CSS/JS", "Vercel"]
+        },
+        {
+            "name": "CleanSlate Junk",
+            "type": "Junk Removal · Service Business",
+            "url": "https://cleanslate-junk.vercel.app",
+            "emoji": "\ud83d\udeb4",
+            "desc": "Sacramento junk removal site with before/after slider, FAQ accordion, sticky mobile CTA, animated text reveals, and film grain texture. 5 custom Leonardo AI images.",
+            "tags": ["HTML/CSS/JS", "Leonardo AI", "Vercel", "Interactive"]
         },
         {
             "name": "Paws & Co",
@@ -293,5 +319,5 @@
             "status": "BUILDING"
         }
     ],
-    "lastUpdated": "2026-04-21T09:40:00"
+    "lastUpdated": "2026-04-21T23:30:00"
 }

@@ -15,11 +15,11 @@
         },
         "p3": {
             "name": "Lead Machine",
-            "progress": "\u2014"
+            "progress": "—"
         },
         "p4": {
             "name": "Scale",
-            "progress": "\u2014"
+            "progress": "—"
         }
     },
     "deploys": [
@@ -95,62 +95,87 @@
             "name": "Trinh Media",
             "type": "Agency Portfolio",
             "url": "https://trinh-media-site.vercel.app",
-            "emoji": "\ud83c\udfac",
+            "emoji": "🎬",
             "desc": "Cinematic scroll-driven agency site with GSAP animations, video hero, 3D tilt cards, and live contact form.",
-            "tags": ["HTML/CSS/JS", "GSAP", "Formspree", "Vercel"]
+            "tags": [
+                "HTML/CSS/JS",
+                "GSAP",
+                "Formspree",
+                "Vercel"
+            ]
         },
         {
             "name": "T4 Tea For U",
-            "type": "Restaurant \u00b7 92 Items \u00b7 Live Ordering",
+            "type": "Restaurant · 92 Items · Live Ordering",
             "url": "https://t4-folsom.vercel.app",
-            "emoji": "\ud83e\uddc3",
+            "emoji": "🧃",
             "desc": "Full menu browser with 102 product images, DoorDash and Grubhub ordering integration, and real-time open/closed status.",
-            "tags": ["HTML/CSS/JS", "DoorDash API", "Grubhub", "102 Images"]
+            "tags": [
+                "HTML/CSS/JS",
+                "DoorDash API",
+                "Grubhub",
+                "102 Images"
+            ]
         },
         {
             "name": "Aura Nail Lounge",
             "type": "Luxury Service",
             "url": "https://auranailsla.vercel.app",
-            "emoji": "\u2728",
+            "emoji": "✨",
             "desc": "Luxury nail salon with AI-generated imagery, cursor glow, text shimmer, parallax breaks, and interactive booking. 10/10 quality.",
-            "tags": ["HTML/CSS/JS", "Leonardo AI", "Vercel"]
+            "tags": [
+                "HTML/CSS/JS",
+                "Leonardo AI",
+                "Vercel"
+            ]
         },
         {
             "name": "Emyie's Shop",
             "type": "Retail Storefront",
             "url": "https://emyies-shop.vercel.app",
-            "emoji": "\ud83d\uded2",
+            "emoji": "🛒",
             "desc": "Clean, modern retail storefront with product showcase and brand identity.",
-            "tags": ["HTML/CSS/JS", "Vercel"]
+            "tags": [
+                "HTML/CSS/JS",
+                "Vercel"
+            ]
         },
         {
             "name": "CleanSlate Junk",
             "type": "Junk Removal · Service Business",
             "url": "https://cleanslate-junk.vercel.app",
-            "emoji": "\ud83d\udeb4",
+            "emoji": "🚴",
             "desc": "Sacramento junk removal site with before/after slider, FAQ accordion, sticky mobile CTA, animated text reveals, and film grain texture. 5 custom Leonardo AI images.",
-            "tags": ["HTML/CSS/JS", "Leonardo AI", "Vercel", "Interactive"]
+            "tags": [
+                "HTML/CSS/JS",
+                "Leonardo AI",
+                "Vercel",
+                "Interactive"
+            ]
         },
         {
             "name": "Paws & Co",
             "type": "Pet Services",
             "url": "https://paws-and-co-eta.vercel.app",
-            "emoji": "\ud83d\udc3e",
+            "emoji": "🐾",
             "desc": "Pet care services site with warm design and service booking flow.",
-            "tags": ["HTML/CSS/JS", "Vercel"]
+            "tags": [
+                "HTML/CSS/JS",
+                "Vercel"
+            ]
         }
     ],
     "quickActions": [
         {
-            "icon": "\ud83e\udde0",
+            "icon": "🧠",
             "name": "Notion Brain",
-            "desc": "Business OS \u00b7 CRM \u00b7 Sprints",
+            "desc": "Business OS · CRM · Sprints",
             "url": "https://notion.so",
             "bg": "var(--purple-dim)",
             "color": "var(--purple)"
         },
         {
-            "icon": "\ud83d\udce7",
+            "icon": "📧",
             "name": "Gmail",
             "desc": "Inbox & outreach",
             "url": "https://mail.google.com",
@@ -158,7 +183,7 @@
             "color": "var(--cyan)"
         },
         {
-            "icon": "\u25b2",
+            "icon": "▲",
             "name": "Vercel Dashboard",
             "desc": "Deployments & domains",
             "url": "https://vercel.com/kimchiwrices-projects",
@@ -166,7 +191,7 @@
             "color": "var(--gold)"
         },
         {
-            "icon": "\ud83d\udc19",
+            "icon": "🐙",
             "name": "GitHub",
             "desc": "All repositories",
             "url": "https://github.com/kimchiwrice",
@@ -176,49 +201,49 @@
     ],
     "tools": [
         {
-            "icon": "\ud83d\udcc5",
+            "icon": "📅",
             "name": "Google Calendar",
             "desc": "Schedule & shifts",
             "url": "https://calendar.google.com",
             "color": "var(--green)"
         },
         {
-            "icon": "\ud83d\udccd",
+            "icon": "📍",
             "name": "Google Business Profile",
             "desc": "T4 Folsom GBP management",
             "url": "https://business.google.com",
             "color": "var(--green)"
         },
         {
-            "icon": "\ud83d\udccb",
+            "icon": "📋",
             "name": "Formspree",
             "desc": "Form submissions & leads",
             "url": "https://formspree.io/forms",
             "color": "var(--gold)"
         },
         {
-            "icon": "\ud83d\udcc1",
+            "icon": "📁",
             "name": "Google Drive",
             "desc": "File storage & docs",
             "url": "https://drive.google.com",
             "color": "var(--cyan)"
         },
         {
-            "icon": "\ud83d\udcca",
+            "icon": "📊",
             "name": "Google Analytics",
             "desc": "Traffic & conversion tracking",
             "url": "https://analytics.google.com",
             "color": "var(--gold)"
         },
         {
-            "icon": "\ud83d\udd0d",
+            "icon": "🔍",
             "name": "Search Console",
             "desc": "SEO performance & indexing",
             "url": "https://search.google.com/search-console",
             "color": "var(--green)"
         },
         {
-            "icon": "\ud83d\udcf7",
+            "icon": "📷",
             "name": "Instagram",
             "desc": "Content & brand presence",
             "url": "https://instagram.com",
@@ -227,15 +252,15 @@
     ],
     "aiTools": [
         {
-            "icon": "\ud83e\udd16",
+            "icon": "🤖",
             "name": "Claude",
-            "desc": "Strategy, code, automation, ops \u2014 primary AI operator",
+            "desc": "Strategy, code, automation, ops — primary AI operator",
             "url": "https://claude.ai",
             "color": "var(--gold)",
             "use": "Full-stack operator: builds sites, writes code, manages systems, runs deploys, strategic planning"
         },
         {
-            "icon": "\ud83d\udcac",
+            "icon": "💬",
             "name": "ChatGPT",
             "desc": "Research, brainstorming, second opinions",
             "url": "https://chat.openai.com",
@@ -243,7 +268,7 @@
             "use": "Quick research, alternative perspectives, content drafting, general Q&A when you want a different angle"
         },
         {
-            "icon": "\u26a1",
+            "icon": "⚡",
             "name": "Grok",
             "desc": "Real-time trends & unfiltered analysis",
             "url": "https://grok.x.ai",
@@ -251,7 +276,7 @@
             "use": "Real-time market pulse, trending topics, social sentiment, unfiltered takes on current events"
         },
         {
-            "icon": "\ud83c\udfac",
+            "icon": "🎬",
             "name": "Kling AI",
             "desc": "AI video generation from text/image",
             "url": "https://klingai.com",
@@ -259,7 +284,7 @@
             "use": "Generate promo videos, product demos, social media video content from text prompts or reference images"
         },
         {
-            "icon": "\ud83c\udfa8",
+            "icon": "🎨",
             "name": "Canva AI",
             "desc": "AI-powered design & brand assets",
             "url": "https://canva.com",
@@ -267,9 +292,9 @@
             "use": "Quick social graphics, presentations, thumbnails, brand templates with AI-assisted layout and text"
         },
         {
-            "icon": "\ud83d\uddbc\ufe0f",
+            "icon": "🖼️",
             "name": "Google Gemini",
-            "desc": "Multimodal AI \u2014 text, image, video analysis",
+            "desc": "Multimodal AI — text, image, video analysis",
             "url": "https://gemini.google.com",
             "color": "var(--cyan)",
             "use": "Analyze screenshots, extract data from images, Google ecosystem integration, multimodal tasks"
@@ -277,53 +302,64 @@
     ],
     "systems": [
         {
-            "icon": "\u26a1",
+            "icon": "⚡",
             "name": "HQ Command Center",
             "desc": "Real-time operator dashboard",
             "status": "LIVE"
         },
         {
-            "icon": "\ud83d\udcc8",
+            "icon": "📈",
             "name": "Notion Sprint System",
             "desc": "2-week sprints with auto-tracking",
             "status": "ACTIVE"
         },
         {
-            "icon": "\ud83d\ude80",
+            "icon": "🚀",
             "name": "Vercel CI/CD Pipeline",
             "desc": "Push-to-deploy for all sites",
             "status": "AUTO"
         },
         {
-            "icon": "\ud83d\udee1\ufe0f",
+            "icon": "🛡️",
             "name": "Deploy QA System",
             "desc": "Smoke tests + null byte scanning + validation",
             "status": "ACTIVE"
         },
         {
-            "icon": "\ud83d\udcec",
+            "icon": "📬",
             "name": "Daily Outreach Engine",
-            "desc": "Weekday cold-email drafter \u2014 Gmail + Drive tracker",
+            "desc": "Weekday cold-email drafter — Gmail + Drive tracker",
             "status": "READY"
         }
     ],
     "ventures": [
         {
-            "icon": "\ud83e\uddc3",
-            "name": "T4 Tea For U \u2014 Folsom",
-            "desc": "Boba shop \u00b7 Daily operations \u00b7 Online ordering",
+            "icon": "🧃",
+            "name": "T4 Tea For U — Folsom",
+            "desc": "Boba shop · Daily operations · Online ordering",
             "url": "https://t4-folsom.vercel.app",
             "color": "var(--gold)",
             "status": "OPERATING"
         },
         {
-            "icon": "\ud83c\udfac",
+            "icon": "🎬",
             "name": "Trinh Media",
-            "desc": "Creative agency \u00b7 Web \u00b7 Design \u00b7 Marketing",
+            "desc": "Creative agency · Web · Design · Marketing",
             "url": "https://trinh-media-site.vercel.app",
             "color": "var(--green)",
             "status": "BUILDING"
         }
     ],
-    "lastUpdated": "2026-04-22T06:45:00"
+    "lastUpdated": "2026-04-23T07:33:35",
+    "revenue": {
+        "mtdCents": 100,
+        "ytdCents": 100,
+        "entries": [
+            {
+                "cents": 100,
+                "note": "test revenue from myself",
+                "when": "2026-04-23"
+            }
+        ]
+    }
 }

@@ -1155,16 +1155,25 @@
                 if (open.length) {
                     const sec = document.getElementById('pipeline-sec');
                     const grid = document.getElementById('pipeline-grid');
+                    const stageBg = { new: 'var(--cyan-dim)', qualified: 'var(--purple-dim)', proposed: 'var(--gold-dim)' };
                     const stageColor = { new: 'var(--cyan)', qualified: 'var(--purple)', proposed: 'var(--gold)' };
-                    grid.innerHTML = open.map(l => `
-                        <div class="tool-card">
-                            <div class="tool-ico" style="color:${stageColor[l.stage] || 'var(--text-2)'}">●</div>
-                            <div class="tool-txt">
-                                <div class="tool-name">${l.name} <span style="color:var(--text-3);font-weight:400;font-size:0.85em">· ${l.source}</span></div>
-                                <div class="tool-desc">${l.stage.toUpperCase()} · $${((l.valueCents||0)/100).toFixed(0)} · ${l.nextAction || '—'}</div>
+                    grid.innerHTML = open.map(l => {
+                        const val = (l.valueCents || 0) / 100;
+                        const valStr = val >= 1000 ? `$${(val/1000).toFixed(1)}k` : `$${val.toFixed(0)}`;
+                        return `
+                            <div class="lnk" style="cursor:default">
+                                <div class="lnk-icon" style="background:${stageBg[l.stage] || 'var(--bg-card)'};color:${stageColor[l.stage] || 'var(--text-2)'}">●</div>
+                                <div class="lnk-body">
+                                    <div class="lnk-name">${l.name} <span style="color:var(--text-3);font-weight:400">· ${l.source}</span></div>
+                                    <div class="lnk-desc">${l.nextAction || '—'}</div>
+                                </div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:${stageColor[l.stage] || 'var(--text-2)'};letter-spacing:0.06em;text-transform:uppercase;text-align:right">
+                                    <div>${l.stage}</div>
+                                    <div style="color:var(--text-2);margin-top:2px">${valStr}</div>
+                                </div>
                             </div>
-                        </div>
-                    `).join('');
+                        `;
+                    }).join('');
                     sec.style.display = '';
                 }
             }

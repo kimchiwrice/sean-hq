@@ -19,7 +19,19 @@ const { execSync } = require('child_process');
 
 const RED = '\x1b[91m', GREEN = '\x1b[92m', GOLD = '\x1b[93m', DIM = '\x1b[90m', RESET = '\x1b[0m';
 const DATA_PATH = path.join(__dirname, 'data.json');
-const GIT = '"C:\\Program Files\\Git\\bin\\git.exe"';
+
+// Cross-platform git — tries `git` in PATH first, falls back to Windows default
+let GIT_CMD = null;
+function git(argsStr) {
+    if (!GIT_CMD) {
+        for (const candidate of ['git', '"C:\\Program Files\\Git\\bin\\git.exe"']) {
+            try { execSync(`${candidate} --version`, { stdio: 'pipe' }); GIT_CMD = candidate; break; }
+            catch { /* try next */ }
+        }
+        if (!GIT_CMD) throw new Error('git not found in PATH or default Windows location');
+    }
+    return execSync(`${GIT_CMD} ${argsStr}`, { cwd: __dirname, stdio: 'pipe' });
+}
 
 // ===== HELPERS =====
 function load() {
@@ -39,10 +51,25 @@ function load() {
     return data;
 }
 
+// Matches on-disk format: ASCII-escaped unicode + inline string-arrays (tags).
+// Keeps git diffs to just the lines that actually changed. Must match hq-audit.js.
+function serialize(data) {
+    let s = JSON.stringify(data, null, 4);
+    let out = '';
+    for (let i = 0; i < s.length; i++) {
+        const code = s.charCodeAt(i);
+        out += code < 0x80 ? s[i] : '\\u' + code.toString(16).padStart(4, '0');
+    }
+    out = out.replace(/\[\n((?:[ \t]+"(?:[^"\\]|\\.)*",?\n)+)[ \t]+\]/g, (_, inner) => {
+        const items = inner.match(/"(?:[^"\\]|\\.)*"/g) || [];
+        return '[' + items.join(', ') + ']';
+    });
+    return out + '\n';
+}
+
 function save(data) {
     data.lastUpdated = new Date().toISOString().replace(/\.\d{3}Z$/, '');
-    const json = JSON.stringify(data, null, 4) + '\n';
-    fs.writeFileSync(DATA_PATH, json, 'utf-8');
+    fs.writeFileSync(DATA_PATH, serialize(data), 'utf-8');
 
     // Verify what we wrote
     const verify = fs.readFileSync(DATA_PATH);
@@ -85,12 +112,12 @@ function showStats(data) {
 
 function gitPush(message) {
     try {
-        execSync(`${GIT} add data.json`, { cwd: __dirname, stdio: 'pipe' });
-        execSync(`${GIT} commit -m "${message}"`, { cwd: __dirname, stdio: 'pipe' });
-        execSync(`${GIT} push origin master`, { cwd: __dirname, stdio: 'pipe' });
+        git('add data.json');
+        git(`commit -m "${message.replace(/"/g, '\\"')}"`);
+        git('push origin master');
         console.log(`${GREEN}✓ Pushed to GitHub → Vercel auto-deploy${RESET}`);
     } catch (e) {
-        const stderr = e.stderr?.toString() || '';
+        const stderr = e.stderr?.toString() || e.message || '';
         if (stderr.includes('nothing to commit')) {
             console.log(`${DIM}No changes to commit${RESET}`);
         } else {

@@ -5,3 +5,7 @@
 *.log
 .DS_Store
 Thumbs.db
+
+# Secrets — hq-log.js reads ANTHROPIC_API_KEY from here
+.env
+.env.local

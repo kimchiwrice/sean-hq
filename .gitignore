@@ -9,3 +9,6 @@ Thumbs.db
 # Secrets — hq-log.js reads ANTHROPIC_API_KEY from here
 .env
 .env.local
+
+# AI spending log (local, privacy)
+.hq-costs.jsonl

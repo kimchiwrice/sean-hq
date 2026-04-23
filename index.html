@@ -791,7 +791,7 @@
                     <div class="stat-val" data-target="38">0</div>
                     <div class="stat-lbl">Tasks Done</div>
                 </div>
-                <div class="stat">
+                <div class="stat" id="stat-rev">
                     <div class="stat-val" data-target="5">0</div>
                     <div class="stat-lbl">Repos</div>
                 </div>
@@ -853,6 +853,16 @@
                     <span class="sec-line"></span>
                 </div>
                 <div class="grid grid-1" id="deploy-log"></div>
+            </div>
+
+            <!-- Pipeline (shows only when leads exist) -->
+            <div class="sec" id="pipeline-sec" style="display:none">
+                <div class="sec-hdr">
+                    <span class="sec-dot"></span>
+                    <span class="sec-title">Pipeline</span>
+                    <span class="sec-line"></span>
+                </div>
+                <div class="grid grid-1" id="pipeline-grid"></div>
             </div>
         </div>
 
@@ -992,6 +1002,7 @@
     let countersResolved = false;
 
     function animateCounter(el, target) {
+        if (el.dataset.noCount === '1') return; // pre-formatted (e.g. revenue "$1.2k")
         const dur = 1.2;
         const obj = { val: 0 };
         gsap.to(obj, {
@@ -1005,6 +1016,7 @@
 
     function forceCounterValues() {
         document.querySelectorAll('.stat-val').forEach(el => {
+            if (el.dataset.noCount === '1') return; // skip pre-formatted stats
             const target = parseInt(el.dataset.target) || 0;
             if (target > 0) el.textContent = target;
         });
@@ -1123,6 +1135,39 @@
             statEls[0].dataset.target = D.stats.liveSites;
             statEls[1].dataset.target = D.stats.tasksDone;
             statEls[3].dataset.target = D.stats.deploys;
+
+            // Revenue stat: replaces "Repos" when data.revenue is set
+            const revStat = document.getElementById('stat-rev');
+            if (D.revenue && typeof D.revenue.mtdCents === 'number') {
+                const mtd = D.revenue.mtdCents / 100;
+                const valEl = revStat.querySelector('.stat-val');
+                const lblEl = revStat.querySelector('.stat-lbl');
+                // Skip counter animation for currency — just set formatted value
+                valEl.textContent = mtd >= 1000 ? `$${(mtd/1000).toFixed(1)}k` : `$${mtd.toFixed(0)}`;
+                valEl.dataset.target = Math.round(mtd); // keep target sane for fallback
+                valEl.dataset.noCount = '1';
+                lblEl.textContent = 'Revenue MTD';
+            }
+
+            // Pipeline — show top open leads (not won/lost), max 4
+            if (Array.isArray(D.leads) && D.leads.length) {
+                const open = D.leads.filter(l => l.stage !== 'won' && l.stage !== 'lost').slice(0, 4);
+                if (open.length) {
+                    const sec = document.getElementById('pipeline-sec');
+                    const grid = document.getElementById('pipeline-grid');
+                    const stageColor = { new: 'var(--cyan)', qualified: 'var(--purple)', proposed: 'var(--gold)' };
+                    grid.innerHTML = open.map(l => `
+                        <div class="tool-card">
+                            <div class="tool-ico" style="color:${stageColor[l.stage] || 'var(--text-2)'}">●</div>
+                            <div class="tool-txt">
+                                <div class="tool-name">${l.name} <span style="color:var(--text-3);font-weight:400;font-size:0.85em">· ${l.source}</span></div>
+                                <div class="tool-desc">${l.stage.toUpperCase()} · $${((l.valueCents||0)/100).toFixed(0)} · ${l.nextAction || '—'}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                    sec.style.display = '';
+                }
+            }
 
             // --- Roadmap ---
             const phases = document.querySelectorAll('.phase-item');
@@ -1287,13 +1332,13 @@
             runCounters();
         });
 
-    // ===== GITHUB LIVE DATA =====
+    // ===== GITHUB LIVE DATA (only if revenue isn't using this slot) =====
     fetch('https://api.github.com/users/kimchiwrice/repos?sort=updated&per_page=10')
         .then(r => r.json())
         .then(repos => {
             if (!repos.length) return;
             const repoStat = document.querySelectorAll('.stat-val')[2];
-            if (repoStat) repoStat.dataset.target = repos.length;
+            if (repoStat && repoStat.dataset.noCount !== '1') repoStat.dataset.target = repos.length;
         })
         .catch(() => {});
 

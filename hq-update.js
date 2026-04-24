@@ -19,7 +19,19 @@ const { execSync } = require('child_process');
 
 const RED = '\x1b[91m', GREEN = '\x1b[92m', GOLD = '\x1b[93m', DIM = '\x1b[90m', RESET = '\x1b[0m';
 const DATA_PATH = path.join(__dirname, 'data.json');
-const GIT = '"C:\\Program Files\\Git\\bin\\git.exe"';
+
+// Cross-platform git — tries `git` in PATH first, falls back to Windows default
+let GIT_CMD = null;
+function git(argsStr) {
+    if (!GIT_CMD) {
+        for (const candidate of ['git', '"C:\\Program Files\\Git\\bin\\git.exe"']) {
+            try { execSync(`${candidate} --version`, { stdio: 'pipe' }); GIT_CMD = candidate; break; }
+            catch { /* try next */ }
+        }
+        if (!GIT_CMD) throw new Error('git not found in PATH or default Windows location');
+    }
+    return execSync(`${GIT_CMD} ${argsStr}`, { cwd: __dirname, stdio: 'pipe' });
+}
 
 // ===== HELPERS =====
 function load() {
@@ -39,10 +51,25 @@ function load() {
     return data;
 }
 
+// Matches on-disk format: ASCII-escaped unicode + inline string-arrays (tags).
+// Keeps git diffs to just the lines that actually changed. Must match hq-audit.js.
+function serialize(data) {
+    let s = JSON.stringify(data, null, 4);
+    let out = '';
+    for (let i = 0; i < s.length; i++) {
+        const code = s.charCodeAt(i);
+        out += code < 0x80 ? s[i] : '\\u' + code.toString(16).padStart(4, '0');
+    }
+    out = out.replace(/\[\n((?:[ \t]+"(?:[^"\\]|\\.)*",?\n)+)[ \t]+\]/g, (_, inner) => {
+        const items = inner.match(/"(?:[^"\\]|\\.)*"/g) || [];
+        return '[' + items.join(', ') + ']';
+    });
+    return out + '\n';
+}
+
 function save(data) {
     data.lastUpdated = new Date().toISOString().replace(/\.\d{3}Z$/, '');
-    const json = JSON.stringify(data, null, 4) + '\n';
-    fs.writeFileSync(DATA_PATH, json, 'utf-8');
+    fs.writeFileSync(DATA_PATH, serialize(data), 'utf-8');
 
     // Verify what we wrote
     const verify = fs.readFileSync(DATA_PATH);
@@ -85,12 +112,12 @@ function showStats(data) {
 
 function gitPush(message) {
     try {
-        execSync(`${GIT} add data.json`, { cwd: __dirname, stdio: 'pipe' });
-        execSync(`${GIT} commit -m "${message}"`, { cwd: __dirname, stdio: 'pipe' });
-        execSync(`${GIT} push origin master`, { cwd: __dirname, stdio: 'pipe' });
+        git('add data.json');
+        git(`commit -m "${message.replace(/"/g, '\\"')}"`);
+        git('push origin master');
         console.log(`${GREEN}✓ Pushed to GitHub → Vercel auto-deploy${RESET}`);
     } catch (e) {
-        const stderr = e.stderr?.toString() || '';
+        const stderr = e.stderr?.toString() || e.message || '';
         if (stderr.includes('nothing to commit')) {
             console.log(`${DIM}No changes to commit${RESET}`);
         } else {
@@ -109,6 +136,11 @@ if (!cmd) {
     console.log(`  node hq-update.js site <n>                    Set liveSites count`);
     console.log(`  node hq-update.js deploys <n>                 Set deploys stat count`);
     console.log(`  node hq-update.js roadmap <p1-p4> "x/y"      Update phase progress`);
+    console.log(`  node hq-update.js revenue add <cents> "note"  Log revenue (integer cents)`);
+    console.log(`  node hq-update.js revenue set-mtd <cents>     Set MTD revenue directly`);
+    console.log(`  node hq-update.js lead add "name" "source" <stage> <cents> "next"  Add lead`);
+    console.log(`  node hq-update.js lead stage <name|idx> <stage>  Move lead stage`);
+    console.log(`  node hq-update.js lead rm <name|idx>          Remove lead`);
     console.log(`  node hq-update.js show                        Print current stats`);
     console.log(`  node hq-update.js validate                    Run validation only`);
     console.log(`  node hq-update.js push                        Git commit + push\n`);
@@ -116,6 +148,26 @@ if (!cmd) {
 }
 
 const data = load();
+
+// Auto-init optional fields on first use — doesn't alter existing data
+function ensureRevenue() {
+    if (!data.revenue) data.revenue = { mtdCents: 0, ytdCents: 0, entries: [] };
+    return data.revenue;
+}
+function ensureLeads() {
+    if (!Array.isArray(data.leads)) data.leads = [];
+    return data.leads;
+}
+const STAGES = ['new','qualified','proposed','won','lost'];
+function findLead(needle) {
+    const leads = ensureLeads();
+    const idx = parseInt(needle);
+    if (!isNaN(idx) && leads[idx]) return idx;
+    const n = String(needle).toLowerCase();
+    return leads.findIndex(l => l.name.toLowerCase().includes(n));
+}
+function monthKey(d = new Date()) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
+function centsToStr(c) { return `$${(c/100).toFixed(2)}`; }
 
 switch (cmd) {
     case 'task': {
@@ -190,6 +242,86 @@ switch (cmd) {
         }
         const msg = args[0] || `data: update stats (tasks=${data.stats.tasksDone}, deploys=${data.stats.deploys})`;
         gitPush(msg);
+        break;
+    }
+    case 'revenue': {
+        const sub = args[0];
+        const rev = ensureRevenue();
+        if (sub === 'add') {
+            const cents = parseInt(args[1]);
+            const note = args[2] || '';
+            if (isNaN(cents)) { console.error(`${RED}Usage: revenue add <cents> "note"${RESET}`); process.exit(1); }
+            const when = new Date().toISOString().slice(0,10);
+            rev.entries.unshift({ cents, note, when });
+            if (rev.entries.length > 50) rev.entries = rev.entries.slice(0, 50);
+            // Recompute MTD + YTD from entries (source of truth)
+            const thisMonth = monthKey(), thisYear = String(new Date().getFullYear());
+            rev.mtdCents = rev.entries.filter(e => e.when?.startsWith(thisMonth)).reduce((s,e) => s + (e.cents||0), 0);
+            rev.ytdCents = rev.entries.filter(e => e.when?.startsWith(thisYear)).reduce((s,e) => s + (e.cents||0), 0);
+            save(data);
+            console.log(`${GREEN}✓ +${centsToStr(cents)} — "${note}" (${when})${RESET}`);
+            console.log(`  MTD: ${centsToStr(rev.mtdCents)} · YTD: ${centsToStr(rev.ytdCents)}`);
+        } else if (sub === 'set-mtd') {
+            const cents = parseInt(args[1]);
+            if (isNaN(cents)) { console.error(`${RED}Usage: revenue set-mtd <cents>${RESET}`); process.exit(1); }
+            const old = rev.mtdCents;
+            rev.mtdCents = cents;
+            save(data);
+            console.log(`${GREEN}✓ MTD: ${centsToStr(old)} → ${centsToStr(cents)}${RESET}`);
+        } else {
+            console.error(`${RED}Usage: revenue add <cents> "note" | revenue set-mtd <cents>${RESET}`);
+            process.exit(1);
+        }
+        break;
+    }
+    case 'lead': {
+        const sub = args[0];
+        const leads = ensureLeads();
+        if (sub === 'add') {
+            const [, name, source, stage, valueCents, nextAction] = args;
+            if (!name || !source || !STAGES.includes(stage)) {
+                console.error(`${RED}Usage: lead add "name" "source" <${STAGES.join('|')}> <cents> "nextAction"${RESET}`);
+                process.exit(1);
+            }
+            const lead = {
+                name, source,
+                stage,
+                valueCents: parseInt(valueCents) || 0,
+                nextAction: nextAction || '',
+                added: new Date().toISOString().slice(0,10),
+            };
+            leads.unshift(lead);
+            save(data);
+            console.log(`${GREEN}✓ lead added: ${name} (${source}) · ${stage} · ${centsToStr(lead.valueCents)}${RESET}`);
+        } else if (sub === 'stage') {
+            const i = findLead(args[1]);
+            if (i < 0) { console.error(`${RED}lead not found: ${args[1]}${RESET}`); process.exit(1); }
+            if (!STAGES.includes(args[2])) { console.error(`${RED}stage must be one of: ${STAGES.join(', ')}${RESET}`); process.exit(1); }
+            const old = leads[i].stage;
+            leads[i].stage = args[2];
+            // If moved to "won", auto-log revenue
+            if (args[2] === 'won' && leads[i].valueCents > 0) {
+                const rev = ensureRevenue();
+                const when = new Date().toISOString().slice(0,10);
+                rev.entries.unshift({ cents: leads[i].valueCents, note: `won: ${leads[i].name}`, when });
+                if (rev.entries.length > 50) rev.entries = rev.entries.slice(0, 50);
+                const tm = monthKey(), ty = String(new Date().getFullYear());
+                rev.mtdCents = rev.entries.filter(e => e.when?.startsWith(tm)).reduce((s,e) => s + (e.cents||0), 0);
+                rev.ytdCents = rev.entries.filter(e => e.when?.startsWith(ty)).reduce((s,e) => s + (e.cents||0), 0);
+                console.log(`${GOLD}  → auto-logged ${centsToStr(leads[i].valueCents)} revenue${RESET}`);
+            }
+            save(data);
+            console.log(`${GREEN}✓ ${leads[i].name}: ${old} → ${args[2]}${RESET}`);
+        } else if (sub === 'rm') {
+            const i = findLead(args[1]);
+            if (i < 0) { console.error(`${RED}lead not found: ${args[1]}${RESET}`); process.exit(1); }
+            const gone = leads.splice(i, 1)[0];
+            save(data);
+            console.log(`${GREEN}✓ removed: ${gone.name}${RESET}`);
+        } else {
+            console.error(`${RED}Usage: lead add|stage|rm${RESET}`);
+            process.exit(1);
+        }
         break;
     }
     default:

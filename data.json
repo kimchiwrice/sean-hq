@@ -125,7 +125,7 @@
         },
         {
             "name": "CleanSlate Junk",
-            "type": "Junk Removal · Service Business",
+            "type": "Junk Removal \u00b7 Service Business",
             "url": "https://cleanslate-junk.vercel.app",
             "emoji": "\ud83d\udeb4",
             "desc": "Sacramento junk removal site with before/after slider, FAQ accordion, sticky mobile CTA, animated text reveals, and film grain texture. 5 custom Leonardo AI images.",
@@ -395,5 +395,5 @@
             "status": "BUILDING"
         }
     ],
-    "lastUpdated": "2026-04-24T10:00:00"
+    "lastUpdated": "2026-04-24T10:00:00",\n    "revenue": {\n        "mtdCents": 100,\n        "ytdCents": 100,\n        "entries": [\n            {\n                "cents": 100,\n                "note": "test revenue from myself",\n                "when": "2026-04-23"\n            }\n        ]\n    }
 }

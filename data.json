@@ -445,13 +445,13 @@
             "icon": "\u2699\ufe0f",
             "name": "n8n Automation",
             "desc": "Self-hosted workflow engine \u2014 connects all tools + services automatically",
-            "status": "INSTALLING"
+            "status": "INSTALLED"
         },
         {
             "icon": "\ud83e\uddd1\u200d\ud83e\udd1d\u200d\ud83e\uddd1",
             "name": "CrewAI Agents",
             "desc": "Multi-agent AI crews \u2014 autonomous research, content, outreach teams",
-            "status": "INSTALLING"
+            "status": "INSTALLED"
         }
     ],
     "ventures": [

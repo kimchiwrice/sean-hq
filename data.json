@@ -338,6 +338,46 @@
             "url": "https://business.facebook.com",
             "color": "var(--purple)",
             "use": "Native AI-powered audience targeting and budget optimization for Meta ad campaigns. Free with ad spend."
+        },
+        {
+            "icon": "\u2699\ufe0f",
+            "name": "n8n",
+            "desc": "Workflow automation \u2014 400+ integrations, visual builder",
+            "url": "https://n8n.io",
+            "color": "var(--green)",
+            "use": "Self-hosted automation backbone. Wires Formspree \u2192 Notion \u2192 Gmail \u2192 Sheets. Unlimited workflows, zero cost."
+        },
+        {
+            "icon": "\ud83e\uddd1\u200d\ud83e\udd1d\u200d\ud83e\uddd1",
+            "name": "CrewAI",
+            "desc": "Multi-agent AI teams \u2014 autonomous task crews",
+            "url": "https://crewai.com",
+            "color": "var(--purple)",
+            "use": "Build AI agent squads: researcher + copywriter + scheduler collaborate on tasks. Python-based, Claude-powered."
+        },
+        {
+            "icon": "\ud83c\udfb5",
+            "name": "Fish Audio",
+            "desc": "AI voice cloning \u2014 15-sec sample, #1 on benchmarks",
+            "url": "https://fish.audio",
+            "color": "var(--cyan)",
+            "use": "Clone any voice from 15 seconds. Emotion tags for warm/excited/whisper. Open source, beats ElevenLabs."
+        },
+        {
+            "icon": "\ud83e\udde9",
+            "name": "Dify",
+            "desc": "AI app builder \u2014 chatbots, RAG, visual workflows",
+            "url": "https://dify.ai",
+            "color": "var(--gold)",
+            "use": "136k stars. Build AI chatbots for T4 ordering or Aura booking. Visual platform with RAG + agent capabilities."
+        },
+        {
+            "icon": "\u2702\ufe0f",
+            "name": "Opus Clip",
+            "desc": "Long-to-short AI video \u2014 auto-clips for TikTok/Reels",
+            "url": "https://opus.pro",
+            "color": "var(--purple)",
+            "use": "Feed long video \u2192 auto-clips best moments into TikTok/Reels shorts with captions. AI picks viral hooks."
         }
     ],
     "systems": [
@@ -400,6 +440,18 @@
             "name": "Desktop Commander",
             "desc": "Windows file ops, git push via bat files, process management",
             "status": "LIVE"
+        },
+        {
+            "icon": "\u2699\ufe0f",
+            "name": "n8n Automation",
+            "desc": "Self-hosted workflow engine \u2014 connects all tools + services automatically",
+            "status": "INSTALLING"
+        },
+        {
+            "icon": "\ud83e\uddd1\u200d\ud83e\udd1d\u200d\ud83e\uddd1",
+            "name": "CrewAI Agents",
+            "desc": "Multi-agent AI crews \u2014 autonomous research, content, outreach teams",
+            "status": "INSTALLING"
         }
     ],
     "ventures": [

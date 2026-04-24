@@ -1231,7 +1231,7 @@
                 <a class="folio" href="${p.url}" target="_blank">
                     <div class="folio-preview">
                         <div class="folio-preview-ph" data-url="${p.url}">${p.emoji}</div>
-                        <div class="folio-badge"><span class="dot" style="width:4px;height:4px"></span> LIVE</div>
+                        <div class="folio-badge" data-check-url="${p.url}"><span class="dot" style="width:4px;height:4px"></span> <span class="badge-text">CHECKING</span></div>
                     </div>
                     <div class="folio-info">
                         <div class="folio-row">
@@ -1243,6 +1243,7 @@
                         </div>
                         <div class="folio-desc">${p.desc}</div>
                         <div class="folio-tech">${p.tags.map(t => `<span class="folio-tag">${t}</span>`).join('')}</div>
+                        <div class="folio-ping" data-ping-url="${p.url}" style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:var(--text-3);margin-top:6px;letter-spacing:0.04em;">—</div>
                     </div>
                 </a>
             `).join('');
@@ -1313,12 +1314,8 @@
                 </a>
             `).join('');
 
-            // --- Last Updated ---
-            if (D.lastUpdated) {
-                const updated = new Date(D.lastUpdated);
-                const statusEl = document.querySelector('.hdr-status');
-                if (statusEl) statusEl.innerHTML = `<span class="dot"></span> Synced ${updated.toLocaleDateString('en-US', { month:'short', day:'numeric' })}`;
-            }
+            // --- Last Updated (don't overwrite status — uptime checker will handle it) ---
+            // Status badge now shows live uptime results instead of static sync date
 
             // Play entrance AFTER data loaded
             runCounters();
@@ -1350,6 +1347,70 @@
             if (repoStat && repoStat.dataset.noCount !== '1') repoStat.dataset.target = repos.length;
         })
         .catch(() => {});
+
+    // ===== LIVE UPTIME CHECKER =====
+    async function checkSite(url) {
+        const start = performance.now();
+        try {
+            await fetch(url, { method: 'HEAD', mode: 'no-cors', cache: 'no-store' });
+            return { online: true, ms: Math.round(performance.now() - start) };
+        } catch (e) {
+            return { online: false, ms: null };
+        }
+    }
+
+    async function runUptimeChecks() {
+        const badges = document.querySelectorAll('.folio-badge[data-check-url]');
+        const pings = document.querySelectorAll('.folio-ping[data-ping-url]');
+        const statusEl = document.querySelector('.hdr-status');
+        let onlineCount = 0;
+        let total = badges.length;
+
+        if (statusEl) statusEl.innerHTML = '<span class="dot" style="background:var(--gold)"></span> Checking sites\u2026';
+
+        const checks = Array.from(badges).map(async (badge) => {
+            const url = badge.dataset.checkUrl;
+            const result = await checkSite(url);
+            const badgeText = badge.querySelector('.badge-text');
+            const dot = badge.querySelector('.dot');
+            const pingEl = document.querySelector(`.folio-ping[data-ping-url="${url}"]`);
+
+            if (result.online) {
+                onlineCount++;
+                if (dot) { dot.style.background = 'var(--green)'; dot.style.width = '4px'; dot.style.height = '4px'; }
+                if (badgeText) badgeText.textContent = 'ONLINE';
+                badge.style.color = 'var(--green)';
+                if (pingEl) {
+                    pingEl.style.color = 'var(--green)';
+                    pingEl.textContent = result.ms + 'ms \u00b7 ' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+                }
+            } else {
+                if (dot) { dot.style.background = 'var(--red)'; dot.style.width = '4px'; dot.style.height = '4px'; }
+                if (badgeText) badgeText.textContent = 'DOWN';
+                badge.style.color = 'var(--red)';
+                if (pingEl) {
+                    pingEl.style.color = 'var(--red)';
+                    pingEl.textContent = 'UNREACHABLE \u00b7 ' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+                }
+            }
+        });
+
+        await Promise.all(checks);
+
+        // Update header status
+        if (statusEl) {
+            if (onlineCount === total) {
+                statusEl.innerHTML = '<span class="dot"></span> ' + total + '/' + total + ' Online';
+                statusEl.style.color = 'var(--green)';
+            } else {
+                statusEl.innerHTML = '<span class="dot" style="background:var(--red)"></span> ' + onlineCount + '/' + total + ' Online';
+                statusEl.style.color = 'var(--red)';
+            }
+        }
+    }
+
+    // Run uptime checks 3s after page load (after portfolio cards render)
+    setTimeout(runUptimeChecks, 3000);
 
     // ===== SERVICE WORKER =====
     if ('serviceWorker' in navigator) {

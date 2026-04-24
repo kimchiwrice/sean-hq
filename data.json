@@ -97,7 +97,12 @@
             "url": "https://trinh-media-site.vercel.app",
             "emoji": "\ud83c\udfac",
             "desc": "Cinematic scroll-driven agency site with GSAP animations, video hero, 3D tilt cards, and live contact form.",
-            "tags": ["HTML/CSS/JS", "GSAP", "Formspree", "Vercel"]
+            "tags": [
+                "HTML/CSS/JS",
+                "GSAP",
+                "Formspree",
+                "Vercel"
+            ]
         },
         {
             "name": "T4 Tea For U",
@@ -105,7 +110,12 @@
             "url": "https://t4-folsom.vercel.app",
             "emoji": "\ud83e\uddc3",
             "desc": "Full menu browser with 102 product images, DoorDash and Grubhub ordering integration, and real-time open/closed status.",
-            "tags": ["HTML/CSS/JS", "DoorDash API", "Grubhub", "102 Images"]
+            "tags": [
+                "HTML/CSS/JS",
+                "DoorDash API",
+                "Grubhub",
+                "102 Images"
+            ]
         },
         {
             "name": "Aura Nail Lounge",
@@ -113,7 +123,11 @@
             "url": "https://auranailsla.vercel.app",
             "emoji": "\u2728",
             "desc": "Luxury nail salon with AI-generated imagery, cursor glow, text shimmer, parallax breaks, and interactive booking. 10/10 quality.",
-            "tags": ["HTML/CSS/JS", "Leonardo AI", "Vercel"]
+            "tags": [
+                "HTML/CSS/JS",
+                "Leonardo AI",
+                "Vercel"
+            ]
         },
         {
             "name": "Emyie's Shop",
@@ -121,7 +135,10 @@
             "url": "https://emyies-shop.vercel.app",
             "emoji": "\ud83d\uded2",
             "desc": "Clean, modern retail storefront with product showcase and brand identity.",
-            "tags": ["HTML/CSS/JS", "Vercel"]
+            "tags": [
+                "HTML/CSS/JS",
+                "Vercel"
+            ]
         },
         {
             "name": "CleanSlate Junk",
@@ -129,7 +146,12 @@
             "url": "https://cleanslate-junk.vercel.app",
             "emoji": "\ud83d\udeb4",
             "desc": "Sacramento junk removal site with before/after slider, FAQ accordion, sticky mobile CTA, animated text reveals, and film grain texture. 5 custom Leonardo AI images.",
-            "tags": ["HTML/CSS/JS", "Leonardo AI", "Vercel", "Interactive"]
+            "tags": [
+                "HTML/CSS/JS",
+                "Leonardo AI",
+                "Vercel",
+                "Interactive"
+            ]
         },
         {
             "name": "Paws & Co",
@@ -137,7 +159,10 @@
             "url": "https://paws-and-co-eta.vercel.app",
             "emoji": "\ud83d\udc3e",
             "desc": "Pet care services site with warm design and service booking flow.",
-            "tags": ["HTML/CSS/JS", "Vercel"]
+            "tags": [
+                "HTML/CSS/JS",
+                "Vercel"
+            ]
         }
     ],
     "quickActions": [
@@ -319,19 +344,19 @@
         {
             "icon": "\u26a1",
             "name": "HQ Command Center",
-            "desc": "Real-time operator dashboard — all metrics, deploys, portfolio",
+            "desc": "Real-time operator dashboard \u2014 all metrics, deploys, portfolio",
             "status": "LIVE"
         },
         {
             "icon": "\ud83d\udcc8",
             "name": "Notion Sprint System",
-            "desc": "2-week sprints with auto-tracking — North Star, Done Log, Decision Log",
+            "desc": "2-week sprints with auto-tracking \u2014 North Star, Done Log, Decision Log",
             "status": "ACTIVE"
         },
         {
             "icon": "\ud83d\ude80",
             "name": "Vercel CI/CD Pipeline",
-            "desc": "Push-to-deploy for all sites — auto-build on git push",
+            "desc": "Push-to-deploy for all sites \u2014 auto-build on git push",
             "status": "AUTO"
         },
         {
@@ -343,31 +368,31 @@
         {
             "icon": "\ud83d\udcec",
             "name": "Daily Outreach Engine",
-            "desc": "Weekday cold-email drafter — Gmail + Drive tracker",
+            "desc": "Weekday cold-email drafter \u2014 Gmail + Drive tracker",
             "status": "READY"
         },
         {
             "icon": "\ud83d\udc41\ufe0f",
             "name": "Watchdog Agent",
-            "desc": "Site uptime monitor — pulls live from data.json, auto-updates",
+            "desc": "Site uptime monitor \u2014 pulls live from data.json, auto-updates",
             "status": "LIVE"
         },
         {
             "icon": "\ud83d\udd04",
             "name": "Project-Done Triggers",
-            "desc": "Auto-update all 5 systems when any project ships — zero manual steps",
+            "desc": "Auto-update all 5 systems when any project ships \u2014 zero manual steps",
             "status": "ACTIVE"
         },
         {
             "icon": "\ud83e\udde0",
             "name": "Session Automation",
-            "desc": "Auto-load brain on start, auto-write updates on end — no context lost",
+            "desc": "Auto-load brain on start, auto-write updates on end \u2014 no context lost",
             "status": "ACTIVE"
         },
         {
             "icon": "\ud83d\udd0d",
             "name": "Cross-System Audit",
-            "desc": "60-sec quick check every session + full Monday audit — zero drift policy",
+            "desc": "60-sec quick check every session + full Monday audit \u2014 zero drift policy",
             "status": "ACTIVE"
         },
         {
@@ -395,5 +420,16 @@
             "status": "BUILDING"
         }
     ],
-    "lastUpdated": "2026-04-24T10:00:00",\n    "revenue": {\n        "mtdCents": 100,\n        "ytdCents": 100,\n        "entries": [\n            {\n                "cents": 100,\n                "note": "test revenue from myself",\n                "when": "2026-04-23"\n            }\n        ]\n    }
+    "lastUpdated": "2026-04-24T10:00:00",
+    "revenue": {
+        "mtdCents": 100,
+        "ytdCents": 100,
+        "entries": [
+            {
+                "cents": 100,
+                "note": "test revenue from myself",
+                "when": "2026-04-23"
+            }
+        ]
+    }
 }

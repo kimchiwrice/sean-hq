@@ -273,25 +273,65 @@
             "url": "https://gemini.google.com",
             "color": "var(--cyan)",
             "use": "Analyze screenshots, extract data from images, Google ecosystem integration, multimodal tasks"
+        },
+        {
+            "icon": "\ud83d\udda5\ufe0f",
+            "name": "Cursor Pro",
+            "desc": "AI-powered IDE \u2014 autocomplete, refactor, debug",
+            "url": "https://cursor.sh",
+            "color": "var(--green)",
+            "use": "Primary code editor with AI autocomplete, inline refactoring, and contextual debugging. $20/mo."
+        },
+        {
+            "icon": "\ud83c\udfa8",
+            "name": "Leonardo AI",
+            "desc": "AI image generation \u2014 Lucid Origin model",
+            "url": "https://leonardo.ai",
+            "color": "var(--purple)",
+            "use": "Portfolio imagery, hero photos, product shots. Lucid Origin model + Stock Photo style. 13+ images generated across projects."
+        },
+        {
+            "icon": "\ud83c\udfac",
+            "name": "Seedance / fal.ai",
+            "desc": "AI cinematic video \u2014 hero backgrounds",
+            "url": "https://fal.ai",
+            "color": "var(--cyan)",
+            "use": "Hero videos, cinematic background loops for portfolio sites. Pay-per-use ~$3/video. On-call for premium projects."
+        },
+        {
+            "icon": "\u270d\ufe0f",
+            "name": "Copy.ai",
+            "desc": "AI copywriter \u2014 ads, captions, headlines",
+            "url": "https://copy.ai",
+            "color": "var(--gold)",
+            "use": "Ad copy, social captions, email subject lines, headline variations. Starter plan $9/mo."
+        },
+        {
+            "icon": "\ud83c\udfaf",
+            "name": "Meta Advantage+",
+            "desc": "AI ad targeting \u2014 Facebook & Instagram",
+            "url": "https://business.facebook.com",
+            "color": "var(--purple)",
+            "use": "Native AI-powered audience targeting and budget optimization for Meta ad campaigns. Free with ad spend."
         }
     ],
     "systems": [
         {
             "icon": "\u26a1",
             "name": "HQ Command Center",
-            "desc": "Real-time operator dashboard",
+            "desc": "Real-time operator dashboard — all metrics, deploys, portfolio",
             "status": "LIVE"
         },
         {
             "icon": "\ud83d\udcc8",
             "name": "Notion Sprint System",
-            "desc": "2-week sprints with auto-tracking",
+            "desc": "2-week sprints with auto-tracking — North Star, Done Log, Decision Log",
             "status": "ACTIVE"
         },
         {
             "icon": "\ud83d\ude80",
             "name": "Vercel CI/CD Pipeline",
-            "desc": "Push-to-deploy for all sites",
+            "desc": "Push-to-deploy for all sites — auto-build on git push",
             "status": "AUTO"
         },
         {
@@ -303,8 +343,38 @@
         {
             "icon": "\ud83d\udcec",
             "name": "Daily Outreach Engine",
-            "desc": "Weekday cold-email drafter \u2014 Gmail + Drive tracker",
+            "desc": "Weekday cold-email drafter — Gmail + Drive tracker",
             "status": "READY"
+        },
+        {
+            "icon": "\ud83d\udc41\ufe0f",
+            "name": "Watchdog Agent",
+            "desc": "Site uptime monitor — pulls live from data.json, auto-updates",
+            "status": "LIVE"
+        },
+        {
+            "icon": "\ud83d\udd04",
+            "name": "Project-Done Triggers",
+            "desc": "Auto-update all 5 systems when any project ships — zero manual steps",
+            "status": "ACTIVE"
+        },
+        {
+            "icon": "\ud83e\udde0",
+            "name": "Session Automation",
+            "desc": "Auto-load brain on start, auto-write updates on end — no context lost",
+            "status": "ACTIVE"
+        },
+        {
+            "icon": "\ud83d\udd0d",
+            "name": "Cross-System Audit",
+            "desc": "60-sec quick check every session + full Monday audit — zero drift policy",
+            "status": "ACTIVE"
+        },
+        {
+            "icon": "\ud83d\udcbb",
+            "name": "Desktop Commander",
+            "desc": "Windows file ops, git push via bat files, process management",
+            "status": "LIVE"
         }
     ],
     "ventures": [
@@ -325,5 +395,5 @@
             "status": "BUILDING"
         }
     ],
-    "lastUpdated": "2026-04-22T06:45:00"
+    "lastUpdated": "2026-04-24T10:00:00"
 }

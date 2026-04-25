@@ -414,7 +414,7 @@
         {
             "icon": "\ud83d\udc41\ufe0f",
             "name": "Watchdog Agent",
-            "desc": "Site uptime monitor \u2014 pulls live from data.json, auto-updates",
+            "desc": "Site uptime monitor \u2014 live fetch pings all 6 portfolio sites",
             "status": "LIVE"
         },
         {
@@ -444,14 +444,14 @@
         {
             "icon": "\u2699\ufe0f",
             "name": "n8n Automation",
-            "desc": "Self-hosted workflow engine \u2014 connects all tools + services automatically",
-            "status": "INSTALLED"
+            "desc": "Self-hosted workflow engine v2.17.7 \u2014 live at localhost:5678",
+            "status": "LIVE"
         },
         {
             "icon": "\ud83e\uddd1\u200d\ud83e\udd1d\u200d\ud83e\uddd1",
             "name": "CrewAI Agents",
-            "desc": "Multi-agent AI crews \u2014 autonomous research, content, outreach teams",
-            "status": "INSTALLED"
+            "desc": "Multi-agent AI crews v1.14.2 \u2014 Claude-powered, tested and operational",
+            "status": "LIVE"
         }
     ],
     "ventures": [

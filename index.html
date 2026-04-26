@@ -96,6 +96,217 @@
             mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black, transparent);
         }
 
+        /* ===== DAILY TRACKER ===== */
+        .tracker-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--gold);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .tracker-target {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 14px;
+            background: linear-gradient(135deg, rgba(201,168,76,0.08), rgba(201,168,76,0.02));
+            border: 1px solid rgba(201,168,76,0.15);
+            border-radius: 14px;
+        }
+
+        .tracker-target-label {
+            font-size: 0.6rem;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .tracker-target-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gold), #E8D48A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tracker-target-sub {
+            font-size: 0.7rem;
+            color: var(--text-2);
+            margin-top: 2px;
+        }
+
+        .tracker-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 10px;
+            transition: border-color 0.3s;
+        }
+
+        .tracker-card.done { border-color: rgba(52,211,153,0.3); }
+
+        .tracker-card-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .tracker-card-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tracker-card-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.55rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .badge-daily { background: var(--cyan-dim); color: var(--cyan); }
+        .badge-week { background: var(--purple-dim); color: var(--purple); }
+
+        .tracker-input-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tracker-input {
+            flex: 1;
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .tracker-input:focus { border-color: var(--gold); }
+
+        .tracker-input::placeholder { color: var(--text-3); }
+
+        .tracker-btn {
+            background: linear-gradient(135deg, var(--gold), #E8D48A);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #08090E;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .tracker-btn:active { transform: scale(0.96); }
+
+        .tracker-commit {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 10px;
+        }
+
+        .tracker-commit textarea {
+            width: 100%;
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            resize: vertical;
+            min-height: 60px;
+            outline: none;
+        }
+
+        .tracker-commit textarea:focus { border-color: var(--gold); }
+        .tracker-commit textarea::placeholder { color: var(--text-3); }
+
+        .tracker-commit-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tracker-streak {
+            text-align: center;
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(52,211,153,0.08), rgba(52,211,153,0.02));
+            border: 1px solid rgba(52,211,153,0.15);
+            border-radius: 14px;
+            margin-bottom: 16px;
+        }
+
+        .tracker-streak-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--green);
+        }
+
+        .tracker-streak-lbl {
+            font-size: 0.65rem;
+            color: var(--text-2);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .tracker-history {
+            margin-top: 16px;
+        }
+
+        .tracker-history-title {
+            font-size: 0.7rem;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 8px;
+        }
+
+        .tracker-history-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.75rem;
+        }
+
+        .tracker-history-date { color: var(--text-2); font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; }
+        .tracker-history-data { color: var(--text); display: flex; gap: 12px; }
+        .tracker-history-pill {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            border-radius: 6px;
+            background: var(--bg-3);
+        }
+
         /* ===== MAIN CONTAINER ===== */
         .app {
             position: relative; z-index: 1;
@@ -662,7 +873,7 @@
 
         .bnav-btn {
             flex: 1;
-            max-width: 90px;
+            max-width: 80px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -917,6 +1128,98 @@
                 <div class="grid grid-1" id="biz-grid"></div>
             </div>
         </div>
+        <!-- ===== TRACK VIEW ===== -->
+        <div class="view" id="v-track">
+            <div class="tracker-date" id="tracker-date"></div>
+
+            <div class="tracker-target">
+                <div class="tracker-target-label">December 2026 Target</div>
+                <div class="tracker-target-val">$10,000<span style="font-size:0.7rem;opacity:0.6">/mo</span></div>
+                <div class="tracker-target-sub" id="tracker-gap">Current: $4,400 — Gap: $5,600</div>
+            </div>
+
+            <div class="tracker-streak">
+                <div class="tracker-streak-val" id="streak-val">0</div>
+                <div class="tracker-streak-lbl">Day Streak</div>
+            </div>
+
+            <!-- Outreach -->
+            <div class="tracker-card" id="tc-outreach">
+                <div class="tracker-card-hdr">
+                    <div class="tracker-card-title">&#128233; Outreach Sent</div>
+                    <span class="tracker-card-badge badge-week" id="outreach-week">0/5 this week</span>
+                </div>
+                <div class="tracker-input-row">
+                    <input class="tracker-input" type="number" id="inp-outreach" placeholder="How many today?" min="0" inputmode="numeric">
+                    <button class="tracker-btn" onclick="logTracker('outreach')">Log</button>
+                </div>
+            </div>
+
+            <!-- Spending -->
+            <div class="tracker-card" id="tc-spend">
+                <div class="tracker-card-hdr">
+                    <div class="tracker-card-title">&#128176; Money Spent</div>
+                    <span class="tracker-card-badge badge-daily">today</span>
+                </div>
+                <div class="tracker-input-row">
+                    <input class="tracker-input" type="number" id="inp-spend" placeholder="$ spent today" min="0" step="0.01" inputmode="decimal">
+                    <button class="tracker-btn" onclick="logTracker('spend')">Log</button>
+                </div>
+            </div>
+
+            <!-- Trades -->
+            <div class="tracker-card" id="tc-trades">
+                <div class="tracker-card-hdr">
+                    <div class="tracker-card-title">&#128200; Trades</div>
+                    <span class="tracker-card-badge badge-daily">today</span>
+                </div>
+                <div class="tracker-input-row" style="gap:6px">
+                    <input class="tracker-input" type="number" id="inp-wins" placeholder="Wins" min="0" inputmode="numeric" style="flex:1">
+                    <input class="tracker-input" type="number" id="inp-losses" placeholder="Losses" min="0" inputmode="numeric" style="flex:1">
+                    <button class="tracker-btn" onclick="logTracker('trades')">Log</button>
+                </div>
+            </div>
+
+            <!-- T4 Revenue -->
+            <div class="tracker-card" id="tc-t4">
+                <div class="tracker-card-hdr">
+                    <div class="tracker-card-title">&#129379; T4 Daily Revenue</div>
+                    <span class="tracker-card-badge badge-daily">today</span>
+                </div>
+                <div class="tracker-input-row">
+                    <input class="tracker-input" type="number" id="inp-t4" placeholder="$ T4 made today" min="0" step="1" inputmode="decimal">
+                    <button class="tracker-btn" onclick="logTracker('t4')">Log</button>
+                </div>
+            </div>
+
+            <!-- Growth Hours -->
+            <div class="tracker-card" id="tc-hours">
+                <div class="tracker-card-hdr">
+                    <div class="tracker-card-title">&#9203; Growth Hours</div>
+                    <span class="tracker-card-badge badge-week" id="hours-week">0/20 this week</span>
+                </div>
+                <div class="tracker-input-row">
+                    <input class="tracker-input" type="number" id="inp-hours" placeholder="Hrs on growth (not T4)" min="0" step="0.5" inputmode="decimal">
+                    <button class="tracker-btn" onclick="logTracker('hours')">Log</button>
+                </div>
+            </div>
+
+            <!-- Daily Commitment -->
+            <div class="tracker-commit">
+                <div class="tracker-commit-label">&#127919; Today's Commitment</div>
+                <textarea id="inp-commit" placeholder="What's the ONE thing you're committing to today?"></textarea>
+                <div style="display:flex;gap:8px;margin-top:8px">
+                    <button class="tracker-btn" style="flex:1" onclick="logTracker('commit')">Set</button>
+                    <button class="tracker-btn" style="flex:1;background:var(--green);color:#08090E" onclick="logTracker('commit-done')">&#10003; Done</button>
+                </div>
+            </div>
+
+            <!-- History -->
+            <div class="tracker-history">
+                <div class="tracker-history-title">Last 7 Days</div>
+                <div id="tracker-history-list"></div>
+            </div>
+        </div>
     </div>
 
     <!-- Bottom Nav -->
@@ -936,6 +1239,10 @@
         <button class="bnav-btn" data-v="v-sys">
             <span class="bnav-ico">&#129504;</span>
             <span class="bnav-lbl">Systems</span>
+        </button>
+        <button class="bnav-btn" data-v="v-track">
+            <span class="bnav-ico">&#127919;</span>
+            <span class="bnav-lbl">Track</span>
         </button>
     </nav>
 
@@ -1411,6 +1718,185 @@
 
     // Run uptime checks 3s after page load (after portfolio cards render)
     setTimeout(runUptimeChecks, 3000);
+
+    // ===== DAILY TRACKER SYSTEM =====
+    const TRACKER_KEY = 'hq_tracker_v1';
+
+    function todayKey() {
+        return new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    }
+
+    function getWeekStart() {
+        const d = new Date();
+        const day = d.getDay();
+        const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday start
+        return new Date(d.setDate(diff)).toISOString().split('T')[0];
+    }
+
+    function loadTrackerData() {
+        try { return JSON.parse(localStorage.getItem(TRACKER_KEY)) || {}; } catch { return {}; }
+    }
+
+    function saveTrackerData(data) {
+        localStorage.setItem(TRACKER_KEY, JSON.stringify(data));
+    }
+
+    function getTodayData() {
+        const all = loadTrackerData();
+        const key = todayKey();
+        if (!all[key]) all[key] = { outreach: 0, spend: 0, wins: 0, losses: 0, t4: 0, hours: 0, commit: '', commitDone: false };
+        return all[key];
+    }
+
+    function logTracker(type) {
+        const all = loadTrackerData();
+        const key = todayKey();
+        if (!all[key]) all[key] = { outreach: 0, spend: 0, wins: 0, losses: 0, t4: 0, hours: 0, commit: '', commitDone: false };
+        const d = all[key];
+
+        switch(type) {
+            case 'outreach': {
+                const v = parseInt(document.getElementById('inp-outreach').value) || 0;
+                d.outreach += v;
+                document.getElementById('inp-outreach').value = '';
+                document.getElementById('tc-outreach').classList.add('done');
+                break;
+            }
+            case 'spend': {
+                const v = parseFloat(document.getElementById('inp-spend').value) || 0;
+                d.spend += v;
+                document.getElementById('inp-spend').value = '';
+                document.getElementById('tc-spend').classList.add('done');
+                break;
+            }
+            case 'trades': {
+                const w = parseInt(document.getElementById('inp-wins').value) || 0;
+                const l = parseInt(document.getElementById('inp-losses').value) || 0;
+                d.wins += w;
+                d.losses += l;
+                document.getElementById('inp-wins').value = '';
+                document.getElementById('inp-losses').value = '';
+                document.getElementById('tc-trades').classList.add('done');
+                break;
+            }
+            case 't4': {
+                const v = parseFloat(document.getElementById('inp-t4').value) || 0;
+                d.t4 = v;
+                document.getElementById('inp-t4').value = '';
+                document.getElementById('tc-t4').classList.add('done');
+                break;
+            }
+            case 'hours': {
+                const v = parseFloat(document.getElementById('inp-hours').value) || 0;
+                d.hours += v;
+                document.getElementById('inp-hours').value = '';
+                document.getElementById('tc-hours').classList.add('done');
+                break;
+            }
+            case 'commit': {
+                d.commit = document.getElementById('inp-commit').value;
+                break;
+            }
+            case 'commit-done': {
+                d.commitDone = true;
+                break;
+            }
+        }
+
+        all[key] = d;
+        saveTrackerData(all);
+        refreshTracker();
+    }
+
+    function refreshTracker() {
+        const all = loadTrackerData();
+        const today = todayKey();
+        const d = all[today] || { outreach: 0, spend: 0, wins: 0, losses: 0, t4: 0, hours: 0, commit: '', commitDone: false };
+
+        // Date header
+        const dateEl = document.getElementById('tracker-date');
+        if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+
+        // Weekly totals
+        const weekStart = getWeekStart();
+        let weekOutreach = 0, weekHours = 0;
+        Object.keys(all).forEach(k => {
+            if (k >= weekStart) {
+                weekOutreach += (all[k].outreach || 0);
+                weekHours += (all[k].hours || 0);
+            }
+        });
+
+        const owEl = document.getElementById('outreach-week');
+        if (owEl) {
+            owEl.textContent = weekOutreach + '/5 this week';
+            if (weekOutreach >= 5) owEl.style.color = 'var(--green)';
+        }
+
+        const hwEl = document.getElementById('hours-week');
+        if (hwEl) {
+            hwEl.textContent = weekHours + '/20 this week';
+            if (weekHours >= 20) hwEl.style.color = 'var(--green)';
+        }
+
+        // Mark done cards
+        if (d.outreach > 0) document.getElementById('tc-outreach').classList.add('done');
+        if (d.spend > 0) document.getElementById('tc-spend').classList.add('done');
+        if (d.wins > 0 || d.losses > 0) document.getElementById('tc-trades').classList.add('done');
+        if (d.t4 > 0) document.getElementById('tc-t4').classList.add('done');
+        if (d.hours > 0) document.getElementById('tc-hours').classList.add('done');
+
+        // Commitment
+        if (d.commit) document.getElementById('inp-commit').value = d.commit;
+
+        // Streak calculation
+        let streak = 0;
+        const sortedDays = Object.keys(all).sort().reverse();
+        for (let i = 0; i < sortedDays.length; i++) {
+            const dayData = all[sortedDays[i]];
+            // A "logged" day = at least outreach OR hours OR trades logged
+            if (dayData.outreach > 0 || dayData.hours > 0 || dayData.wins > 0 || dayData.losses > 0) {
+                streak++;
+            } else if (sortedDays[i] !== today) {
+                break; // Don't break streak on today if not logged yet
+            } else {
+                break;
+            }
+        }
+        const streakEl = document.getElementById('streak-val');
+        if (streakEl) {
+            streakEl.textContent = streak;
+            if (streak >= 7) streakEl.style.color = 'var(--gold)';
+        }
+
+        // History (last 7 days)
+        const histEl = document.getElementById('tracker-history-list');
+        if (histEl) {
+            const last7 = Object.keys(all).sort().reverse().slice(0, 7);
+            histEl.innerHTML = last7.map(k => {
+                const r = all[k];
+                const dateStr = new Date(k + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                const totalTrades = (r.wins || 0) + (r.losses || 0);
+                const winRate = totalTrades > 0 ? Math.round((r.wins / totalTrades) * 100) : 0;
+                return `
+                    <div class="tracker-history-row">
+                        <span class="tracker-history-date">${dateStr}</span>
+                        <div class="tracker-history-data">
+                            ${r.outreach ? `<span class="tracker-history-pill" style="color:var(--cyan)">&#128233; ${r.outreach}</span>` : ''}
+                            ${r.spend ? `<span class="tracker-history-pill" style="color:var(--red)">$${r.spend.toFixed(0)}</span>` : ''}
+                            ${totalTrades ? `<span class="tracker-history-pill" style="color:${winRate>=50?'var(--green)':'var(--red)'}">${winRate}% W</span>` : ''}
+                            ${r.hours ? `<span class="tracker-history-pill" style="color:var(--gold)">${r.hours}h</span>` : ''}
+                            ${r.t4 ? `<span class="tracker-history-pill" style="color:var(--gold)">T4:$${r.t4}</span>` : ''}
+                            ${r.commitDone ? '<span class="tracker-history-pill" style="color:var(--green)">&#10003;</span>' : (r.commit ? '<span class="tracker-history-pill" style="color:var(--red)">&#10007;</span>' : '')}
+                        </div>
+                    </div>
+                `;
+            }).join('') || '<div style="color:var(--text-3);font-size:0.75rem;padding:12px 0">No data yet. Start logging!</div>';
+        }
+    }
+
+    // Initialize tracker when Track view loads
+    refreshTracker();
 
     // ===== SERVICE WORKER =====
     if ('serviceWorker' in navigator) {

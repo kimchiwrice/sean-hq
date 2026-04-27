@@ -5,47 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>HQ — Sean Trinh</title>
     <meta name="description" content="Operator command center">
-    <meta name="theme-color" content="#08090E">
+    <meta name="theme-color" content="#05060A">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="HQ">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#9889;</text></svg>">
     <link rel="apple-touch-icon" href="icon-192.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --bg: #08090E;
-            --bg-2: #0F1117;
-            --bg-3: #161820;
-            --bg-card: rgba(255,255,255,0.025);
-            --bg-card-hover: rgba(255,255,255,0.055);
-            --border: rgba(255,255,255,0.06);
-            --border-hover: rgba(201,168,76,0.4);
-            --text: #F0EDE8;
-            --text-2: rgba(240,237,232,0.6);
-            --text-3: rgba(240,237,232,0.35);
-            --gold: #C9A84C;
-            --gold-glow: rgba(201,168,76,0.25);
-            --gold-dim: rgba(201,168,76,0.12);
-            --green: #34D399;
-            --green-dim: rgba(52,211,153,0.1);
-            --cyan: #06B6D4;
-            --cyan-dim: rgba(6,182,212,0.08);
+            --bg: #05060A;
+            --bg-2: #0A0C12;
+            --bg-3: #10131A;
+            --bg-card: rgba(10, 14, 25, 0.8);
+            --border: rgba(0, 200, 255, 0.08);
+            --border-glow: rgba(0, 200, 255, 0.25);
+            --text: #E8ECF4;
+            --text-2: rgba(232, 236, 244, 0.55);
+            --text-3: rgba(232, 236, 244, 0.28);
+            --cyan: #00C8FF;
+            --cyan-dim: rgba(0, 200, 255, 0.08);
+            --cyan-glow: rgba(0, 200, 255, 0.3);
+            --gold: #FFB800;
+            --gold-dim: rgba(255, 184, 0, 0.08);
+            --gold-glow: rgba(255, 184, 0, 0.25);
+            --green: #00FF94;
+            --green-dim: rgba(0, 255, 148, 0.08);
+            --red: #FF3D5A;
+            --red-dim: rgba(255, 61, 90, 0.08);
             --purple: #A78BFA;
-            --purple-dim: rgba(167,139,250,0.08);
-            --red: #FB7185;
+            --purple-dim: rgba(167, 139, 250, 0.08);
             --safe-top: env(safe-area-inset-top, 0px);
             --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-sans: 'Inter', -apple-system, sans-serif;
         }
 
         html { scroll-behavior: smooth; }
 
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
+            font-family: var(--font-sans);
             background: var(--bg);
             color: var(--text);
             min-height: 100dvh;
@@ -53,317 +56,46 @@
             overflow-x: hidden;
         }
 
-        /* ===== PARTICLE CANVAS ===== */
-        #particles {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 0;
-        }
-
-        /* ===== AMBIENT BG ===== */
-        .ambient {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            pointer-events: none; z-index: 0;
-        }
-        .ambient::before {
-            content: '';
-            position: absolute; top: -30%; right: -20%;
-            width: 700px; height: 700px;
-            background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 60%);
-            animation: ambientFloat 20s ease-in-out infinite;
-        }
-        .ambient::after {
-            content: '';
-            position: absolute; bottom: -20%; left: -20%;
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(6,182,212,0.04) 0%, transparent 60%);
-            animation: ambientFloat 25s ease-in-out infinite reverse;
-        }
-
-        @keyframes ambientFloat {
-            0%, 100% { transform: translate(0, 0); }
-            33% { transform: translate(30px, -20px); }
-            66% { transform: translate(-20px, 15px); }
-        }
-
-        /* Subtle grid */
-        .grid-bg {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        /* ===== HUD BACKGROUND ===== */
+        .hud-grid {
+            position: fixed; inset: 0;
             background-image:
-                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-            background-size: 48px 48px;
+                linear-gradient(rgba(0,200,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,200,255,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
             pointer-events: none; z-index: 0;
-            mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black, transparent);
+            mask-image: radial-gradient(ellipse 70% 50% at 50% 30%, black, transparent);
         }
 
-        /* ===== DAILY TRACKER ===== */
-        .tracker-date {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            color: var(--gold);
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            margin-bottom: 16px;
-            text-align: center;
+        .hud-scanline {
+            position: fixed; inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,200,255,0.008) 2px,
+                rgba(0,200,255,0.008) 4px
+            );
+            pointer-events: none; z-index: 0;
+            animation: scanMove 8s linear infinite;
         }
 
-        .tracker-target {
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 14px;
-            background: linear-gradient(135deg, rgba(201,168,76,0.08), rgba(201,168,76,0.02));
-            border: 1px solid rgba(201,168,76,0.15);
-            border-radius: 14px;
+        @keyframes scanMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(4px); }
         }
 
-        .tracker-target-label {
-            font-size: 0.6rem;
-            color: var(--text-3);
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            font-family: 'JetBrains Mono', monospace;
+        .hud-glow {
+            position: fixed; top: -200px; left: 50%; transform: translateX(-50%);
+            width: 600px; height: 400px;
+            background: radial-gradient(ellipse, rgba(0,200,255,0.04) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+            animation: glowPulse 6s ease-in-out infinite;
         }
 
-        .tracker-target-val {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.6rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--gold), #E8D48A);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .tracker-target-sub {
-            font-size: 0.7rem;
-            color: var(--text-2);
-            margin-top: 2px;
-        }
-
-        .tracker-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 10px;
-            transition: border-color 0.3s;
-        }
-
-        .tracker-card.done { border-color: rgba(52,211,153,0.3); }
-
-        .tracker-card-hdr {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .tracker-card-title {
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .tracker-card-badge {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.55rem;
-            padding: 2px 8px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
-        .badge-daily { background: var(--cyan-dim); color: var(--cyan); }
-        .badge-week { background: var(--purple-dim); color: var(--purple); }
-
-        .tracker-input-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .tracker-input {
-            flex: 1;
-            background: var(--bg-2);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 10px 14px;
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        .tracker-input:focus { border-color: var(--gold); }
-
-        .tracker-input::placeholder { color: var(--text-3); }
-
-        .tracker-btn {
-            background: linear-gradient(135deg, var(--gold), #E8D48A);
-            border: none;
-            border-radius: 10px;
-            padding: 10px 16px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #08090E;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s;
-        }
-
-        .tracker-btn:active { transform: scale(0.96); }
-
-        .tracker-commit {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 10px;
-        }
-
-        .tracker-pick {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 10px 14px;
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.8rem;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.2s;
-            width: 100%;
-        }
-
-        .tracker-pick:active { transform: scale(0.97); }
-
-        .tracker-pick.selected {
-            border-color: var(--gold);
-            background: var(--gold-dim);
-            color: var(--gold);
-        }
-
-        .spend-cat {
-            width: auto;
-            padding: 6px 12px;
-            font-size: 0.7rem;
-            text-align: center;
-        }
-
-        .spend-cat.active {
-            border-color: var(--gold);
-            background: var(--gold-dim);
-            color: var(--gold);
-        }
-
-        .tracker-check {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 9px 12px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .tracker-check:has(input:checked) {
-            border-color: rgba(52,211,153,0.3);
-            background: var(--green-dim);
-        }
-
-        .tracker-check input {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--green);
-        }
-
-        .tracker-commit textarea {
-            width: 100%;
-            background: var(--bg-2);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 12px;
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
-            resize: vertical;
-            min-height: 60px;
-            outline: none;
-        }
-
-        .tracker-commit textarea:focus { border-color: var(--gold); }
-        .tracker-commit textarea::placeholder { color: var(--text-3); }
-
-        .tracker-commit-label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .tracker-streak {
-            text-align: center;
-            padding: 16px;
-            background: linear-gradient(135deg, rgba(52,211,153,0.08), rgba(52,211,153,0.02));
-            border: 1px solid rgba(52,211,153,0.15);
-            border-radius: 14px;
-            margin-bottom: 16px;
-        }
-
-        .tracker-streak-val {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--green);
-        }
-
-        .tracker-streak-lbl {
-            font-size: 0.65rem;
-            color: var(--text-2);
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .tracker-history {
-            margin-top: 16px;
-        }
-
-        .tracker-history-title {
-            font-size: 0.7rem;
-            color: var(--text-3);
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            font-family: 'JetBrains Mono', monospace;
-            margin-bottom: 8px;
-        }
-
-        .tracker-history-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.75rem;
-        }
-
-        .tracker-history-date { color: var(--text-2); font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; }
-        .tracker-history-data { color: var(--text); display: flex; gap: 12px; }
-        .tracker-history-pill {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.6rem;
-            padding: 2px 6px;
-            border-radius: 6px;
-            background: var(--bg-3);
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
         }
 
         /* ===== MAIN CONTAINER ===== */
@@ -371,1457 +103,1181 @@
             position: relative; z-index: 1;
             max-width: 480px;
             margin: 0 auto;
-            padding: calc(var(--safe-top) + 16px) 16px calc(var(--safe-bottom) + 80px);
+            padding: calc(var(--safe-top) + 12px) 14px calc(var(--safe-bottom) + 72px);
         }
 
         /* ===== HEADER ===== */
         .hdr {
-            padding: 8px 0 28px;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
+            padding: 6px 0 20px;
         }
 
-        .hdr-left { display: flex; flex-direction: column; gap: 2px; }
-
-        .hdr-greeting {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.6rem;
-            letter-spacing: 0.2em;
+        .hdr-tag {
+            font-family: var(--font-mono);
+            font-size: 0.5rem;
+            letter-spacing: 0.25em;
             text-transform: uppercase;
-            color: var(--gold);
-            font-weight: 500;
+            color: var(--cyan);
+            opacity: 0.7;
         }
 
         .hdr-name {
-            font-size: 1.65rem;
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            line-height: 1.1;
-            background: linear-gradient(135deg, var(--text) 0%, rgba(201,168,76,0.8) 100%);
+            font-family: var(--font-mono);
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text);
+            line-height: 1.2;
+        }
+
+        .hdr-name span {
+            background: linear-gradient(135deg, var(--cyan), var(--gold));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-        }
-
-        .hdr-title {
-            font-size: 0.75rem;
-            color: var(--text-2);
-            font-weight: 400;
-            margin-top: 2px;
         }
 
         .hdr-right {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 4px;
-            padding-top: 4px;
+            display: flex; flex-direction: column; align-items: flex-end; gap: 3px; padding-top: 2px;
         }
 
         .hdr-time {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
             color: var(--text-3);
+            letter-spacing: 0.05em;
         }
 
         .hdr-status {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.55rem;
-            color: var(--green);
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-
-        .dot {
-            width: 6px; height: 6px;
-            background: var(--green);
-            border-radius: 50%;
-            position: relative;
-        }
-
-        .dot::before {
-            content: '';
-            position: absolute;
-            inset: -3px;
-            border-radius: 50%;
-            border: 1px solid rgba(52,211,153,0.3);
-            animation: pulse-ring 2.5s ease-out infinite;
-        }
-
-        .dot::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 50%;
-            background: var(--green);
-            animation: pulse-dot 2.5s ease-in-out infinite;
-        }
-
-        @keyframes pulse-ring {
-            0% { transform: scale(1); opacity: 0.6; }
-            100% { transform: scale(2.5); opacity: 0; }
-        }
-
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; box-shadow: 0 0 6px rgba(52,211,153,0.5); }
-            50% { opacity: 0.6; box-shadow: 0 0 12px rgba(52,211,153,0.8); }
-        }
-
-        /* ===== STATS ROW ===== */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-            margin-bottom: 26px;
-        }
-
-        .stat {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 14px 8px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .stat::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(201,168,76,0.06), transparent 60%);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .stat:hover::before { opacity: 1; }
-
-        .stat:hover {
-            border-color: var(--border-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3), 0 0 20px rgba(201,168,76,0.06);
-        }
-
-        .stat-val {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.4rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--gold), #E8D48A);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            position: relative;
-            z-index: 1;
-        }
-
-        .stat-lbl {
+            display: flex; align-items: center; gap: 5px;
+            font-family: var(--font-mono);
             font-size: 0.5rem;
-            color: var(--text-3);
+            color: var(--green);
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            letter-spacing: 0.12em;
-            margin-top: 4px;
-            font-weight: 500;
-            position: relative;
-            z-index: 1;
         }
 
-        /* ===== AI TOOL CARDS ===== */
-        .ai-tool-use {
-            font-size: 0.58rem;
-            color: var(--text-3);
-            margin-top: 3px;
-            line-height: 1.4;
-            font-style: italic;
+        .pulse-dot {
+            width: 5px; height: 5px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 6px rgba(0,255,148,0.5);
+            animation: blink 2s ease-in-out infinite;
         }
 
-        /* ===== SECTION ===== */
-        .sec { margin-bottom: 26px; }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* ===== HUD SECTION HEADERS ===== */
+        .sec { margin-bottom: 20px; }
 
         .sec-hdr {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 10px;
+            position: relative;
         }
 
-        .sec-dot {
-            width: 4px; height: 4px;
-            border-radius: 50%;
-            background: var(--gold);
-            box-shadow: 0 0 6px var(--gold-glow);
+        .sec-hdr::before {
+            content: '';
+            width: 3px; height: 12px;
+            background: var(--cyan);
+            box-shadow: 0 0 8px var(--cyan-glow);
+            border-radius: 1px;
         }
 
         .sec-title {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.6rem;
-            letter-spacing: 0.15em;
+            font-family: var(--font-mono);
+            font-size: 0.55rem;
+            letter-spacing: 0.2em;
             text-transform: uppercase;
-            color: var(--text-2);
+            color: var(--cyan);
             font-weight: 500;
         }
 
         .sec-line {
-            flex: 1;
-            height: 1px;
+            flex: 1; height: 1px;
             background: linear-gradient(90deg, var(--border), transparent);
         }
 
-        /* ===== LINK CARDS ===== */
-        .grid { display: grid; gap: 8px; }
-        .grid-2 { grid-template-columns: repeat(2, 1fr); }
-        .grid-1 { grid-template-columns: 1fr; }
-
-        .lnk {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        /* ===== HUD CARDS ===== */
+        .hud-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 14px 16px;
-            text-decoration: none;
-            color: var(--text);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 6px;
+            padding: 14px;
+            margin-bottom: 8px;
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(12px);
         }
 
-        .lnk::before {
+        .hud-card::before {
             content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(201,168,76,0.04), transparent 60%);
-            opacity: 0;
-            transition: opacity 0.3s;
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+            opacity: 0.3;
         }
 
-        .lnk::after {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(201,168,76,0.06) 0%, transparent 50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
+        .hud-card.gold::before {
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
         }
 
-        .lnk:hover::before, .lnk:active::before { opacity: 1; }
-        .lnk:hover::after { opacity: 1; }
-
-        .lnk:hover, .lnk:active {
-            border-color: var(--border-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(201,168,76,0.08);
+        .hud-card.green::before {
+            background: linear-gradient(90deg, transparent, var(--green), transparent);
         }
 
-        .lnk-icon {
-            width: 40px; height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.15rem;
+        /* ===== TODAY'S OPS — THE MAIN EVENT ===== */
+        .ops-greeting {
+            font-family: var(--font-mono);
+            font-size: 0.55rem;
+            color: var(--text-3);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .ops-question {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 14px;
+            line-height: 1.3;
+        }
+
+        .ops-task {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 12px;
+            background: rgba(0,200,255,0.03);
+            border: 1px solid rgba(0,200,255,0.06);
+            border-radius: 6px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ops-task:active { transform: scale(0.98); }
+
+        .ops-task.checked {
+            border-color: rgba(0,255,148,0.2);
+            background: rgba(0,255,148,0.04);
+        }
+
+        .ops-task.checked .ops-task-text {
+            text-decoration: line-through;
+            color: var(--text-3);
+        }
+
+        .ops-check {
+            width: 18px; height: 18px;
+            border: 1.5px solid var(--border-glow);
+            border-radius: 4px;
+            display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
-            position: relative;
-            z-index: 1;
-        }
-
-        .lnk-body { flex: 1; min-width: 0; position: relative; z-index: 1; }
-
-        .lnk-name {
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: -0.01em;
-        }
-
-        .lnk-desc {
             font-size: 0.65rem;
-            color: var(--text-3);
-            margin-top: 1px;
+            color: transparent;
+            transition: all 0.2s;
         }
 
-        .lnk-arrow {
-            color: var(--text-3);
-            font-size: 0.7rem;
-            transition: all 0.3s;
-            position: relative;
-            z-index: 1;
+        .ops-task.checked .ops-check {
+            background: var(--green);
+            border-color: var(--green);
+            color: var(--bg);
         }
 
-        .lnk:hover .lnk-arrow { transform: translateX(4px); color: var(--gold); }
+        .ops-task-text {
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--text);
+            flex: 1;
+            transition: all 0.2s;
+        }
 
-        /* ===== PORTFOLIO CARDS ===== */
-        .folio {
-            display: block;
+        .ops-task-tag {
+            font-family: var(--font-mono);
+            font-size: 0.45rem;
+            padding: 2px 6px;
+            border-radius: 3px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .tag-trinh { background: var(--cyan-dim); color: var(--cyan); }
+        .tag-t4 { background: var(--gold-dim); color: var(--gold); }
+        .tag-trade { background: var(--green-dim); color: var(--green); }
+        .tag-personal { background: var(--purple-dim); color: var(--purple); }
+
+        .ops-add-row {
+            display: flex; gap: 6px; margin-top: 8px;
+        }
+
+        .ops-input {
+            flex: 1;
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 10px;
+            color: var(--text);
+            font-family: var(--font-sans);
+            font-size: 0.78rem;
+            outline: none;
+        }
+
+        .ops-input:focus { border-color: var(--cyan); }
+        .ops-input::placeholder { color: var(--text-3); }
+
+        .ops-add-btn {
+            background: var(--cyan);
+            border: none;
+            border-radius: 6px;
+            padding: 8px 14px;
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: var(--bg);
+            cursor: pointer;
+            letter-spacing: 0.05em;
+        }
+
+        .ops-add-btn:active { transform: scale(0.95); }
+
+        .ops-progress {
+            margin-top: 10px;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .ops-bar {
+            flex: 1; height: 3px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .ops-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--cyan), var(--green));
+            border-radius: 2px;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 8px var(--cyan-glow);
+        }
+
+        .ops-bar-text {
+            font-family: var(--font-mono);
+            font-size: 0.5rem;
+            color: var(--text-3);
+            white-space: nowrap;
+        }
+
+        /* ===== FINANCIAL PULSE ===== */
+        .fin-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+
+        .fin-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            overflow: hidden;
-            text-decoration: none;
-            color: var(--text);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-style: preserve-3d;
-            perspective: 800px;
-        }
-
-        .folio:hover {
-            border-color: var(--border-hover);
-            box-shadow: 0 16px 50px rgba(0,0,0,0.5), 0 0 30px rgba(201,168,76,0.08);
-        }
-
-        .folio-preview {
-            width: 100%;
-            height: 180px;
+            border-radius: 6px;
+            padding: 12px 10px;
+            text-align: center;
             position: relative;
             overflow: hidden;
-            background: var(--bg-2);
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .folio-preview::after {
+        .fin-card:active { transform: scale(0.97); }
+
+        .fin-card::before {
             content: '';
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            height: 40px;
-            background: linear-gradient(transparent, var(--bg-card));
-            z-index: 3;
-            pointer-events: none;
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 1px;
+            opacity: 0.4;
         }
 
-        .folio-preview iframe {
-            width: 300%;
-            height: 300%;
-            transform: scale(0.3333);
-            transform-origin: top left;
-            border: none;
-            pointer-events: none;
-        }
+        .fin-card.bofa::before { background: linear-gradient(90deg, transparent, #E31837, transparent); }
+        .fin-card.webull::before { background: linear-gradient(90deg, transparent, #00C805, transparent); }
+        .fin-card.moma::before { background: linear-gradient(90deg, transparent, var(--gold), transparent); }
 
-        .folio-preview-ph {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, var(--bg-2), var(--bg-3));
-            transition: opacity 0.6s;
-        }
-
-        /* Shimmer loading effect */
-        .folio-preview-ph::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
-            animation: shimmer 2s ease-in-out infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        .folio-badge {
-            position: absolute;
-            top: 10px; right: 10px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            background: rgba(8,9,14,0.85);
-            backdrop-filter: blur(8px);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.55rem;
-            font-weight: 600;
-            color: var(--green);
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            z-index: 4;
-            border: 1px solid rgba(52,211,153,0.15);
-        }
-
-        .folio-info { padding: 14px 16px 16px; }
-
-        .folio-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .folio-name {
-            font-size: 0.9rem;
-            font-weight: 700;
-            letter-spacing: -0.01em;
-        }
-
-        .folio-type {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.55rem;
+        .fin-label {
+            font-family: var(--font-mono);
+            font-size: 0.45rem;
             color: var(--text-3);
+            letter-spacing: 0.15em;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
+            margin-bottom: 4px;
+        }
+
+        .fin-value {
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        .fin-sub {
+            font-family: var(--font-mono);
+            font-size: 0.45rem;
+            color: var(--text-3);
             margin-top: 3px;
         }
 
-        .folio-desc {
-            font-size: 0.7rem;
-            color: var(--text-2);
+        .fin-edit {
+            display: none;
             margin-top: 6px;
-            line-height: 1.5;
         }
 
-        .folio-tech {
-            display: flex;
-            gap: 4px;
-            margin-top: 10px;
-            flex-wrap: wrap;
+        .fin-card.editing .fin-edit { display: flex; }
+        .fin-card.editing .fin-value { display: none; }
+
+        .fin-edit input {
+            width: 100%;
+            background: var(--bg-2);
+            border: 1px solid var(--cyan);
+            border-radius: 4px;
+            padding: 6px;
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            text-align: center;
+            outline: none;
         }
 
-        .folio-tag {
-            font-family: 'JetBrains Mono', monospace;
+        /* ===== DAILY TRACKER (HUD version) ===== */
+        .tracker-date {
+            font-family: var(--font-mono);
             font-size: 0.5rem;
-            padding: 3px 8px;
-            border-radius: 6px;
-            background: var(--cyan-dim);
             color: var(--cyan);
-            letter-spacing: 0.04em;
-            font-weight: 500;
-            border: 1px solid rgba(6,182,212,0.1);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            text-align: center;
         }
 
-        /* ===== DEPLOY LOG ===== */
-        .deploy {
+        .tracker-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .tracker-mini {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .tracker-mini-val {
+            font-family: var(--font-mono);
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .tracker-mini-lbl {
+            font-family: var(--font-mono);
+            font-size: 0.45rem;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-top: 2px;
+        }
+
+        .t-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 14px;
+            margin-bottom: 8px;
+            transition: border-color 0.3s;
+        }
+
+        .t-card.done { border-color: rgba(0,255,148,0.2); }
+
+        .t-card-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .t-card-title {
+            font-size: 0.75rem;
+            font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 12px 14px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            transition: all 0.25s;
+            gap: 6px;
         }
 
-        .deploy:hover {
-            border-color: rgba(52,211,153,0.2);
-            background: rgba(52,211,153,0.02);
+        .t-badge {
+            font-family: var(--font-mono);
+            font-size: 0.45rem;
+            padding: 2px 7px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 600;
         }
 
-        .deploy-dot {
-            width: 7px; height: 7px;
-            border-radius: 50%;
-            flex-shrink: 0;
+        .badge-daily { background: var(--cyan-dim); color: var(--cyan); }
+        .badge-week { background: var(--purple-dim); color: var(--purple); }
+
+        .t-input-row {
+            display: flex; align-items: center; gap: 6px;
         }
 
-        .deploy-dot.ok {
-            background: var(--green);
-            box-shadow: 0 0 8px rgba(52,211,153,0.4);
-        }
-
-        .deploy-name { flex: 1; font-size: 0.75rem; font-weight: 500; }
-
-        .deploy-hash {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.6rem;
-            color: var(--text-3);
-        }
-
-        .deploy-when {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.6rem;
-            color: var(--text-3);
-        }
-
-        /* ===== ROADMAP ===== */
-        .roadmap-wrap { position: relative; }
-
-        .roadmap-track {
-            position: absolute;
-            top: 50%; left: 0; right: 0;
-            height: 2px;
-            background: var(--border);
-            transform: translateY(-50%);
-            z-index: 0;
-            border-radius: 1px;
-        }
-
-        .roadmap-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--gold), rgba(201,168,76,0.3));
-            border-radius: 1px;
-            width: 0%;
-            transition: width 1.8s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 12px var(--gold-glow);
-        }
-
-        .phase {
-            display: flex;
-            align-items: stretch;
-            gap: 0;
-            position: relative;
-            z-index: 1;
-        }
-
-        .phase-item {
+        .t-input {
             flex: 1;
-            padding: 14px 8px;
-            text-align: center;
-            position: relative;
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 10px;
+            color: var(--text);
+            font-family: var(--font-sans);
+            font-size: 0.8rem;
+            outline: none;
+        }
+
+        .t-input:focus { border-color: var(--cyan); }
+        .t-input::placeholder { color: var(--text-3); }
+
+        .t-btn {
+            background: linear-gradient(135deg, var(--cyan), #0090CC);
+            border: none;
+            border-radius: 6px;
+            padding: 8px 14px;
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: var(--bg);
+            cursor: pointer;
+            letter-spacing: 0.05em;
+        }
+
+        .t-btn:active { transform: scale(0.96); }
+
+        .t-pick {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            transition: all 0.5s;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: var(--text);
+            font-family: var(--font-sans);
+            font-size: 0.75rem;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            width: 100%;
         }
 
-        .phase-item:first-child { border-radius: 12px 0 0 12px; }
-        .phase-item:last-child { border-radius: 0 12px 12px 0; border-right: 1px solid var(--border); }
-        .phase-item + .phase-item { border-left: none; }
+        .t-pick:active { transform: scale(0.97); }
+        .t-pick.selected { border-color: var(--cyan); background: var(--cyan-dim); color: var(--cyan); }
 
-        .phase-item.active {
-            background: var(--gold-dim);
-            border-color: rgba(201,168,76,0.2);
-            box-shadow: inset 0 0 20px rgba(201,168,76,0.05);
+        .spend-cat {
+            width: auto;
+            padding: 5px 10px;
+            font-size: 0.65rem;
+            text-align: center;
         }
 
-        .phase-item.active .phase-num { color: var(--gold); text-shadow: 0 0 10px var(--gold-glow); }
-        .phase-item.active .phase-lbl { color: var(--text-2); }
+        .spend-cat.active { border-color: var(--gold); background: var(--gold-dim); color: var(--gold); }
 
-        .phase-num {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--text-3);
-            transition: all 0.4s;
+        .t-check {
+            display: flex; align-items: center; gap: 8px;
+            padding: 7px 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .phase-lbl {
-            font-size: 0.5rem;
+        .t-check:has(input:checked) {
+            border-color: rgba(0,255,148,0.2);
+            background: var(--green-dim);
+        }
+
+        .t-check input { width: 16px; height: 16px; accent-color: var(--green); }
+
+        .t-commit textarea {
+            width: 100%;
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px;
+            color: var(--text);
+            font-family: var(--font-sans);
+            font-size: 0.8rem;
+            resize: vertical;
+            min-height: 50px;
+            outline: none;
+        }
+
+        .t-commit textarea:focus { border-color: var(--cyan); }
+        .t-commit textarea::placeholder { color: var(--text-3); }
+
+        .tracker-streak-val { font-family: var(--font-mono); font-size: 1.6rem; font-weight: 700; color: var(--green); }
+        .tracker-streak-lbl { font-family: var(--font-mono); font-size: 0.45rem; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.12em; }
+
+        .tracker-history { margin-top: 14px; }
+        .tracker-history-title { font-family: var(--font-mono); font-size: 0.5rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 6px; }
+        .tracker-history-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.7rem; }
+        .tracker-history-date { color: var(--text-2); font-family: var(--font-mono); font-size: 0.55rem; }
+        .tracker-history-data { color: var(--text); display: flex; gap: 8px; }
+        .tracker-history-pill { font-family: var(--font-mono); font-size: 0.5rem; padding: 2px 5px; border-radius: 4px; background: var(--bg-3); }
+
+        /* ===== QUICK LINKS (HQ view bottom) ===== */
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        .quick-link {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            padding: 10px 4px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.2s;
+        }
+
+        .quick-link:active { transform: scale(0.95); }
+        .quick-link:hover { border-color: var(--border-glow); }
+
+        .quick-icon { font-size: 1.1rem; }
+
+        .quick-label {
+            font-family: var(--font-mono);
+            font-size: 0.4rem;
             color: var(--text-3);
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            margin-top: 2px;
-            transition: all 0.4s;
-        }
-
-        .phase-prog {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.5rem;
-            color: var(--gold);
-            margin-top: 4px;
+            text-align: center;
         }
 
         /* ===== BOTTOM NAV ===== */
         .bnav {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            background: rgba(8,9,14,0.95);
-            backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border-top: 1px solid rgba(255,255,255,0.04);
-            display: flex;
-            justify-content: center;
-            gap: 0;
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: rgba(5,6,10,0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            display: flex; justify-content: center;
             z-index: 100;
             padding-bottom: var(--safe-bottom);
         }
 
         .bnav-btn {
-            flex: 1;
-            max-width: 80px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3px;
+            flex: 1; max-width: 100px;
+            display: flex; flex-direction: column; align-items: center; gap: 2px;
             padding: 10px 0 8px;
-            background: none;
-            border: none;
+            background: none; border: none;
             color: var(--text-3);
             cursor: pointer;
             transition: all 0.3s;
             position: relative;
         }
 
-        .bnav-btn.active { color: var(--gold); }
-        .bnav-btn:hover { color: var(--text); }
+        .bnav-btn.active { color: var(--cyan); }
 
         .bnav-btn.active::before {
             content: '';
-            position: absolute;
-            top: 0; left: 50%;
-            transform: translateX(-50%);
-            width: 24px; height: 2px;
-            background: var(--gold);
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 20px; height: 2px;
+            background: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan-glow);
             border-radius: 0 0 2px 2px;
-            box-shadow: 0 2px 8px var(--gold-glow);
         }
 
-        .bnav-btn.active::after {
-            content: '';
-            position: absolute;
-            top: -4px; left: 50%;
-            transform: translateX(-50%);
-            width: 40px; height: 8px;
-            background: radial-gradient(ellipse, var(--gold-glow), transparent);
-            pointer-events: none;
-        }
-
-        .bnav-ico { font-size: 1.15rem; line-height: 1; transition: transform 0.2s; }
+        .bnav-ico { font-size: 1.1rem; line-height: 1; }
         .bnav-btn:active .bnav-ico { transform: scale(0.9); }
 
         .bnav-lbl {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.5rem;
-            letter-spacing: 0.08em;
+            font-family: var(--font-mono);
+            font-size: 0.42rem;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
             font-weight: 500;
         }
-
-        /* ===== ENTRANCE ANIMATIONS (CSS) ===== */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes slideRight {
-            from { opacity: 0; transform: translateX(-15px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .hdr-greeting { animation: fadeIn 0.5s ease both 0.1s; }
-        .hdr-name { animation: slideRight 0.6s ease both 0.2s; }
-        .hdr-title { animation: fadeIn 0.5s ease both 0.35s; }
-        .hdr-time { animation: fadeIn 0.4s ease both 0.2s; }
-        .hdr-status { animation: fadeIn 0.5s ease both 0.35s; }
-        .stat { animation: fadeUp 0.5s ease both; }
-        .stat:nth-child(1) { animation-delay: 0.3s; }
-        .stat:nth-child(2) { animation-delay: 0.38s; }
-        .stat:nth-child(3) { animation-delay: 0.46s; }
-        .stat:nth-child(4) { animation-delay: 0.54s; }
-        .sec { animation: fadeUp 0.45s ease both; }
-        .sec:nth-child(1) { animation-delay: 0.5s; }
-        .sec:nth-child(2) { animation-delay: 0.6s; }
-        .sec:nth-child(3) { animation-delay: 0.7s; }
 
         /* ===== VIEW SYSTEM ===== */
         .view { display: none; }
         .view.on { display: block; }
 
+        /* ===== ENTRANCE ANIMATIONS ===== */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideRight { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: translateX(0); } }
+
+        .hdr-tag { animation: fadeIn 0.4s ease both 0.1s; }
+        .hdr-name { animation: slideRight 0.5s ease both 0.15s; }
+        .hdr-time { animation: fadeIn 0.4s ease both 0.2s; }
+        .hdr-status { animation: fadeIn 0.4s ease both 0.3s; }
+
         /* ===== RESPONSIVE ===== */
-        @media (min-width: 768px) {
-            .app { max-width: 560px; padding-top: 40px; }
-            .stats { grid-template-columns: repeat(4, 1fr); }
-            .folio-preview { height: 220px; }
-        }
+        @media (min-width: 768px) { .app { max-width: 540px; padding-top: 36px; } }
+        @media (max-width: 360px) { .hdr-name { font-size: 1.2rem; } .fin-grid { grid-template-columns: 1fr; } }
 
-        @media (max-width: 360px) {
-            .hdr-name { font-size: 1.4rem; }
-            .stats { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        /* ===== SCROLLBAR ===== */
-        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar { width: 2px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,200,255,0.1); border-radius: 2px; }
     </style>
 </head>
 <body>
-    <canvas id="particles"></canvas>
-    <div class="ambient"></div>
-    <div class="grid-bg"></div>
+    <div class="hud-grid"></div>
+    <div class="hud-scanline"></div>
+    <div class="hud-glow"></div>
 
     <div class="app" id="app">
         <header class="hdr">
-            <div class="hdr-left">
-                <div class="hdr-greeting" id="greet"></div>
-                <div class="hdr-name">Sean Trinh</div>
-                <div class="hdr-title">Operator &middot; Builder &middot; Designer</div>
+            <div>
+                <div class="hdr-tag" id="greet">OPERATOR HQ</div>
+                <div class="hdr-name"><span>Sean Trinh</span></div>
             </div>
             <div class="hdr-right">
                 <div class="hdr-time" id="clock"></div>
-                <div class="hdr-status"><span class="dot"></span> Systems Online</div>
+                <div class="hdr-status" id="hdr-status"><span class="pulse-dot"></span> ONLINE</div>
             </div>
         </header>
 
-        <!-- ===== HQ VIEW ===== -->
-        <div class="view on" id="v-hq">
-            <div class="stats" id="stats-grid">
-                <div class="stat">
-                    <div class="stat-val" data-target="5">0</div>
-                    <div class="stat-lbl">Live Sites</div>
+        <!-- ===== OPS VIEW (DEFAULT) ===== -->
+        <div class="view on" id="v-ops">
+
+            <!-- TODAY'S OPS — What's on my plate -->
+            <div class="sec">
+                <div class="sec-hdr">
+                    <span class="sec-title">Today's Ops</span>
+                    <span class="sec-line"></span>
                 </div>
-                <div class="stat">
-                    <div class="stat-val" data-target="38">0</div>
-                    <div class="stat-lbl">Tasks Done</div>
-                </div>
-                <div class="stat" id="stat-rev">
-                    <div class="stat-val" data-target="5">0</div>
-                    <div class="stat-lbl">Repos</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-val" data-target="4">0</div>
-                    <div class="stat-lbl">Deploys</div>
+                <div class="hud-card">
+                    <div class="ops-greeting" id="ops-greet"></div>
+                    <div class="ops-question">What needs to get done today?</div>
+                    <div id="ops-tasks"></div>
+                    <div class="ops-add-row">
+                        <input class="ops-input" type="text" id="ops-new-task" placeholder="Add a task..." maxlength="80">
+                        <select id="ops-new-tag" style="background:var(--bg-2);border:1px solid var(--border);border-radius:6px;padding:6px;color:var(--text);font-family:var(--font-mono);font-size:0.55rem;outline:none">
+                            <option value="trinh">Trinh</option>
+                            <option value="t4">T4</option>
+                            <option value="trade">Trade</option>
+                            <option value="personal">Personal</option>
+                        </select>
+                        <button class="ops-add-btn" onclick="addOpsTask()">+</button>
+                    </div>
+                    <div class="ops-progress" id="ops-progress">
+                        <div class="ops-bar"><div class="ops-bar-fill" id="ops-bar-fill" style="width:0%"></div></div>
+                        <div class="ops-bar-text" id="ops-bar-text">0/0</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Roadmap -->
+            <!-- FINANCIAL PULSE -->
             <div class="sec">
                 <div class="sec-hdr">
-                    <span class="sec-dot"></span>
-                    <span class="sec-title">100x Roadmap</span>
+                    <span class="sec-title">Financial Pulse</span>
                     <span class="sec-line"></span>
                 </div>
-                <div class="roadmap-wrap">
-                    <div class="roadmap-track"><div class="roadmap-fill" id="roadmap-fill"></div></div>
-                    <div class="phase">
-                        <div class="phase-item active">
-                            <div class="phase-num">P1</div>
-                            <div class="phase-lbl">Revenue On</div>
-                            <div class="phase-prog">2/5</div>
+                <div class="fin-grid">
+                    <div class="fin-card bofa" onclick="toggleFinEdit(this, 'bofa')">
+                        <div class="fin-label">BofA</div>
+                        <div class="fin-value" id="fin-bofa">--</div>
+                        <div class="fin-sub" id="fin-bofa-sub">tap to update</div>
+                        <div class="fin-edit">
+                            <input type="number" id="fin-bofa-input" placeholder="$" inputmode="decimal"
+                                   onkeydown="if(event.key==='Enter'){saveFinance('bofa');event.stopPropagation()}"
+                                   onclick="event.stopPropagation()">
                         </div>
-                        <div class="phase-item">
-                            <div class="phase-num">P2</div>
-                            <div class="phase-lbl">Proof Stack</div>
-                            <div class="phase-prog">0/5</div>
+                    </div>
+                    <div class="fin-card webull" onclick="toggleFinEdit(this, 'webull')">
+                        <div class="fin-label">Webull</div>
+                        <div class="fin-value" id="fin-webull">--</div>
+                        <div class="fin-sub" id="fin-webull-sub">tap to update</div>
+                        <div class="fin-edit">
+                            <input type="number" id="fin-webull-input" placeholder="$" inputmode="decimal"
+                                   onkeydown="if(event.key==='Enter'){saveFinance('webull');event.stopPropagation()}"
+                                   onclick="event.stopPropagation()">
                         </div>
-                        <div class="phase-item">
-                            <div class="phase-num">P3</div>
-                            <div class="phase-lbl">Lead Machine</div>
-                            <div class="phase-prog">&mdash;</div>
-                        </div>
-                        <div class="phase-item">
-                            <div class="phase-num">P4</div>
-                            <div class="phase-lbl">Scale</div>
-                            <div class="phase-prog">&mdash;</div>
+                    </div>
+                    <div class="fin-card moma" onclick="toggleFinEdit(this, 'moma')">
+                        <div class="fin-label">MOMA</div>
+                        <div class="fin-value" id="fin-moma">--</div>
+                        <div class="fin-sub" id="fin-moma-sub">tap to update</div>
+                        <div class="fin-edit">
+                            <input type="number" id="fin-moma-input" placeholder="$" inputmode="decimal"
+                                   onkeydown="if(event.key==='Enter'){saveFinance('moma');event.stopPropagation()}"
+                                   onclick="event.stopPropagation()">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Quick Actions -->
+            <!-- QUICK LINKS -->
             <div class="sec">
                 <div class="sec-hdr">
-                    <span class="sec-dot"></span>
-                    <span class="sec-title">Quick Actions</span>
+                    <span class="sec-title">Quick Launch</span>
                     <span class="sec-line"></span>
                 </div>
-                <div class="grid grid-1" id="quick-actions"></div>
-            </div>
-
-            <!-- Recent Deploys -->
-            <div class="sec">
-                <div class="sec-hdr">
-                    <span class="sec-dot"></span>
-                    <span class="sec-title">Recent Deploys</span>
-                    <span class="sec-line"></span>
-                </div>
-                <div class="grid grid-1" id="deploy-log"></div>
-            </div>
-
-            <!-- Pipeline (shows only when leads exist) -->
-            <div class="sec" id="pipeline-sec" style="display:none">
-                <div class="sec-hdr">
-                    <span class="sec-dot"></span>
-                    <span class="sec-title">Pipeline</span>
-                    <span class="sec-line"></span>
-                </div>
-                <div class="grid grid-1" id="pipeline-grid"></div>
+                <div class="quick-grid" id="quick-links"></div>
             </div>
         </div>
 
-        <!-- ===== PORTFOLIO VIEW ===== -->
-        <div class="view" id="v-work">
-            <div class="sec">
-                <div class="sec-hdr">
-                    <span class="sec-dot"></span>
-                    <span class="sec-title">Portfolio &mdash; Live Work</span>
-                    <span class="sec-line"></span>
-                </div>
-                <div class="grid grid-1" id="folio-grid" style="gap:14px"></div>
-            </div>
-        </div>
-
-        <!-- ===== TOOLS VIEW ===== -->
-        <div class="view" id="v-tools">
-            <div class="sec">
-                <div class="sec-hdr">
-                    <span class="sec-dot"></span>
-                    <span class="sec-title">Tools &amp; Services</span>
-                    <span class="sec-line"></span>
-                </div>
-                <div class="grid grid-1" id="tools-grid"></div>
-            </div>
-            <div class="sec" style="margin-top:20px">
-                <div class="sec-hdr">
-                    <span class="sec-dot"></span>
-                    <span class="sec-title">AI Team</span>
-                    <span class="sec-line"></span>
-                </div>
-                <div class="grid grid-1" id="ai-tools-grid"></div>
-            </div>
-        </div>
-
-        <!-- ===== SYSTEMS VIEW ===== -->
-        <div class="view" id="v-sys">
-            <div class="sec">
-                <div class="sec-hdr">
-                    <span class="sec-dot"></span>
-                    <span class="sec-title">Active Systems</span>
-                    <span class="sec-line"></span>
-                </div>
-                <div class="grid grid-1" id="sys-grid"></div>
-            </div>
-            <div class="sec" style="margin-top:20px">
-                <div class="sec-hdr">
-                    <span class="sec-dot"></span>
-                    <span class="sec-title">Business Ventures</span>
-                    <span class="sec-line"></span>
-                </div>
-                <div class="grid grid-1" id="biz-grid"></div>
-            </div>
-        </div>
         <!-- ===== TRACK VIEW ===== -->
         <div class="view" id="v-track">
             <div class="tracker-date" id="tracker-date"></div>
 
-            <!-- Target + Streak row -->
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
-                <div class="tracker-target" style="margin-bottom:0">
-                    <div class="tracker-target-label">Dec 2026 Target</div>
-                    <div class="tracker-target-val" style="font-size:1.3rem">$10K<span style="font-size:0.6rem;opacity:0.6">/mo</span></div>
-                    <div class="tracker-target-sub" style="font-size:0.6rem">Gap: $5,600/mo</div>
+            <div class="tracker-row">
+                <div class="tracker-mini" style="background:linear-gradient(135deg, rgba(255,184,0,0.06), rgba(255,184,0,0.01)); border-color:rgba(255,184,0,0.12)">
+                    <div class="tracker-mini-lbl">Dec 2026 Target</div>
+                    <div class="tracker-mini-val" style="color:var(--gold);font-size:1.2rem">$10K<span style="font-size:0.5rem;opacity:0.5">/mo</span></div>
+                    <div style="font-family:var(--font-mono);font-size:0.4rem;color:var(--text-3);margin-top:2px">Gap: $5,600/mo</div>
                 </div>
-                <div class="tracker-streak" style="margin-bottom:0">
+                <div class="tracker-mini" style="background:linear-gradient(135deg, rgba(0,255,148,0.06), rgba(0,255,148,0.01)); border-color:rgba(0,255,148,0.12)">
                     <div class="tracker-streak-val" id="streak-val">0</div>
                     <div class="tracker-streak-lbl">Day Streak</div>
                 </div>
             </div>
 
-            <!-- TODAY'S FOCUS — pick from list, not free text -->
-            <div class="tracker-card" id="tc-focus">
-                <div class="tracker-card-hdr">
-                    <div class="tracker-card-title">&#127919; Today's Focus</div>
-                    <span class="tracker-card-badge badge-daily" id="focus-status">pick one</span>
+            <!-- TODAY'S FOCUS -->
+            <div class="t-card" id="tc-focus">
+                <div class="t-card-hdr">
+                    <div class="t-card-title">&#127919; Today's Focus</div>
+                    <span class="t-badge badge-daily" id="focus-status">pick one</span>
                 </div>
-                <div id="focus-options" style="display:flex;flex-direction:column;gap:6px">
-                    <button class="tracker-pick" data-focus="outreach" onclick="setFocus(this)">Send outreach messages</button>
-                    <button class="tracker-pick" data-focus="trinh" onclick="setFocus(this)">Work on Trinh Media</button>
-                    <button class="tracker-pick" data-focus="t4-growth" onclick="setFocus(this)">T4 growth idea for boss</button>
-                    <button class="tracker-pick" data-focus="trading" onclick="setFocus(this)">Trading session</button>
-                    <button class="tracker-pick" data-focus="learn" onclick="setFocus(this)">Learn / build skills</button>
-                    <button class="tracker-pick" data-focus="rest" onclick="setFocus(this)">Intentional rest day</button>
+                <div id="focus-options" style="display:flex;flex-direction:column;gap:5px">
+                    <button class="t-pick" data-focus="outreach" onclick="setFocus(this)">Send outreach messages</button>
+                    <button class="t-pick" data-focus="trinh" onclick="setFocus(this)">Work on Trinh Media</button>
+                    <button class="t-pick" data-focus="t4-growth" onclick="setFocus(this)">T4 growth idea for boss</button>
+                    <button class="t-pick" data-focus="trading" onclick="setFocus(this)">Trading session</button>
+                    <button class="t-pick" data-focus="learn" onclick="setFocus(this)">Learn / build skills</button>
+                    <button class="t-pick" data-focus="rest" onclick="setFocus(this)">Intentional rest day</button>
                 </div>
-                <button class="tracker-btn" id="focus-done-btn" style="width:100%;margin-top:8px;background:var(--green);color:#08090E;display:none" onclick="logTracker('focus-done')">&#10003; Done — I did it</button>
+                <button class="t-btn" id="focus-done-btn" style="width:100%;margin-top:6px;background:var(--green);display:none" onclick="logTracker('focus-done')">&#10003; Done</button>
             </div>
 
-            <!-- OUTREACH — tap counter -->
-            <div class="tracker-card" id="tc-outreach">
-                <div class="tracker-card-hdr">
-                    <div class="tracker-card-title">&#128233; Outreach</div>
-                    <span class="tracker-card-badge badge-week" id="outreach-week">0/5 this week</span>
+            <!-- OUTREACH -->
+            <div class="t-card" id="tc-outreach">
+                <div class="t-card-hdr">
+                    <div class="t-card-title">&#128233; Outreach</div>
+                    <span class="t-badge badge-week" id="outreach-week">0/5 this week</span>
                 </div>
-                <div style="display:flex;align-items:center;gap:10px">
-                    <button class="tracker-btn" style="font-size:1.1rem;padding:8px 18px" onclick="tapCount('outreach',-1)">-</button>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <button class="t-btn" style="font-size:1rem;padding:6px 16px" onclick="tapCount('outreach',-1)">-</button>
                     <div style="flex:1;text-align:center">
-                        <div id="outreach-count" style="font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--cyan)">0</div>
-                        <div style="font-size:0.6rem;color:var(--text-2)">messages today</div>
+                        <div id="outreach-count" style="font-family:var(--font-mono);font-size:1.6rem;font-weight:700;color:var(--cyan)">0</div>
+                        <div style="font-size:0.5rem;color:var(--text-2)">messages today</div>
                     </div>
-                    <button class="tracker-btn" style="font-size:1.1rem;padding:8px 18px" onclick="tapCount('outreach',1)">+</button>
+                    <button class="t-btn" style="font-size:1rem;padding:6px 16px" onclick="tapCount('outreach',1)">+</button>
                 </div>
             </div>
 
-            <!-- SPENDING — quick-tap categories -->
-            <div class="tracker-card" id="tc-spend">
-                <div class="tracker-card-hdr">
-                    <div class="tracker-card-title">&#128176; Spending</div>
-                    <span class="tracker-card-badge badge-daily" id="spend-total">$0 today</span>
+            <!-- SPENDING -->
+            <div class="t-card" id="tc-spend">
+                <div class="t-card-hdr">
+                    <div class="t-card-title">&#128176; Spending</div>
+                    <span class="t-badge badge-daily" id="spend-total">$0 today</span>
                 </div>
-                <div style="font-size:0.65rem;color:var(--text-3);margin-bottom:8px">Tap category, then amount</div>
-                <div id="spend-cats" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
-                    <button class="tracker-pick spend-cat active" data-cat="food" onclick="pickCat(this)">&#127374; Food</button>
-                    <button class="tracker-pick spend-cat" data-cat="gas" onclick="pickCat(this)">&#9981; Gas</button>
-                    <button class="tracker-pick spend-cat" data-cat="subs" onclick="pickCat(this)">&#128241; Subs</button>
-                    <button class="tracker-pick spend-cat" data-cat="impulse" onclick="pickCat(this)">&#128184; Impulse</button>
-                    <button class="tracker-pick spend-cat" data-cat="other" onclick="pickCat(this)">&#8226; Other</button>
+                <div style="font-size:0.55rem;color:var(--text-3);margin-bottom:6px">Tap category, then amount</div>
+                <div id="spend-cats" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px">
+                    <button class="t-pick spend-cat active" data-cat="food" onclick="pickCat(this)">&#127374; Food</button>
+                    <button class="t-pick spend-cat" data-cat="gas" onclick="pickCat(this)">&#9981; Gas</button>
+                    <button class="t-pick spend-cat" data-cat="subs" onclick="pickCat(this)">&#128241; Subs</button>
+                    <button class="t-pick spend-cat" data-cat="impulse" onclick="pickCat(this)">&#128184; Impulse</button>
+                    <button class="t-pick spend-cat" data-cat="other" onclick="pickCat(this)">&#8226; Other</button>
                 </div>
-                <div style="display:flex;flex-wrap:wrap;gap:6px">
-                    <button class="tracker-btn" style="flex:1;min-width:55px" onclick="tapSpend(5)">$5</button>
-                    <button class="tracker-btn" style="flex:1;min-width:55px" onclick="tapSpend(10)">$10</button>
-                    <button class="tracker-btn" style="flex:1;min-width:55px" onclick="tapSpend(15)">$15</button>
-                    <button class="tracker-btn" style="flex:1;min-width:55px" onclick="tapSpend(20)">$20</button>
-                    <button class="tracker-btn" style="flex:1;min-width:55px" onclick="tapSpend(30)">$30</button>
-                    <button class="tracker-btn" style="flex:1;min-width:55px" onclick="tapSpend(50)">$50</button>
+                <div style="display:flex;flex-wrap:wrap;gap:5px">
+                    <button class="t-btn" style="flex:1;min-width:50px" onclick="tapSpend(5)">$5</button>
+                    <button class="t-btn" style="flex:1;min-width:50px" onclick="tapSpend(10)">$10</button>
+                    <button class="t-btn" style="flex:1;min-width:50px" onclick="tapSpend(15)">$15</button>
+                    <button class="t-btn" style="flex:1;min-width:50px" onclick="tapSpend(20)">$20</button>
+                    <button class="t-btn" style="flex:1;min-width:50px" onclick="tapSpend(30)">$30</button>
+                    <button class="t-btn" style="flex:1;min-width:50px" onclick="tapSpend(50)">$50</button>
                 </div>
-                <div class="tracker-input-row" style="margin-top:8px">
-                    <input class="tracker-input" type="number" id="inp-spend-custom" placeholder="Custom $" min="0" inputmode="decimal" style="flex:1">
-                    <button class="tracker-btn" onclick="tapSpend(parseFloat(document.getElementById('inp-spend-custom').value)||0); document.getElementById('inp-spend-custom').value=''">Add</button>
+                <div class="t-input-row" style="margin-top:6px">
+                    <input class="t-input" type="number" id="inp-spend-custom" placeholder="Custom $" min="0" inputmode="decimal">
+                    <button class="t-btn" onclick="tapSpend(parseFloat(document.getElementById('inp-spend-custom').value)||0); document.getElementById('inp-spend-custom').value=''">Add</button>
                 </div>
-                <div id="spend-breakdown" style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-3)"></div>
+                <div id="spend-breakdown" style="margin-top:6px;font-family:var(--font-mono);font-size:0.5rem;color:var(--text-3)"></div>
             </div>
 
-            <!-- TRADES — simple W/L/skip -->
-            <div class="tracker-card" id="tc-trades">
-                <div class="tracker-card-hdr">
-                    <div class="tracker-card-title">&#128200; Today's Trades</div>
-                    <span class="tracker-card-badge badge-daily" id="trade-summary">—</span>
+            <!-- TRADES -->
+            <div class="t-card" id="tc-trades">
+                <div class="t-card-hdr">
+                    <div class="t-card-title">&#128200; Trades</div>
+                    <span class="t-badge badge-daily" id="trade-summary">&mdash;</span>
                 </div>
-                <div style="display:flex;gap:8px">
-                    <button class="tracker-btn" style="flex:1;background:var(--green);color:#08090E" onclick="tapTrade('W')">&#9650; Win</button>
-                    <button class="tracker-btn" style="flex:1;background:var(--red);color:#fff" onclick="tapTrade('L')">&#9660; Loss</button>
-                    <button class="tracker-btn" style="flex:1" onclick="tapTrade('skip')">No trades</button>
+                <div style="display:flex;gap:6px">
+                    <button class="t-btn" style="flex:1;background:var(--green)" onclick="tapTrade('W')">&#9650; Win</button>
+                    <button class="t-btn" style="flex:1;background:var(--red);color:#fff" onclick="tapTrade('L')">&#9660; Loss</button>
+                    <button class="t-btn" style="flex:1" onclick="tapTrade('skip')">No trades</button>
                 </div>
-                <div id="trade-log" style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-2);display:flex;gap:4px;flex-wrap:wrap"></div>
+                <div id="trade-log" style="margin-top:6px;font-family:var(--font-mono);font-size:0.55rem;color:var(--text-2);display:flex;gap:4px;flex-wrap:wrap"></div>
             </div>
 
-            <!-- T4 REVENUE — end of shift log -->
-            <div class="tracker-card" id="tc-t4">
-                <div class="tracker-card-hdr">
-                    <div class="tracker-card-title">&#129379; T4 Close-Out</div>
-                    <span class="tracker-card-badge badge-daily" id="t4-status">not logged</span>
+            <!-- T4 CLOSE-OUT -->
+            <div class="t-card" id="tc-t4">
+                <div class="t-card-hdr">
+                    <div class="t-card-title">&#129379; T4 Close-Out</div>
+                    <span class="t-badge badge-daily" id="t4-status">not logged</span>
                 </div>
-                <div class="tracker-input-row">
-                    <input class="tracker-input" type="number" id="inp-t4" placeholder="Today's register total $" min="0" step="1" inputmode="numeric">
-                    <button class="tracker-btn" onclick="logTracker('t4')">Log</button>
+                <div class="t-input-row">
+                    <input class="t-input" type="number" id="inp-t4" placeholder="Register total $" min="0" step="1" inputmode="numeric">
+                    <button class="t-btn" onclick="logTracker('t4')">Log</button>
                 </div>
-                <div id="t4-avg" style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-3)"></div>
+                <div id="t4-avg" style="margin-top:4px;font-family:var(--font-mono);font-size:0.5rem;color:var(--text-3)"></div>
             </div>
 
-            <!-- WHAT I DID TODAY — checkboxes, not hours -->
-            <div class="tracker-card" id="tc-activity">
-                <div class="tracker-card-hdr">
-                    <div class="tracker-card-title">&#9889; What I Did Today</div>
-                    <span class="tracker-card-badge badge-daily" id="activity-count">0 logged</span>
+            <!-- WHAT I DID -->
+            <div class="t-card" id="tc-activity">
+                <div class="t-card-hdr">
+                    <div class="t-card-title">&#9889; What I Did Today</div>
+                    <span class="t-badge badge-daily" id="activity-count">0 logged</span>
                 </div>
-                <div id="activity-checks" style="display:flex;flex-direction:column;gap:4px">
-                    <label class="tracker-check"><input type="checkbox" onchange="logActivity(this)" data-act="outreach"> Sent outreach</label>
-                    <label class="tracker-check"><input type="checkbox" onchange="logActivity(this)" data-act="trinh-work"> Worked on Trinh Media</label>
-                    <label class="tracker-check"><input type="checkbox" onchange="logActivity(this)" data-act="traded"> Traded</label>
-                    <label class="tracker-check"><input type="checkbox" onchange="logActivity(this)" data-act="learned"> Learned something new</label>
-                    <label class="tracker-check"><input type="checkbox" onchange="logActivity(this)" data-act="gym"> Hit the gym</label>
-                    <label class="tracker-check"><input type="checkbox" onchange="logActivity(this)" data-act="t4-shift"> Worked T4 shift</label>
-                    <label class="tracker-check"><input type="checkbox" onchange="logActivity(this)" data-act="t4-idea"> Pitched/brainstormed T4 growth</label>
-                    <label class="tracker-check"><input type="checkbox" onchange="logActivity(this)" data-act="content"> Created content</label>
-                    <label class="tracker-check" style="color:var(--text-3)"><input type="checkbox" onchange="logActivity(this)" data-act="gamed"> Gamed / scrolled</label>
+                <div id="activity-checks" style="display:flex;flex-direction:column;gap:3px">
+                    <label class="t-check"><input type="checkbox" onchange="logActivity(this)" data-act="outreach"> Sent outreach</label>
+                    <label class="t-check"><input type="checkbox" onchange="logActivity(this)" data-act="trinh-work"> Worked on Trinh Media</label>
+                    <label class="t-check"><input type="checkbox" onchange="logActivity(this)" data-act="traded"> Traded</label>
+                    <label class="t-check"><input type="checkbox" onchange="logActivity(this)" data-act="learned"> Learned something new</label>
+                    <label class="t-check"><input type="checkbox" onchange="logActivity(this)" data-act="gym"> Hit the gym</label>
+                    <label class="t-check"><input type="checkbox" onchange="logActivity(this)" data-act="t4-shift"> Worked T4 shift</label>
+                    <label class="t-check"><input type="checkbox" onchange="logActivity(this)" data-act="t4-idea"> Pitched/brainstormed T4 growth</label>
+                    <label class="t-check"><input type="checkbox" onchange="logActivity(this)" data-act="content"> Created content</label>
+                    <label class="t-check" style="color:var(--text-3)"><input type="checkbox" onchange="logActivity(this)" data-act="gamed"> Gamed / scrolled</label>
                 </div>
             </div>
 
-            <!-- History -->
+            <!-- HISTORY -->
             <div class="tracker-history">
                 <div class="tracker-history-title">Last 7 Days</div>
                 <div id="tracker-history-list"></div>
+            </div>
+        </div>
+
+        <!-- ===== INTEL VIEW ===== -->
+        <div class="view" id="v-intel">
+            <div class="sec">
+                <div class="sec-hdr">
+                    <span class="sec-title">Tools &amp; Links</span>
+                    <span class="sec-line"></span>
+                </div>
+                <div class="quick-grid" id="intel-tools" style="grid-template-columns:repeat(3,1fr);gap:8px"></div>
+            </div>
+            <div class="sec" style="margin-top:16px">
+                <div class="sec-hdr">
+                    <span class="sec-title">Systems Status</span>
+                    <span class="sec-line"></span>
+                </div>
+                <div id="intel-systems" style="display:flex;flex-direction:column;gap:6px"></div>
             </div>
         </div>
     </div>
 
     <!-- Bottom Nav -->
     <nav class="bnav">
-        <button class="bnav-btn active" data-v="v-hq">
+        <button class="bnav-btn active" data-v="v-ops">
             <span class="bnav-ico">&#9889;</span>
-            <span class="bnav-lbl">HQ</span>
-        </button>
-        <button class="bnav-btn" data-v="v-work">
-            <span class="bnav-ico">&#128142;</span>
-            <span class="bnav-lbl">Work</span>
-        </button>
-        <button class="bnav-btn" data-v="v-tools">
-            <span class="bnav-ico">&#128295;</span>
-            <span class="bnav-lbl">Tools</span>
-        </button>
-        <button class="bnav-btn" data-v="v-sys">
-            <span class="bnav-ico">&#129504;</span>
-            <span class="bnav-lbl">Systems</span>
+            <span class="bnav-lbl">Ops</span>
         </button>
         <button class="bnav-btn" data-v="v-track">
             <span class="bnav-ico">&#127919;</span>
             <span class="bnav-lbl">Track</span>
         </button>
+        <button class="bnav-btn" data-v="v-intel">
+            <span class="bnav-ico">&#128225;</span>
+            <span class="bnav-lbl">Intel</span>
+        </button>
     </nav>
 
     <script>
-    // ===== PARTICLE SYSTEM =====
-    const canvas = document.getElementById('particles');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    class Particle {
-        constructor() {
-            this.reset();
-        }
-        reset() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 1.5 + 0.3;
-            this.speedX = (Math.random() - 0.5) * 0.3;
-            this.speedY = (Math.random() - 0.5) * 0.3;
-            this.opacity = Math.random() * 0.3 + 0.05;
-            this.color = Math.random() > 0.7 ? '201,168,76' : '240,237,232';
-        }
-        update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
-        }
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(${this.color},${this.opacity})`;
-            ctx.fill();
-        }
-    }
-
-    for (let i = 0; i < 40; i++) particles.push(new Particle());
-
-    function animateParticles() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => { p.update(); p.draw(); });
-        requestAnimationFrame(animateParticles);
-    }
-    animateParticles();
-
-    // ===== CLOCK =====
+    // ===== CLOCK + GREETING =====
     const clockEl = document.getElementById('clock');
     const greetEl = document.getElementById('greet');
+    const opsGreetEl = document.getElementById('ops-greet');
+
     function tick() {
         const d = new Date();
         const h = d.getHours();
-        greetEl.textContent = (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening');
-        clockEl.textContent = d.toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit', hour12:true });
+        const greeting = h < 12 ? 'Good morning, operator' : h < 17 ? 'Good afternoon, operator' : 'Good evening, operator';
+        if (greetEl) greetEl.textContent = 'OPERATOR HQ // ' + (h < 12 ? 'MORNING' : h < 17 ? 'AFTERNOON' : 'EVENING');
+        if (opsGreetEl) opsGreetEl.textContent = greeting;
+        if (clockEl) clockEl.textContent = d.toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit', hour12:true });
     }
     tick(); setInterval(tick, 10000);
 
-    // ===== ANIMATED COUNTERS =====
-    let countersResolved = false;
-
-    function animateCounter(el, target) {
-        if (el.dataset.noCount === '1') return; // pre-formatted (e.g. revenue "$1.2k")
-        const dur = 1.2;
-        const obj = { val: 0 };
-        gsap.to(obj, {
-            val: target,
-            duration: dur,
-            ease: 'power2.out',
-            onUpdate: () => { el.textContent = Math.round(obj.val); },
-            onComplete: () => { el.textContent = target; } // Guarantee final value
-        });
-    }
-
-    function forceCounterValues() {
-        document.querySelectorAll('.stat-val').forEach(el => {
-            if (el.dataset.noCount === '1') return; // skip pre-formatted stats
-            const target = parseInt(el.dataset.target) || 0;
-            if (target > 0) el.textContent = target;
-        });
-        countersResolved = true;
-    }
-
-    // ===== ENTRANCE ANIMATION =====
-    function runCounters() {
-        if (document.hidden) {
-            // Tab in background — skip animation, set values directly
-            forceCounterValues();
-        } else {
-            setTimeout(() => {
-                document.querySelectorAll('.stat-val').forEach(el => {
-                    const target = parseInt(el.dataset.target) || 0;
-                    if (target > 0) animateCounter(el, target);
-                });
-            }, 500);
-            // Safety net: force correct values after animation should be done
-            setTimeout(forceCounterValues, 2500);
-        }
-        // Roadmap fill
-        const applyRoadmap = () => {
-            const fill = document.getElementById('roadmap-fill');
-            if (fill && fill.style.width === '0%' || fill && !fill.style.width) {
-                fill.style.width = '30%';
-            }
-        };
-        if (document.hidden) applyRoadmap();
-        else setTimeout(applyRoadmap, 900);
-    }
-
-    // Re-trigger counters when tab becomes visible (handles background-loaded tabs)
-    document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && !countersResolved) {
-            runCounters();
-        }
-    });
-
-    // ===== NAV WITH GSAP TRANSITIONS =====
-    let currentView = 'v-hq';
+    // ===== NAV SYSTEM =====
+    let currentView = 'v-ops';
     document.querySelectorAll('.bnav-btn').forEach(b => {
         b.addEventListener('click', () => {
             const targetId = b.dataset.v;
             if (targetId === currentView) return;
-
             document.querySelectorAll('.bnav-btn').forEach(x => x.classList.remove('active'));
             b.classList.add('active');
-
             const oldView = document.getElementById(currentView);
             const newView = document.getElementById(targetId);
-
             gsap.to(oldView, {
-                opacity: 0, y: -10, duration: 0.2, ease: 'power2.in',
+                opacity: 0, y: -8, duration: 0.18, ease: 'power2.in',
                 onComplete: () => {
                     oldView.classList.remove('on');
                     newView.classList.add('on');
-                    gsap.fromTo(newView,
-                        { opacity: 0, y: 15 },
-                        { opacity: 1, y: 0, duration: 0.35, ease: 'power3.out' }
-                    );
-
-                    // Stagger animate children
-                    const items = newView.querySelectorAll('.lnk, .folio, .deploy');
-                    if (items.length) {
-                        gsap.fromTo(items,
-                            { opacity: 0, y: 10 },
-                            { opacity: 1, y: 0, duration: 0.3, stagger: 0.04, ease: 'power2.out', delay: 0.1 }
-                        );
-                    }
+                    gsap.fromTo(newView, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: 'power3.out' });
                 }
             });
-
             currentView = targetId;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     });
 
-    // ===== MOUSE GLOW ON LINK CARDS =====
-    document.addEventListener('mousemove', e => {
-        document.querySelectorAll('.lnk').forEach(el => {
-            const rect = el.getBoundingClientRect();
-            const x = ((e.clientX - rect.left) / rect.width) * 100;
-            const y = ((e.clientY - rect.top) / rect.height) * 100;
-            el.style.setProperty('--mx', x + '%');
-            el.style.setProperty('--my', y + '%');
-        });
+    // ===== TODAY'S OPS SYSTEM =====
+    const OPS_KEY = 'hq_ops_v1';
+
+    function todayKey() { return new Date().toISOString().split('T')[0]; }
+
+    function loadOps() {
+        try {
+            const data = JSON.parse(localStorage.getItem(OPS_KEY)) || {};
+            const today = todayKey();
+            if (!data[today]) data[today] = { tasks: [] };
+            return data;
+        } catch { return { [todayKey()]: { tasks: [] } }; }
+    }
+
+    function saveOps(data) { localStorage.setItem(OPS_KEY, JSON.stringify(data)); }
+
+    function addOpsTask() {
+        const input = document.getElementById('ops-new-task');
+        const tag = document.getElementById('ops-new-tag').value;
+        const text = input.value.trim();
+        if (!text) return;
+
+        const data = loadOps();
+        const today = todayKey();
+        data[today].tasks.push({ text, tag, done: false, id: Date.now() });
+        saveOps(data);
+        input.value = '';
+        renderOps();
+    }
+
+    document.getElementById('ops-new-task').addEventListener('keydown', e => {
+        if (e.key === 'Enter') addOpsTask();
     });
 
-    // ===== 3D TILT ON PORTFOLIO CARDS =====
-    document.addEventListener('mousemove', e => {
-        document.querySelectorAll('.folio').forEach(card => {
-            const rect = card.getBoundingClientRect();
-            if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
-                gsap.to(card, { rotateX: 0, rotateY: 0, duration: 0.4, ease: 'power2.out' });
-                return;
+    function toggleOpsTask(id) {
+        const data = loadOps();
+        const today = todayKey();
+        const task = data[today].tasks.find(t => t.id === id);
+        if (task) task.done = !task.done;
+        saveOps(data);
+        renderOps();
+    }
+
+    function deleteOpsTask(id) {
+        const data = loadOps();
+        const today = todayKey();
+        data[today].tasks = data[today].tasks.filter(t => t.id !== id);
+        saveOps(data);
+        renderOps();
+    }
+
+    function renderOps() {
+        const data = loadOps();
+        const today = todayKey();
+        const tasks = data[today].tasks || [];
+        const container = document.getElementById('ops-tasks');
+        const tagClass = { trinh: 'tag-trinh', t4: 'tag-t4', trade: 'tag-trade', personal: 'tag-personal' };
+
+        container.innerHTML = tasks.map(t => `
+            <div class="ops-task ${t.done ? 'checked' : ''}" onclick="toggleOpsTask(${t.id})">
+                <div class="ops-check">${t.done ? '&#10003;' : ''}</div>
+                <div class="ops-task-text">${t.text}</div>
+                <span class="ops-task-tag ${tagClass[t.tag] || 'tag-personal'}">${t.tag}</span>
+                <div style="font-size:0.6rem;color:var(--text-3);cursor:pointer;padding:4px" onclick="event.stopPropagation();deleteOpsTask(${t.id})">&#10005;</div>
+            </div>
+        `).join('');
+
+        // Progress
+        const done = tasks.filter(t => t.done).length;
+        const total = tasks.length;
+        const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+        document.getElementById('ops-bar-fill').style.width = pct + '%';
+        document.getElementById('ops-bar-text').textContent = done + '/' + total + (total > 0 ? ' (' + pct + '%)' : '');
+
+        // Update header status with task count
+        const statusEl = document.getElementById('hdr-status');
+        if (statusEl && total > 0) {
+            if (done === total) {
+                statusEl.innerHTML = '<span class="pulse-dot" style="background:var(--green)"></span> ALL OPS CLEAR';
+                statusEl.style.color = 'var(--green)';
+            } else {
+                statusEl.innerHTML = '<span class="pulse-dot"></span> ' + (total - done) + ' OPS PENDING';
+                statusEl.style.color = 'var(--cyan)';
             }
-            const x = (e.clientX - rect.left) / rect.width;
-            const y = (e.clientY - rect.top) / rect.height;
-            const tiltX = (y - 0.5) * -6;
-            const tiltY = (x - 0.5) * 6;
-            gsap.to(card, { rotateX: tiltX, rotateY: tiltY, duration: 0.3, ease: 'power2.out', transformPerspective: 800 });
-        });
-    });
+        }
+    }
 
-    // ===== LOAD LIVE DATA =====
-    fetch('data.json?' + Date.now())
-        .then(r => {
-            if (!r.ok) throw new Error('HTTP ' + r.status);
-            return r.json();
-        })
-        .then(D => {
-            if (!D.stats || !D.quickActions || !D.deploys) throw new Error('Malformed data.json — missing required fields');
-            // --- Stats targets ---
-            const statEls = document.querySelectorAll('.stat-val');
-            statEls[0].dataset.target = D.stats.liveSites;
-            statEls[1].dataset.target = D.stats.tasksDone;
-            statEls[3].dataset.target = D.stats.deploys;
+    renderOps();
 
-            // Revenue stat: replaces "Repos" when data.revenue is set
-            const revStat = document.getElementById('stat-rev');
-            if (D.revenue && typeof D.revenue.mtdCents === 'number') {
-                const mtd = D.revenue.mtdCents / 100;
-                const valEl = revStat.querySelector('.stat-val');
-                const lblEl = revStat.querySelector('.stat-lbl');
-                // Skip counter animation for currency — just set formatted value
-                valEl.textContent = mtd >= 1000 ? `$${(mtd/1000).toFixed(1)}k` : `$${mtd.toFixed(0)}`;
-                valEl.dataset.target = Math.round(mtd); // keep target sane for fallback
-                valEl.dataset.noCount = '1';
-                lblEl.textContent = 'Revenue MTD';
-            }
+    // ===== FINANCIAL PULSE =====
+    const FIN_KEY = 'hq_finance_v1';
 
-            // Pipeline — show top open leads (not won/lost), max 4
-            if (Array.isArray(D.leads) && D.leads.length) {
-                const open = D.leads.filter(l => l.stage !== 'won' && l.stage !== 'lost').slice(0, 4);
-                if (open.length) {
-                    const sec = document.getElementById('pipeline-sec');
-                    const grid = document.getElementById('pipeline-grid');
-                    const stageBg = { new: 'var(--cyan-dim)', qualified: 'var(--purple-dim)', proposed: 'var(--gold-dim)' };
-                    const stageColor = { new: 'var(--cyan)', qualified: 'var(--purple)', proposed: 'var(--gold)' };
-                    grid.innerHTML = open.map(l => {
-                        const val = (l.valueCents || 0) / 100;
-                        const valStr = val >= 1000 ? `$${(val/1000).toFixed(1)}k` : `$${val.toFixed(0)}`;
-                        return `
-                            <div class="lnk" style="cursor:default">
-                                <div class="lnk-icon" style="background:${stageBg[l.stage] || 'var(--bg-card)'};color:${stageColor[l.stage] || 'var(--text-2)'}">●</div>
-                                <div class="lnk-body">
-                                    <div class="lnk-name">${l.name} <span style="color:var(--text-3);font-weight:400">· ${l.source}</span></div>
-                                    <div class="lnk-desc">${l.nextAction || '—'}</div>
-                                </div>
-                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:${stageColor[l.stage] || 'var(--text-2)'};letter-spacing:0.06em;text-transform:uppercase;text-align:right">
-                                    <div>${l.stage}</div>
-                                    <div style="color:var(--text-2);margin-top:2px">${valStr}</div>
-                                </div>
-                            </div>
-                        `;
-                    }).join('');
-                    sec.style.display = '';
-                }
-            }
+    function loadFinance() {
+        try { return JSON.parse(localStorage.getItem(FIN_KEY)) || {}; } catch { return {}; }
+    }
 
-            // --- Roadmap ---
-            const phases = document.querySelectorAll('.phase-item');
-            const rm = [D.roadmap.p1, D.roadmap.p2, D.roadmap.p3, D.roadmap.p4];
-            let totalComplete = 0;
-            let totalItems = 0;
-            phases.forEach((el, i) => {
-                el.querySelector('.phase-prog').textContent = rm[i].progress;
-                if (rm[i].progress !== '\u2014' && rm[i].progress !== '—') {
-                    const parts = rm[i].progress.split('/');
-                    if (parts.length === 2) {
-                        totalComplete += parseInt(parts[0]);
-                        totalItems += parseInt(parts[1]);
+    function saveFinance(type) {
+        const input = document.getElementById('fin-' + type + '-input');
+        const val = parseFloat(input.value);
+        if (isNaN(val)) return;
+
+        const data = loadFinance();
+        if (!data[type]) data[type] = [];
+        data[type].push({ value: val, date: new Date().toISOString() });
+        localStorage.setItem(FIN_KEY, JSON.stringify(data));
+
+        // Close editing
+        document.querySelectorAll('.fin-card').forEach(c => c.classList.remove('editing'));
+        input.value = '';
+        renderFinance();
+    }
+
+    function toggleFinEdit(card, type) {
+        const wasEditing = card.classList.contains('editing');
+        document.querySelectorAll('.fin-card').forEach(c => c.classList.remove('editing'));
+
+        if (!wasEditing) {
+            card.classList.add('editing');
+            setTimeout(() => {
+                const input = document.getElementById('fin-' + type + '-input');
+                if (input) input.focus();
+            }, 50);
+        } else {
+            // Save on close if there's a value
+            const input = document.getElementById('fin-' + type + '-input');
+            if (input && input.value) saveFinance(type);
+        }
+    }
+
+    function renderFinance() {
+        const data = loadFinance();
+        const today = todayKey();
+
+        ['bofa', 'webull', 'moma'].forEach(type => {
+            const entries = data[type] || [];
+            const valEl = document.getElementById('fin-' + type);
+            const subEl = document.getElementById('fin-' + type + '-sub');
+
+            if (entries.length > 0) {
+                const latest = entries[entries.length - 1];
+                const val = latest.value;
+                valEl.textContent = val >= 10000 ? '$' + (val / 1000).toFixed(1) + 'k' : '$' + val.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+                const date = new Date(latest.date);
+                const isToday = latest.date.startsWith(today);
+                subEl.textContent = isToday ? 'updated today' : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                subEl.style.color = isToday ? 'var(--green)' : '';
+
+                // Change detection
+                if (entries.length >= 2) {
+                    const prev = entries[entries.length - 2].value;
+                    const diff = val - prev;
+                    if (diff !== 0) {
+                        const sign = diff > 0 ? '+' : '';
+                        valEl.style.color = diff > 0 ? 'var(--green)' : 'var(--red)';
+                        subEl.textContent += ' (' + sign + '$' + Math.abs(diff).toLocaleString() + ')';
                     }
-                    if (parseInt(parts[0]) > 0) el.classList.add('active');
-                    else el.classList.remove('active');
-                } else {
-                    el.classList.remove('active');
                 }
-            });
+            } else {
+                valEl.textContent = '--';
+                valEl.style.color = '';
+                subEl.textContent = 'tap to update';
+                subEl.style.color = '';
+            }
+        });
+    }
 
-            // Calculate roadmap fill percentage
-            const fillPct = totalItems > 0 ? Math.max((totalComplete / 20) * 100, 5) : 5;
-            setTimeout(() => {
-                gsap.to('#roadmap-fill', { width: fillPct + '%', duration: 1.5, ease: 'power2.inOut' });
-            }, 800);
+    renderFinance();
 
-            // --- Quick Actions ---
-            document.getElementById('quick-actions').innerHTML = D.quickActions.map(a => `
-                <a class="lnk" href="${a.url}" target="_blank">
-                    <div class="lnk-icon" style="background:${a.bg}">${a.icon}</div>
-                    <div class="lnk-body">
-                        <div class="lnk-name">${a.name}</div>
-                        <div class="lnk-desc">${a.desc}</div>
-                    </div>
-                    <div class="lnk-arrow">&rarr;</div>
-                </a>
-            `).join('');
+    // ===== QUICK LINKS =====
+    const defaultLinks = [
+        { icon: '&#128200;', label: 'Webull', url: 'https://app.webull.com' },
+        { icon: '&#127974;', label: 'BofA', url: 'https://www.bankofamerica.com' },
+        { icon: '&#127922;', label: 'MOMA', url: 'https://operator.moma.com' },
+        { icon: '&#128187;', label: 'Vercel', url: 'https://vercel.com/dashboard' },
+        { icon: '&#127760;', label: 'GitHub', url: 'https://github.com/kimchiwrice' },
+        { icon: '&#128172;', label: 'Claude', url: 'https://claude.ai' },
+        { icon: '&#128202;', label: 'Notion', url: 'https://notion.so' },
+        { icon: '&#128188;', label: 'Canva', url: 'https://canva.com' },
+    ];
 
-            // --- Deploys ---
-            document.getElementById('deploy-log').innerHTML = D.deploys.map(d => `
-                <div class="deploy">
-                    <span class="deploy-dot ok"></span>
-                    <span class="deploy-name">${d.project} &mdash; ${d.msg}</span>
-                    <span class="deploy-hash">${d.hash}</span>
-                    <span class="deploy-when">${d.when}</span>
-                </div>
-            `).join('');
+    function renderQuickLinks() {
+        // Try to load from data.json first, fall back to defaults
+        const container = document.getElementById('quick-links');
+        const links = defaultLinks;
+        container.innerHTML = links.map(l => `
+            <a class="quick-link" href="${l.url}" target="_blank">
+                <span class="quick-icon">${l.icon}</span>
+                <span class="quick-label">${l.label}</span>
+            </a>
+        `).join('');
+    }
 
-            // --- Portfolio ---
-            document.getElementById('folio-grid').innerHTML = D.portfolio.map(p => `
-                <a class="folio" href="${p.url}" target="_blank">
-                    <div class="folio-preview">
-                        <div class="folio-preview-ph" data-url="${p.url}">${p.emoji}</div>
-                        <div class="folio-badge" data-check-url="${p.url}"><span class="dot" style="width:4px;height:4px"></span> <span class="badge-text">CHECKING</span></div>
-                    </div>
-                    <div class="folio-info">
-                        <div class="folio-row">
-                            <div>
-                                <div class="folio-name">${p.name}</div>
-                                <div class="folio-type">${p.type}</div>
-                            </div>
-                            <div class="lnk-arrow" style="font-size:0.8rem">&rarr;</div>
-                        </div>
-                        <div class="folio-desc">${p.desc}</div>
-                        <div class="folio-tech">${p.tags.map(t => `<span class="folio-tag">${t}</span>`).join('')}</div>
-                        <div class="folio-ping" data-ping-url="${p.url}" style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:var(--text-3);margin-top:6px;letter-spacing:0.04em;">—</div>
-                    </div>
-                </a>
-            `).join('');
+    renderQuickLinks();
 
-            // Load live previews
-            setTimeout(() => {
-                document.querySelectorAll('.folio-preview-ph').forEach(ph => {
-                    const url = ph.dataset.url;
-                    if (!url) return;
-                    const iframe = document.createElement('iframe');
-                    iframe.src = url;
-                    iframe.loading = 'lazy';
-                    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
-                    iframe.style.cssText = 'width:300%;height:300%;transform:scale(0.3333);transform-origin:top left;border:none;pointer-events:none;position:absolute;top:0;left:0;';
-                    iframe.onload = () => { gsap.to(ph, { opacity: 0, duration: 0.5 }); };
-                    ph.parentElement.appendChild(iframe);
-                });
-            }, 2000);
-
-            // --- Tools ---
-            document.getElementById('tools-grid').innerHTML = D.tools.map(t => `
-                <a class="lnk" href="${t.url}" target="_blank">
-                    <div class="lnk-icon" style="background:rgba(255,255,255,0.03)">${t.icon}</div>
-                    <div class="lnk-body">
-                        <div class="lnk-name">${t.name}</div>
-                        <div class="lnk-desc">${t.desc}</div>
-                    </div>
-                    <div class="lnk-arrow">&rarr;</div>
-                </a>
-            `).join('');
-
-            // --- AI Tools ---
-            if (D.aiTools && D.aiTools.length) {
-                document.getElementById('ai-tools-grid').innerHTML = D.aiTools.map(t => `
-                    <a class="lnk" href="${t.url}" target="_blank">
-                        <div class="lnk-icon" style="background:rgba(255,255,255,0.03)">${t.icon}</div>
-                        <div class="lnk-body">
-                            <div class="lnk-name">${t.name}</div>
-                            <div class="lnk-desc">${t.desc}</div>
-                            <div class="ai-tool-use">${t.use}</div>
-                        </div>
-                        <div class="lnk-arrow">&rarr;</div>
+    // ===== LOAD DATA.JSON FOR INTEL VIEW =====
+    fetch('data.json?' + Date.now())
+        .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(D => {
+            // Intel > Tools
+            const allTools = [...(D.tools || []), ...(D.aiTools || [])];
+            const intelTools = document.getElementById('intel-tools');
+            if (intelTools && allTools.length) {
+                intelTools.innerHTML = allTools.map(t => `
+                    <a class="quick-link" href="${t.url}" target="_blank" style="padding:12px 6px">
+                        <span class="quick-icon">${t.icon}</span>
+                        <span class="quick-label">${t.name}</span>
                     </a>
                 `).join('');
             }
 
-            // --- Systems ---
-            document.getElementById('sys-grid').innerHTML = D.systems.map(s => `
-                <div class="lnk" style="cursor:default">
-                    <div class="lnk-icon" style="background:var(--green-dim)">${s.icon}</div>
-                    <div class="lnk-body">
-                        <div class="lnk-name">${s.name}</div>
-                        <div class="lnk-desc">${s.desc}</div>
+            // Intel > Systems
+            const allSystems = [...(D.systems || []), ...(D.ventures || [])];
+            const intelSys = document.getElementById('intel-systems');
+            if (intelSys && allSystems.length) {
+                intelSys.innerHTML = allSystems.map(s => `
+                    <div class="hud-card green" style="display:flex;align-items:center;gap:10px;padding:10px 12px">
+                        <span style="font-size:1rem">${s.icon}</span>
+                        <div style="flex:1;min-width:0">
+                            <div style="font-size:0.75rem;font-weight:600">${s.name}</div>
+                            <div style="font-size:0.55rem;color:var(--text-3)">${s.desc}</div>
+                        </div>
+                        <div style="font-family:var(--font-mono);font-size:0.45rem;color:var(--green);letter-spacing:0.08em;text-transform:uppercase">${s.status}</div>
                     </div>
-                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:var(--green);letter-spacing:0.06em;text-transform:uppercase">${s.status}</div>
-                </div>
-            `).join('');
+                `).join('');
+            }
 
-            // --- Business Ventures ---
-            document.getElementById('biz-grid').innerHTML = D.ventures.map(b => `
-                <a class="lnk" href="${b.url}" target="_blank">
-                    <div class="lnk-icon" style="background:${b.color === 'var(--gold)' ? 'var(--gold-dim)' : 'var(--green-dim)'}">${b.icon}</div>
-                    <div class="lnk-body">
-                        <div class="lnk-name">${b.name}</div>
-                        <div class="lnk-desc">${b.desc}</div>
-                    </div>
-                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:${b.color};letter-spacing:0.06em;text-transform:uppercase">${b.status}</div>
-                </a>
-            `).join('');
-
-            // --- Last Updated (don't overwrite status — uptime checker will handle it) ---
-            // Status badge now shows live uptime results instead of static sync date
-
-            // Play entrance AFTER data loaded
-            runCounters();
+            // Override quick links if data.json has them
+            if (D.quickActions && D.quickActions.length) {
+                const ql = document.getElementById('quick-links');
+                // Merge: keep defaults but prepend quickActions as link cards
+            }
         })
         .catch(err => {
-            console.error('data.json load failed:', err);
-            // Show error state — don't leave blank sections
-            const errCard = `<div class="lnk" style="border-color:rgba(251,113,133,0.3);cursor:default">
-                <div class="lnk-icon" style="background:rgba(251,113,133,0.1);font-size:1rem">⚠</div>
-                <div class="lnk-body">
-                    <div class="lnk-name" style="color:var(--red)">Data sync failed</div>
-                    <div class="lnk-desc">Showing cached values · Pull to refresh</div>
-                </div>
-            </div>`;
-            ['quick-actions','deploy-log'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el && !el.children.length) el.innerHTML = errCard;
-            });
-            // Still animate whatever hardcoded values exist
-            runCounters();
+            console.warn('data.json not loaded:', err.message);
         });
 
-    // ===== GITHUB LIVE DATA (only if revenue isn't using this slot) =====
-    fetch('https://api.github.com/users/kimchiwrice/repos?sort=updated&per_page=10')
-        .then(r => r.json())
-        .then(repos => {
-            if (!repos.length) return;
-            const repoStat = document.querySelectorAll('.stat-val')[2];
-            if (repoStat && repoStat.dataset.noCount !== '1') repoStat.dataset.target = repos.length;
-        })
-        .catch(() => {});
-
-    // ===== LIVE UPTIME CHECKER =====
-    async function checkSite(url) {
-        const start = performance.now();
-        try {
-            await fetch(url, { method: 'HEAD', mode: 'no-cors', cache: 'no-store' });
-            return { online: true, ms: Math.round(performance.now() - start) };
-        } catch (e) {
-            return { online: false, ms: null };
-        }
-    }
-
-    async function runUptimeChecks() {
-        const badges = document.querySelectorAll('.folio-badge[data-check-url]');
-        const pings = document.querySelectorAll('.folio-ping[data-ping-url]');
-        const statusEl = document.querySelector('.hdr-status');
-        let onlineCount = 0;
-        let total = badges.length;
-
-        if (statusEl) statusEl.innerHTML = '<span class="dot" style="background:var(--gold)"></span> Checking sites\u2026';
-
-        const checks = Array.from(badges).map(async (badge) => {
-            const url = badge.dataset.checkUrl;
-            const result = await checkSite(url);
-            const badgeText = badge.querySelector('.badge-text');
-            const dot = badge.querySelector('.dot');
-            const pingEl = document.querySelector(`.folio-ping[data-ping-url="${url}"]`);
-
-            if (result.online) {
-                onlineCount++;
-                if (dot) { dot.style.background = 'var(--green)'; dot.style.width = '4px'; dot.style.height = '4px'; }
-                if (badgeText) badgeText.textContent = 'ONLINE';
-                badge.style.color = 'var(--green)';
-                if (pingEl) {
-                    pingEl.style.color = 'var(--green)';
-                    pingEl.textContent = result.ms + 'ms \u00b7 ' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-                }
-            } else {
-                if (dot) { dot.style.background = 'var(--red)'; dot.style.width = '4px'; dot.style.height = '4px'; }
-                if (badgeText) badgeText.textContent = 'DOWN';
-                badge.style.color = 'var(--red)';
-                if (pingEl) {
-                    pingEl.style.color = 'var(--red)';
-                    pingEl.textContent = 'UNREACHABLE \u00b7 ' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-                }
-            }
-        });
-
-        await Promise.all(checks);
-
-        // Update header status
-        if (statusEl) {
-            if (onlineCount === total) {
-                statusEl.innerHTML = '<span class="dot"></span> ' + total + '/' + total + ' Online';
-                statusEl.style.color = 'var(--green)';
-            } else {
-                statusEl.innerHTML = '<span class="dot" style="background:var(--red)"></span> ' + onlineCount + '/' + total + ' Online';
-                statusEl.style.color = 'var(--red)';
-            }
-        }
-    }
-
-    // Run uptime checks 3s after page load (after portfolio cards render)
-    setTimeout(runUptimeChecks, 3000);
-
-    // ===== DAILY TRACKER SYSTEM v2 =====
+    // ===== DAILY TRACKER SYSTEM (preserved from v1) =====
     const TRACKER_KEY = 'hq_tracker_v2';
     let activeCat = 'food';
-
-    function todayKey() { return new Date().toISOString().split('T')[0]; }
 
     function getWeekStart() {
         const d = new Date();
@@ -1862,7 +1318,7 @@
         d.focusDone = false;
         all[todayKey()] = d;
         saveTrackerData(all);
-        document.querySelectorAll('#focus-options .tracker-pick').forEach(b => b.classList.remove('selected'));
+        document.querySelectorAll('#focus-options .t-pick').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         document.getElementById('focus-status').textContent = 'set';
         document.getElementById('focus-status').style.color = 'var(--gold)';
@@ -1922,16 +1378,12 @@
     function logTracker(type) {
         const all = loadTrackerData();
         const d = getDay(todayKey());
-
         if (type === 't4') {
             const v = parseFloat(document.getElementById('inp-t4').value) || 0;
             d.t4 = v;
             document.getElementById('inp-t4').value = '';
         }
-        if (type === 'focus-done') {
-            d.focusDone = true;
-        }
-
+        if (type === 'focus-done') { d.focusDone = true; }
         all[todayKey()] = d;
         saveTrackerData(all);
         refreshTracker();
@@ -1946,11 +1398,10 @@
         const dateEl = document.getElementById('tracker-date');
         if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
-        // Outreach count
+        // Outreach
         const ocEl = document.getElementById('outreach-count');
         if (ocEl) ocEl.textContent = d.outreach || 0;
 
-        // Weekly outreach
         const weekStart = getWeekStart();
         let weekOutreach = 0;
         Object.keys(all).forEach(k => { if (k >= weekStart) weekOutreach += (all[k].outreach || 0); });
@@ -1960,7 +1411,7 @@
             owEl.style.color = weekOutreach >= 5 ? 'var(--green)' : '';
         }
 
-        // Spending total + breakdown
+        // Spending
         const spendTotal = Object.values(d.spend).reduce((a, b) => a + b, 0);
         const stEl = document.getElementById('spend-total');
         if (stEl) {
@@ -1970,8 +1421,7 @@
         const sbEl = document.getElementById('spend-breakdown');
         if (sbEl) {
             const cats = { food: 'Food', gas: 'Gas', subs: 'Subs', impulse: 'Impulse', other: 'Other' };
-            const parts = Object.entries(d.spend).filter(([, v]) => v > 0).map(([k, v]) => cats[k] + ': $' + Math.round(v));
-            sbEl.textContent = parts.join(' / ') || '';
+            sbEl.textContent = Object.entries(d.spend).filter(([, v]) => v > 0).map(([k, v]) => cats[k] + ': $' + Math.round(v)).join(' / ') || '';
         }
 
         // Trades
@@ -1993,7 +1443,7 @@
         }
         if (tlEl) {
             tlEl.innerHTML = d.trades.filter(t => t !== 'skip').map(t =>
-                `<span style="padding:2px 8px;border-radius:6px;background:${t === 'W' ? 'var(--green-dim)' : 'rgba(251,113,133,0.1)'};color:${t === 'W' ? 'var(--green)' : 'var(--red)'}">${t}</span>`
+                `<span style="padding:2px 6px;border-radius:4px;background:${t === 'W' ? 'var(--green-dim)' : 'var(--red-dim)'};color:${t === 'W' ? 'var(--green)' : 'var(--red)'}">${t}</span>`
             ).join('');
         }
 
@@ -2003,19 +1453,18 @@
             if (d.t4 > 0) { t4sEl.textContent = '$' + Math.round(d.t4); t4sEl.style.color = 'var(--green)'; }
             else { t4sEl.textContent = 'not logged'; t4sEl.style.color = ''; }
         }
-        // T4 average
         const t4aEl = document.getElementById('t4-avg');
         if (t4aEl) {
             const t4Days = Object.values(all).filter(day => day.t4 > 0);
             if (t4Days.length >= 3) {
                 const avg = Math.round(t4Days.reduce((s, day) => s + day.t4, 0) / t4Days.length);
-                t4aEl.textContent = t4Days.length + ' days logged / avg $' + avg + '/day / ~$' + Math.round(avg * 30) + '/mo pace';
+                t4aEl.textContent = t4Days.length + ' days / avg $' + avg + '/day / ~$' + Math.round(avg * 30) + '/mo';
             }
         }
 
         // Focus
         if (d.focus) {
-            document.querySelectorAll('#focus-options .tracker-pick').forEach(b => {
+            document.querySelectorAll('#focus-options .t-pick').forEach(b => {
                 b.classList.toggle('selected', b.dataset.focus === d.focus);
             });
             document.getElementById('focus-done-btn').style.display = '';
@@ -2085,7 +1534,7 @@
                             ${r.focusDone ? '<span class="tracker-history-pill" style="color:var(--green)">&#10003;</span>' : (r.focus ? '<span class="tracker-history-pill" style="color:var(--red)">&#10007;</span>' : '')}
                         </div>
                     </div>`;
-            }).join('') || '<div style="color:var(--text-3);font-size:0.75rem;padding:12px 0">No data yet. Start logging!</div>';
+            }).join('') || '<div style="color:var(--text-3);font-size:0.7rem;padding:10px 0">No data yet</div>';
         }
     }
 

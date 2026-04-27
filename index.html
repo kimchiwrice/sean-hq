@@ -225,6 +225,65 @@
             margin-bottom: 10px;
         }
 
+        .tracker-pick {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .tracker-pick:active { transform: scale(0.97); }
+
+        .tracker-pick.selected {
+            border-color: var(--gold);
+            background: var(--gold-dim);
+            color: var(--gold);
+        }
+
+        .spend-cat {
+            width: auto;
+            padding: 6px 12px;
+            font-size: 0.7rem;
+            text-align: center;
+        }
+
+        .spend-cat.active {
+            border-color: var(--gold);
+            background: var(--gold-dim);
+            color: var(--gold);
+        }
+
+        .tracker-check {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tracker-check:has(input:checked) {
+            border-color: rgba(52,211,153,0.3);
+            background: var(--green-dim);
+        }
+
+        .tracker-check input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--green);
+        }
+
         .tracker-commit textarea {
             width: 100%;
             background: var(--bg-2);
@@ -1132,85 +1191,124 @@
         <div class="view" id="v-track">
             <div class="tracker-date" id="tracker-date"></div>
 
-            <div class="tracker-target">
-                <div class="tracker-target-label">December 2026 Target</div>
-                <div class="tracker-target-val">$10,000<span style="font-size:0.7rem;opacity:0.6">/mo</span></div>
-                <div class="tracker-target-sub" id="tracker-gap">Current: $4,400 — Gap: $5,600</div>
+            <!-- Target + Streak row -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+                <div class="tracker-target" style="margin-bottom:0">
+                    <div class="tracker-target-label">Dec 2026 Target</div>
+                    <div class="tracker-target-val" style="font-size:1.3rem">$10K<span style="font-size:0.6rem;opacity:0.6">/mo</span></div>
+                    <div class="tracker-target-sub" style="font-size:0.6rem">Gap: $5,600/mo</div>
+                </div>
+                <div class="tracker-streak" style="margin-bottom:0">
+                    <div class="tracker-streak-val" id="streak-val">0</div>
+                    <div class="tracker-streak-lbl">Day Streak</div>
+                </div>
             </div>
 
-            <div class="tracker-streak">
-                <div class="tracker-streak-val" id="streak-val">0</div>
-                <div class="tracker-streak-lbl">Day Streak</div>
+            <!-- TODAY'S FOCUS — pick from list, not free text -->
+            <div class="tracker-card" id="tc-focus">
+                <div class="tracker-card-hdr">
+                    <div class="tracker-card-title">&#127919; Today's Focus</div>
+                    <span class="tracker-card-badge badge-daily" id="focus-status">pick one</span>
+                </div>
+                <div id="focus-options" style="display:flex;flex-direction:column;gap:6px">
+                    <button class="tracker-pick" data-focus="outreach" onclick="setFocus(this)">Send outreach messages</button>
+                    <button class="tracker-pick" data-focus="trinh" onclick="setFocus(this)">Work on Trinh Media</button>
+                    <button class="tracker-pick" data-focus="t4-growth" onclick="setFocus(this)">T4 growth idea for boss</button>
+                    <button class="tracker-pick" data-focus="trading" onclick="setFocus(this)">Trading session</button>
+                    <button class="tracker-pick" data-focus="learn" onclick="setFocus(this)">Learn / build skills</button>
+                    <button class="tracker-pick" data-focus="rest" onclick="setFocus(this)">Intentional rest day</button>
+                </div>
+                <button class="tracker-btn" id="focus-done-btn" style="width:100%;margin-top:8px;background:var(--green);color:#08090E;display:none" onclick="logTracker('focus-done')">&#10003; Done — I did it</button>
             </div>
 
-            <!-- Outreach -->
+            <!-- OUTREACH — tap counter -->
             <div class="tracker-card" id="tc-outreach">
                 <div class="tracker-card-hdr">
-                    <div class="tracker-card-title">&#128233; Outreach Sent</div>
+                    <div class="tracker-card-title">&#128233; Outreach</div>
                     <span class="tracker-card-badge badge-week" id="outreach-week">0/5 this week</span>
                 </div>
-                <div class="tracker-input-row">
-                    <input class="tracker-input" type="number" id="inp-outreach" placeholder="How many today?" min="0" inputmode="numeric">
-                    <button class="tracker-btn" onclick="logTracker('outreach')">Log</button>
+                <div style="display:flex;align-items:center;gap:10px">
+                    <button class="tracker-btn" style="font-size:1.1rem;padding:8px 18px" onclick="tapCount('outreach',-1)">-</button>
+                    <div style="flex:1;text-align:center">
+                        <div id="outreach-count" style="font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--cyan)">0</div>
+                        <div style="font-size:0.6rem;color:var(--text-2)">messages today</div>
+                    </div>
+                    <button class="tracker-btn" style="font-size:1.1rem;padding:8px 18px" onclick="tapCount('outreach',1)">+</button>
                 </div>
             </div>
 
-            <!-- Spending -->
+            <!-- SPENDING — quick-tap categories -->
             <div class="tracker-card" id="tc-spend">
                 <div class="tracker-card-hdr">
-                    <div class="tracker-card-title">&#128176; Money Spent</div>
-                    <span class="tracker-card-badge badge-daily">today</span>
+                    <div class="tracker-card-title">&#128176; Spending</div>
+                    <span class="tracker-card-badge badge-daily" id="spend-total">$0 today</span>
                 </div>
-                <div class="tracker-input-row">
-                    <input class="tracker-input" type="number" id="inp-spend" placeholder="$ spent today" min="0" step="0.01" inputmode="decimal">
-                    <button class="tracker-btn" onclick="logTracker('spend')">Log</button>
+                <div style="font-size:0.65rem;color:var(--text-3);margin-bottom:8px">Tap category, then amount</div>
+                <div id="spend-cats" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+                    <button class="tracker-pick spend-cat active" data-cat="food" onclick="pickCat(this)">&#127374; Food</button>
+                    <button class="tracker-pick spend-cat" data-cat="gas" onclick="pickCat(this)">&#9981; Gas</button>
+                    <button class="tracker-pick spend-cat" data-cat="subs" onclick="pickCat(this)">&#128241; Subs</button>
+                    <button class="tracker-pick spend-cat" data-cat="impulse" onclick="pickCat(this)">&#128184; Impulse</button>
+                    <button class="tracker-pick spend-cat" data-cat="other" onclick="pickCat(this)">&#8226; Other</button>
                 </div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px">
+                    <button class="tracker-btn" style="flex:1;min-width:55px" onclick="tapSpend(5)">$5</button>
+                    <button class="tracker-btn" style="flex:1;min-width:55px" onclick="tapSpend(10)">$10</button>
+                    <button class="tracker-btn" style="flex:1;min-width:55px" onclick="tapSpend(15)">$15</button>
+                    <button class="tracker-btn" style="flex:1;min-width:55px" onclick="tapSpend(20)">$20</button>
+                    <button class="tracker-btn" style="flex:1;min-width:55px" onclick="tapSpend(30)">$30</button>
+                    <button class="tracker-btn" style="flex:1;min-width:55px" onclick="tapSpend(50)">$50</button>
+                </div>
+                <div class="tracker-input-row" style="margin-top:8px">
+                    <input class="tracker-input" type="number" id="inp-spend-custom" placeholder="Custom $" min="0" inputmode="decimal" style="flex:1">
+                    <button class="tracker-btn" onclick="tapSpend(parseFloat(document.getElementById('inp-spend-custom').value)||0); document.getElementById('inp-spend-custom').value=''">Add</button>
+                </div>
+                <div id="spend-breakdown" style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-3)"></div>
             </div>
 
-            <!-- Trades -->
+            <!-- TRADES — simple W/L/skip -->
             <div class="tracker-card" id="tc-trades">
                 <div class="tracker-card-hdr">
-                    <div class="tracker-card-title">&#128200; Trades</div>
-                    <span class="tracker-card-badge badge-daily">today</span>
+                    <div class="tracker-card-title">&#128200; Today's Trades</div>
+                    <span class="tracker-card-badge badge-daily" id="trade-summary">—</span>
                 </div>
-                <div class="tracker-input-row" style="gap:6px">
-                    <input class="tracker-input" type="number" id="inp-wins" placeholder="Wins" min="0" inputmode="numeric" style="flex:1">
-                    <input class="tracker-input" type="number" id="inp-losses" placeholder="Losses" min="0" inputmode="numeric" style="flex:1">
-                    <button class="tracker-btn" onclick="logTracker('trades')">Log</button>
+                <div style="display:flex;gap:8px">
+                    <button class="tracker-btn" style="flex:1;background:var(--green);color:#08090E" onclick="tapTrade('W')">&#9650; Win</button>
+                    <button class="tracker-btn" style="flex:1;background:var(--red);color:#fff" onclick="tapTrade('L')">&#9660; Loss</button>
+                    <button class="tracker-btn" style="flex:1" onclick="tapTrade('skip')">No trades</button>
                 </div>
+                <div id="trade-log" style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-2);display:flex;gap:4px;flex-wrap:wrap"></div>
             </div>
 
-            <!-- T4 Revenue -->
+            <!-- T4 REVENUE — end of shift log -->
             <div class="tracker-card" id="tc-t4">
                 <div class="tracker-card-hdr">
-                    <div class="tracker-card-title">&#129379; T4 Daily Revenue</div>
-                    <span class="tracker-card-badge badge-daily">today</span>
+                    <div class="tracker-card-title">&#129379; T4 Close-Out</div>
+                    <span class="tracker-card-badge badge-daily" id="t4-status">not logged</span>
                 </div>
                 <div class="tracker-input-row">
-                    <input class="tracker-input" type="number" id="inp-t4" placeholder="$ T4 made today" min="0" step="1" inputmode="decimal">
+                    <input class="tracker-input" type="number" id="inp-t4" placeholder="Today's register total $" min="0" step="1" inputmode="numeric">
                     <button class="tracker-btn" onclick="logTracker('t4')">Log</button>
                 </div>
+                <div id="t4-avg" style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-3)"></div>
             </div>
 
-            <!-- Growth Hours -->
-            <div class="tracker-card" id="tc-hours">
+            <!-- WHAT I DID TODAY — checkboxes, not hours -->
+            <div class="tracker-card" id="tc-activity">
                 <div class="tracker-card-hdr">
-                    <div class="tracker-card-title">&#9203; Growth Hours</div>
-                    <span class="tracker-card-badge badge-week" id="hours-week">0/20 this week</span>
+                    <div class="tracker-card-title">&#9889; What I Did Today</div>
+                    <span class="tracker-card-badge badge-daily" id="activity-count">0 logged</span>
                 </div>
-                <div class="tracker-input-row">
-                    <input class="tracker-input" type="number" id="inp-hours" placeholder="Hrs on growth (not T4)" min="0" step="0.5" inputmode="decimal">
-                    <button class="tracker-btn" onclick="logTracker('hours')">Log</button>
-                </div>
-            </div>
-
-            <!-- Daily Commitment -->
-            <div class="tracker-commit">
-                <div class="tracker-commit-label">&#127919; Today's Commitment</div>
-                <textarea id="inp-commit" placeholder="What's the ONE thing you're committing to today?"></textarea>
-                <div style="display:flex;gap:8px;margin-top:8px">
-                    <button class="tracker-btn" style="flex:1" onclick="logTracker('commit')">Set</button>
-                    <button class="tracker-btn" style="flex:1;background:var(--green);color:#08090E" onclick="logTracker('commit-done')">&#10003; Done</button>
+                <div id="activity-checks" style="display:flex;flex-direction:column;gap:4px">
+                    <label class="tracker-check"><input type="checkbox" onchange="logActivity(this)" data-act="outreach"> Sent outreach</label>
+                    <label class="tracker-check"><input type="checkbox" onchange="logActivity(this)" data-act="trinh-work"> Worked on Trinh Media</label>
+                    <label class="tracker-check"><input type="checkbox" onchange="logActivity(this)" data-act="traded"> Traded</label>
+                    <label class="tracker-check"><input type="checkbox" onchange="logActivity(this)" data-act="learned"> Learned something new</label>
+                    <label class="tracker-check"><input type="checkbox" onchange="logActivity(this)" data-act="gym"> Hit the gym</label>
+                    <label class="tracker-check"><input type="checkbox" onchange="logActivity(this)" data-act="t4-shift"> Worked T4 shift</label>
+                    <label class="tracker-check"><input type="checkbox" onchange="logActivity(this)" data-act="t4-idea"> Pitched/brainstormed T4 growth</label>
+                    <label class="tracker-check"><input type="checkbox" onchange="logActivity(this)" data-act="content"> Created content</label>
+                    <label class="tracker-check" style="color:var(--text-3)"><input type="checkbox" onchange="logActivity(this)" data-act="gamed"> Gamed / scrolled</label>
                 </div>
             </div>
 
@@ -1719,17 +1817,16 @@
     // Run uptime checks 3s after page load (after portfolio cards render)
     setTimeout(runUptimeChecks, 3000);
 
-    // ===== DAILY TRACKER SYSTEM =====
-    const TRACKER_KEY = 'hq_tracker_v1';
+    // ===== DAILY TRACKER SYSTEM v2 =====
+    const TRACKER_KEY = 'hq_tracker_v2';
+    let activeCat = 'food';
 
-    function todayKey() {
-        return new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-    }
+    function todayKey() { return new Date().toISOString().split('T')[0]; }
 
     function getWeekStart() {
         const d = new Date();
         const day = d.getDay();
-        const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday start
+        const diff = d.getDate() - day + (day === 0 ? -6 : 1);
         return new Date(d.setDate(diff)).toISOString().split('T')[0];
     }
 
@@ -1737,73 +1834,105 @@
         try { return JSON.parse(localStorage.getItem(TRACKER_KEY)) || {}; } catch { return {}; }
     }
 
-    function saveTrackerData(data) {
-        localStorage.setItem(TRACKER_KEY, JSON.stringify(data));
+    function saveTrackerData(data) { localStorage.setItem(TRACKER_KEY, JSON.stringify(data)); }
+
+    function getDay(key) {
+        const all = loadTrackerData();
+        if (!all[key]) all[key] = {
+            outreach: 0,
+            spend: { food: 0, gas: 0, subs: 0, impulse: 0, other: 0 },
+            trades: [],
+            t4: 0,
+            activities: [],
+            focus: '',
+            focusDone: false
+        };
+        if (typeof all[key].spend === 'number') {
+            all[key].spend = { food: all[key].spend, gas: 0, subs: 0, impulse: 0, other: 0 };
+        }
+        if (!Array.isArray(all[key].trades)) all[key].trades = [];
+        if (!Array.isArray(all[key].activities)) all[key].activities = [];
+        return all[key];
     }
 
-    function getTodayData() {
+    function setFocus(btn) {
         const all = loadTrackerData();
-        const key = todayKey();
-        if (!all[key]) all[key] = { outreach: 0, spend: 0, wins: 0, losses: 0, t4: 0, hours: 0, commit: '', commitDone: false };
-        return all[key];
+        const d = getDay(todayKey());
+        d.focus = btn.dataset.focus;
+        d.focusDone = false;
+        all[todayKey()] = d;
+        saveTrackerData(all);
+        document.querySelectorAll('#focus-options .tracker-pick').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        document.getElementById('focus-status').textContent = 'set';
+        document.getElementById('focus-status').style.color = 'var(--gold)';
+        document.getElementById('focus-done-btn').style.display = '';
+    }
+
+    function tapCount(type, delta) {
+        const all = loadTrackerData();
+        const d = getDay(todayKey());
+        d.outreach = Math.max(0, (d.outreach || 0) + delta);
+        all[todayKey()] = d;
+        saveTrackerData(all);
+        refreshTracker();
+    }
+
+    function pickCat(btn) {
+        document.querySelectorAll('.spend-cat').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeCat = btn.dataset.cat;
+    }
+
+    function tapSpend(amount) {
+        if (!amount || amount <= 0) return;
+        const all = loadTrackerData();
+        const d = getDay(todayKey());
+        d.spend[activeCat] = (d.spend[activeCat] || 0) + amount;
+        all[todayKey()] = d;
+        saveTrackerData(all);
+        refreshTracker();
+    }
+
+    function tapTrade(result) {
+        const all = loadTrackerData();
+        const d = getDay(todayKey());
+        if (result === 'skip') {
+            d.trades = ['skip'];
+        } else {
+            if (d.trades.length === 1 && d.trades[0] === 'skip') d.trades = [];
+            d.trades.push(result);
+        }
+        all[todayKey()] = d;
+        saveTrackerData(all);
+        refreshTracker();
+    }
+
+    function logActivity(cb) {
+        const all = loadTrackerData();
+        const d = getDay(todayKey());
+        const act = cb.dataset.act;
+        if (cb.checked && !d.activities.includes(act)) d.activities.push(act);
+        if (!cb.checked) d.activities = d.activities.filter(a => a !== act);
+        all[todayKey()] = d;
+        saveTrackerData(all);
+        refreshTracker();
     }
 
     function logTracker(type) {
         const all = loadTrackerData();
-        const key = todayKey();
-        if (!all[key]) all[key] = { outreach: 0, spend: 0, wins: 0, losses: 0, t4: 0, hours: 0, commit: '', commitDone: false };
-        const d = all[key];
+        const d = getDay(todayKey());
 
-        switch(type) {
-            case 'outreach': {
-                const v = parseInt(document.getElementById('inp-outreach').value) || 0;
-                d.outreach += v;
-                document.getElementById('inp-outreach').value = '';
-                document.getElementById('tc-outreach').classList.add('done');
-                break;
-            }
-            case 'spend': {
-                const v = parseFloat(document.getElementById('inp-spend').value) || 0;
-                d.spend += v;
-                document.getElementById('inp-spend').value = '';
-                document.getElementById('tc-spend').classList.add('done');
-                break;
-            }
-            case 'trades': {
-                const w = parseInt(document.getElementById('inp-wins').value) || 0;
-                const l = parseInt(document.getElementById('inp-losses').value) || 0;
-                d.wins += w;
-                d.losses += l;
-                document.getElementById('inp-wins').value = '';
-                document.getElementById('inp-losses').value = '';
-                document.getElementById('tc-trades').classList.add('done');
-                break;
-            }
-            case 't4': {
-                const v = parseFloat(document.getElementById('inp-t4').value) || 0;
-                d.t4 = v;
-                document.getElementById('inp-t4').value = '';
-                document.getElementById('tc-t4').classList.add('done');
-                break;
-            }
-            case 'hours': {
-                const v = parseFloat(document.getElementById('inp-hours').value) || 0;
-                d.hours += v;
-                document.getElementById('inp-hours').value = '';
-                document.getElementById('tc-hours').classList.add('done');
-                break;
-            }
-            case 'commit': {
-                d.commit = document.getElementById('inp-commit').value;
-                break;
-            }
-            case 'commit-done': {
-                d.commitDone = true;
-                break;
-            }
+        if (type === 't4') {
+            const v = parseFloat(document.getElementById('inp-t4').value) || 0;
+            d.t4 = v;
+            document.getElementById('inp-t4').value = '';
+        }
+        if (type === 'focus-done') {
+            d.focusDone = true;
         }
 
-        all[key] = d;
+        all[todayKey()] = d;
         saveTrackerData(all);
         refreshTracker();
     }
@@ -1811,57 +1940,118 @@
     function refreshTracker() {
         const all = loadTrackerData();
         const today = todayKey();
-        const d = all[today] || { outreach: 0, spend: 0, wins: 0, losses: 0, t4: 0, hours: 0, commit: '', commitDone: false };
+        const d = getDay(today);
 
-        // Date header
+        // Date
         const dateEl = document.getElementById('tracker-date');
-        if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+        if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
-        // Weekly totals
+        // Outreach count
+        const ocEl = document.getElementById('outreach-count');
+        if (ocEl) ocEl.textContent = d.outreach || 0;
+
+        // Weekly outreach
         const weekStart = getWeekStart();
-        let weekOutreach = 0, weekHours = 0;
-        Object.keys(all).forEach(k => {
-            if (k >= weekStart) {
-                weekOutreach += (all[k].outreach || 0);
-                weekHours += (all[k].hours || 0);
-            }
-        });
-
+        let weekOutreach = 0;
+        Object.keys(all).forEach(k => { if (k >= weekStart) weekOutreach += (all[k].outreach || 0); });
         const owEl = document.getElementById('outreach-week');
         if (owEl) {
             owEl.textContent = weekOutreach + '/5 this week';
-            if (weekOutreach >= 5) owEl.style.color = 'var(--green)';
+            owEl.style.color = weekOutreach >= 5 ? 'var(--green)' : '';
         }
 
-        const hwEl = document.getElementById('hours-week');
-        if (hwEl) {
-            hwEl.textContent = weekHours + '/20 this week';
-            if (weekHours >= 20) hwEl.style.color = 'var(--green)';
+        // Spending total + breakdown
+        const spendTotal = Object.values(d.spend).reduce((a, b) => a + b, 0);
+        const stEl = document.getElementById('spend-total');
+        if (stEl) {
+            stEl.textContent = '$' + Math.round(spendTotal) + ' today';
+            if (spendTotal > 30) stEl.style.color = 'var(--red)';
+        }
+        const sbEl = document.getElementById('spend-breakdown');
+        if (sbEl) {
+            const cats = { food: 'Food', gas: 'Gas', subs: 'Subs', impulse: 'Impulse', other: 'Other' };
+            const parts = Object.entries(d.spend).filter(([, v]) => v > 0).map(([k, v]) => cats[k] + ': $' + Math.round(v));
+            sbEl.textContent = parts.join(' / ') || '';
         }
 
-        // Mark done cards
+        // Trades
+        const tsEl = document.getElementById('trade-summary');
+        const tlEl = document.getElementById('trade-log');
+        if (d.trades.length === 0) {
+            if (tsEl) tsEl.textContent = '—';
+        } else if (d.trades[0] === 'skip') {
+            if (tsEl) { tsEl.textContent = 'rest day'; tsEl.style.color = 'var(--text-3)'; }
+        } else {
+            const wins = d.trades.filter(t => t === 'W').length;
+            const losses = d.trades.filter(t => t === 'L').length;
+            const total = wins + losses;
+            const wr = total > 0 ? Math.round((wins / total) * 100) : 0;
+            if (tsEl) {
+                tsEl.textContent = wins + 'W ' + losses + 'L (' + wr + '%)';
+                tsEl.style.color = wr >= 50 ? 'var(--green)' : 'var(--red)';
+            }
+        }
+        if (tlEl) {
+            tlEl.innerHTML = d.trades.filter(t => t !== 'skip').map(t =>
+                `<span style="padding:2px 8px;border-radius:6px;background:${t === 'W' ? 'var(--green-dim)' : 'rgba(251,113,133,0.1)'};color:${t === 'W' ? 'var(--green)' : 'var(--red)'}">${t}</span>`
+            ).join('');
+        }
+
+        // T4
+        const t4sEl = document.getElementById('t4-status');
+        if (t4sEl) {
+            if (d.t4 > 0) { t4sEl.textContent = '$' + Math.round(d.t4); t4sEl.style.color = 'var(--green)'; }
+            else { t4sEl.textContent = 'not logged'; t4sEl.style.color = ''; }
+        }
+        // T4 average
+        const t4aEl = document.getElementById('t4-avg');
+        if (t4aEl) {
+            const t4Days = Object.values(all).filter(day => day.t4 > 0);
+            if (t4Days.length >= 3) {
+                const avg = Math.round(t4Days.reduce((s, day) => s + day.t4, 0) / t4Days.length);
+                t4aEl.textContent = t4Days.length + ' days logged / avg $' + avg + '/day / ~$' + Math.round(avg * 30) + '/mo pace';
+            }
+        }
+
+        // Focus
+        if (d.focus) {
+            document.querySelectorAll('#focus-options .tracker-pick').forEach(b => {
+                b.classList.toggle('selected', b.dataset.focus === d.focus);
+            });
+            document.getElementById('focus-done-btn').style.display = '';
+            const fsEl = document.getElementById('focus-status');
+            if (d.focusDone) { fsEl.textContent = 'done'; fsEl.style.color = 'var(--green)'; }
+            else { fsEl.textContent = 'set'; fsEl.style.color = 'var(--gold)'; }
+        }
+
+        // Activities
+        d.activities.forEach(act => {
+            const cb = document.querySelector(`[data-act="${act}"]`);
+            if (cb) cb.checked = true;
+        });
+        const acEl = document.getElementById('activity-count');
+        if (acEl) {
+            const growth = d.activities.filter(a => !['gamed', 't4-shift'].includes(a)).length;
+            acEl.textContent = growth + ' growth';
+            if (growth >= 3) acEl.style.color = 'var(--green)';
+        }
+
+        // Done state on cards
         if (d.outreach > 0) document.getElementById('tc-outreach').classList.add('done');
-        if (d.spend > 0) document.getElementById('tc-spend').classList.add('done');
-        if (d.wins > 0 || d.losses > 0) document.getElementById('tc-trades').classList.add('done');
+        if (spendTotal > 0) document.getElementById('tc-spend').classList.add('done');
+        if (d.trades.length > 0) document.getElementById('tc-trades').classList.add('done');
         if (d.t4 > 0) document.getElementById('tc-t4').classList.add('done');
-        if (d.hours > 0) document.getElementById('tc-hours').classList.add('done');
+        if (d.activities.length > 0) document.getElementById('tc-activity').classList.add('done');
 
-        // Commitment
-        if (d.commit) document.getElementById('inp-commit').value = d.commit;
-
-        // Streak calculation
+        // Streak
         let streak = 0;
         const sortedDays = Object.keys(all).sort().reverse();
-        for (let i = 0; i < sortedDays.length; i++) {
-            const dayData = all[sortedDays[i]];
-            // A "logged" day = at least outreach OR hours OR trades logged
-            if (dayData.outreach > 0 || dayData.hours > 0 || dayData.wins > 0 || dayData.losses > 0) {
-                streak++;
-            } else if (sortedDays[i] !== today) {
-                break; // Don't break streak on today if not logged yet
-            } else {
-                break;
-            }
+        for (const day of sortedDays) {
+            const dd = all[day];
+            const hasActivity = (dd.activities && dd.activities.length > 0) || (dd.outreach > 0) || (dd.trades && dd.trades.length > 0);
+            if (hasActivity) streak++;
+            else if (day !== today) break;
+            else break;
         }
         const streakEl = document.getElementById('streak-val');
         if (streakEl) {
@@ -1869,33 +2059,36 @@
             if (streak >= 7) streakEl.style.color = 'var(--gold)';
         }
 
-        // History (last 7 days)
+        // History
         const histEl = document.getElementById('tracker-history-list');
         if (histEl) {
             const last7 = Object.keys(all).sort().reverse().slice(0, 7);
             histEl.innerHTML = last7.map(k => {
                 const r = all[k];
                 const dateStr = new Date(k + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-                const totalTrades = (r.wins || 0) + (r.losses || 0);
-                const winRate = totalTrades > 0 ? Math.round((r.wins / totalTrades) * 100) : 0;
+                const sp = typeof r.spend === 'object' ? Object.values(r.spend).reduce((a, b) => a + b, 0) : (r.spend || 0);
+                const trades = Array.isArray(r.trades) ? r.trades.filter(t => t !== 'skip') : [];
+                const tw = trades.filter(t => t === 'W').length;
+                const tl = trades.filter(t => t === 'L').length;
+                const tt = tw + tl;
+                const wr = tt > 0 ? Math.round((tw / tt) * 100) : 0;
+                const growthActs = (r.activities || []).filter(a => !['gamed', 't4-shift'].includes(a)).length;
                 return `
                     <div class="tracker-history-row">
                         <span class="tracker-history-date">${dateStr}</span>
                         <div class="tracker-history-data">
-                            ${r.outreach ? `<span class="tracker-history-pill" style="color:var(--cyan)">&#128233; ${r.outreach}</span>` : ''}
-                            ${r.spend ? `<span class="tracker-history-pill" style="color:var(--red)">$${r.spend.toFixed(0)}</span>` : ''}
-                            ${totalTrades ? `<span class="tracker-history-pill" style="color:${winRate>=50?'var(--green)':'var(--red)'}">${winRate}% W</span>` : ''}
-                            ${r.hours ? `<span class="tracker-history-pill" style="color:var(--gold)">${r.hours}h</span>` : ''}
-                            ${r.t4 ? `<span class="tracker-history-pill" style="color:var(--gold)">T4:$${r.t4}</span>` : ''}
-                            ${r.commitDone ? '<span class="tracker-history-pill" style="color:var(--green)">&#10003;</span>' : (r.commit ? '<span class="tracker-history-pill" style="color:var(--red)">&#10007;</span>' : '')}
+                            ${r.outreach ? `<span class="tracker-history-pill" style="color:var(--cyan)">${r.outreach}msg</span>` : ''}
+                            ${sp > 0 ? `<span class="tracker-history-pill" style="color:var(--red)">-$${Math.round(sp)}</span>` : ''}
+                            ${tt > 0 ? `<span class="tracker-history-pill" style="color:${wr >= 50 ? 'var(--green)' : 'var(--red)'}">${wr}%W</span>` : ''}
+                            ${r.t4 ? `<span class="tracker-history-pill" style="color:var(--gold)">T4:$${Math.round(r.t4)}</span>` : ''}
+                            ${growthActs > 0 ? `<span class="tracker-history-pill" style="color:var(--green)">${growthActs}x</span>` : ''}
+                            ${r.focusDone ? '<span class="tracker-history-pill" style="color:var(--green)">&#10003;</span>' : (r.focus ? '<span class="tracker-history-pill" style="color:var(--red)">&#10007;</span>' : '')}
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }).join('') || '<div style="color:var(--text-3);font-size:0.75rem;padding:12px 0">No data yet. Start logging!</div>';
         }
     }
 
-    // Initialize tracker when Track view loads
     refreshTracker();
 
     // ===== SERVICE WORKER =====
